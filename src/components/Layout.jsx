@@ -98,7 +98,7 @@ const Layout = () => {
                                         onClick={() => switchLanguage("en")}
                                         className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "en"
                                             ? "text-white"
-                                            : "text-white/80 hover:text-white"
+                                            : "text-black hover:text-gray-700"
                                             }`}
                                         style={language === "en" ? { backgroundColor: '#FA8AFF' } : {}}
                                     >
@@ -108,7 +108,7 @@ const Layout = () => {
                                         onClick={() => switchLanguage("ka")}
                                         className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "ka"
                                             ? "text-white"
-                                            : "text-white/80 hover:text-white"
+                                            : "text-black hover:text-gray-700"
                                             }`}
                                         style={language === "ka" ? { backgroundColor: '#FA8AFF' } : {}}
                                     >
@@ -310,7 +310,7 @@ const Layout = () => {
                                     onClick={() => switchLanguage("en")}
                                     className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "en"
                                         ? "text-white"
-                                        : "text-white/80 hover:text-white"
+                                        : "text-black hover:text-gray-700"
                                         }`}
                                     style={language === "en" ? { backgroundColor: '#FA8AFF' } : {}}
                                 >
@@ -320,7 +320,7 @@ const Layout = () => {
                                     onClick={() => switchLanguage("ka")}
                                     className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "ka"
                                         ? "text-white"
-                                        : "text-white/80 hover:text-white"
+                                        : "text-black hover:text-gray-700"
                                         }`}
                                     style={language === "ka" ? { backgroundColor: '#FA8AFF' } : {}}
                                 >
