@@ -3,775 +3,1378 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
-const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const TimezoneServices = ({ api }) => {
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isEditingServices, setIsEditingServices] = useState(false);
+    const [savingServices, setSavingServices] = useState(false);
 
-const HOURS = Array.from({ length: 24 }, (_, i) => {
-    const hour = i.toString().padStart(2, '0');
-    return `${hour}:00`;
-});
+    // Section collapse states - all collapsed by default
+    const [isDocumentsExpanded, setIsDocumentsExpanded] = useState(false);
+    const [isTimesExpanded, setIsTimesExpanded] = useState(false);
+    const [isServicesExpanded, setIsServicesExpanded] = useState(false);
+    const [isPaymentExpanded, setIsPaymentExpanded] = useState(false);
 
-const UTC_OFFSETS = [
-    { value: -12, label: 'UTC-12' },
-    { value: -11, label: 'UTC-11' },
-    { value: -10, label: 'UTC-10 (Hawaii)' },
-    { value: -9, label: 'UTC-9 (Alaska)' },
-    { value: -8, label: 'UTC-8 (Pacific Time)' },
-    { value: -7, label: 'UTC-7 (Mountain Time)' },
-    { value: -6, label: 'UTC-6 (Central Time)' },
-    { value: -5, label: 'UTC-5 (Eastern Time)' },
-    { value: -4, label: 'UTC-4 (Atlantic)' },
-    { value: -3, label: 'UTC-3 (Brazil)' },
-    { value: -2, label: 'UTC-2' },
-    { value: -1, label: 'UTC-1' },
-    { value: 0, label: 'UTC±0 (London)' },
-    { value: 1, label: 'UTC+1 (Central Europe)' },
-    { value: 2, label: 'UTC+2 (Eastern Europe)' },
-    { value: 3, label: 'UTC+3 (Moscow/Turkey)' },
-    { value: 4, label: 'UTC+4 (Georgia/Dubai)' },
-    { value: 5, label: 'UTC+5 (Pakistan)' },
-    { value: 5.5, label: 'UTC+5:30 (India)' },
-    { value: 6, label: 'UTC+6 (Kazakhstan)' },
-    { value: 7, label: 'UTC+7 (Thailand)' },
-    { value: 8, label: 'UTC+8 (China/Singapore)' },
-    { value: 9, label: 'UTC+9 (Japan/Korea)' },
-    { value: 10, label: 'UTC+10 (Sydney)' },
-    { value: 11, label: 'UTC+11' },
-    { value: 12, label: 'UTC+12 (New Zealand)' },
-];
+    // Document confirmation state
+    const [documentStatus, setDocumentStatus] = useState(null);
+    const [selectedDocumentType, setSelectedDocumentType] = useState('');
+    const [confirmingDocument, setConfirmingDocument] = useState(false);
+    const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
 
-const formatTimezoneOffset = (offset) => {
-    if (offset === null || offset === undefined) return 'Not Set';
-    if (offset === 0) return 'UTC±0';
-    const sign = offset > 0 ? '+' : '';
-    return `UTC${sign}${offset}`;
-};
-
-const TimezoneServices = ({ profile, refreshProfile, api }) => {
-    // Availability states
-    const [schedule, setSchedule] = useState({});
-    const [timezoneOffset, setTimezoneOffset] = useState(null);
-    const [requiresTimezone, setRequiresTimezone] = useState(false);
-    const [availabilityLoading, setAvailabilityLoading] = useState(true);
-
-    // Services states
-    const [services, setServices] = useState([]);
-
-    // Dialog states
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isTimezoneDialogOpen, setIsTimezoneDialogOpen] = useState(false);
-    const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
-
-    // Form states
-    const [selectedDay, setSelectedDay] = useState("");
-    const [editingSlot, setEditingSlot] = useState(null);
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [isSaving, setIsSaving] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(null);
-    const [selectedOffset, setSelectedOffset] = useState(null);
-    const [tempSelectedOffset, setTempSelectedOffset] = useState("");
+    // Send application state
     const [sendingApplication, setSendingApplication] = useState(false);
 
-    // Service form
-    const [editingService, setEditingService] = useState(null);
-    const [serviceForm, setServiceForm] = useState({
-        category: '',
-        description: '',
-        price: ''
+    // Payment information state
+    const [paymentInfo, setPaymentInfo] = useState({
+        identificationNumber: '',
+        address: '',
+        bank: '',
+        bankRtgsCode: '',
+        bankAccountNumber: ''
+    });
+    const [originalPaymentInfo, setOriginalPaymentInfo] = useState({
+        identificationNumber: '',
+        address: '',
+        bank: '',
+        bankRtgsCode: '',
+        bankAccountNumber: ''
+    });
+    const [isEditingPayment, setIsEditingPayment] = useState(false);
+    const [savingPayment, setSavingPayment] = useState(false);
+    const [showOtherBankInput, setShowOtherBankInput] = useState(false);
+
+    const [timezone, setTimezone] = useState('');
+    const [schedule, setSchedule] = useState({
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: []
     });
 
-    // Fetch availability
-    const fetchAvailability = async () => {
+    // Initialize with default service
+    const defaultService = {
+        mentorshipService: 'Profession Introduction Session',
+        mentorSessionPrice: 0
+    };
+
+    const [services, setServices] = useState([defaultService]);
+    const [originalServices, setOriginalServices] = useState([defaultService]);
+
+    const [originalData, setOriginalData] = useState({ timezone: '', schedule: {} });
+
+    // Fee percentages - dynamic based on document type
+    const getFeePercentages = () => {
+        if (selectedDocumentType === 'individual_entrepreneur') {
+            return {
+                platformFee: 15,
+                taxes: 0
+            };
+        } else if (selectedDocumentType === 'private_individual') {
+            return {
+                platformFee: 14,
+                taxes: 26
+            };
+        }
+        // Default fallback
+        return {
+            platformFee: 14,
+            taxes: 26
+        };
+    };
+
+    // Common timezones list
+    const timezones = [
+        { value: 'America/New_York', label: 'Eastern Time (ET)' },
+        { value: 'America/Chicago', label: 'Central Time (CT)' },
+        { value: 'America/Denver', label: 'Mountain Time (MT)' },
+        { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
+        { value: 'Europe/London', label: 'London (GMT/BST)' },
+        { value: 'Europe/Paris', label: 'Paris (CET/CEST)' },
+        { value: 'Europe/Berlin', label: 'Berlin (CET/CEST)' },
+        { value: 'Europe/Istanbul', label: 'Istanbul (TRT)' },
+        { value: 'Asia/Dubai', label: 'Dubai (GST)' },
+        { value: 'Asia/Tbilisi', label: 'Tbilisi (GET)' },
+        { value: 'Asia/Kolkata', label: 'India (IST)' },
+        { value: 'Asia/Shanghai', label: 'Shanghai (CST)' },
+        { value: 'Asia/Tokyo', label: 'Tokyo (JST)' },
+        { value: 'Australia/Sydney', label: 'Sydney (AEDT/AEST)' },
+    ];
+
+    // Fetch availability and services data
+    useEffect(() => {
+        fetchDocumentStatus();
+        fetchAvailability();
+        fetchServices();
+        fetchPaymentInfo();
+    }, []);
+
+    const fetchDocumentStatus = async () => {
         try {
-            setAvailabilityLoading(true);
-            const response = await api.get('/availability');
+            const response = await api.get('/mentor/document-status');
+            if (response.data.success) {
+                setDocumentStatus(response.data);
+                if (response.data.hasConfirmed) {
+                    setSelectedDocumentType(response.data.documentConfirmation.documentType);
+                }
+            }
+        } catch (err) {
+            console.error('Failed to load document status:', err);
+        }
+    };
+
+    const fetchAvailability = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/mentor/availability');
 
             if (response.data.success) {
-                setSchedule(response.data.schedule || {});
-                setTimezoneOffset(response.data.timezoneOffset);
-                setRequiresTimezone(response.data.requiresTimezone || false);
-                setSelectedOffset(response.data.timezoneOffset);
+                const { timezone: tz, schedule: sched, requiresTimezone } = response.data;
+
+                setTimezone(tz || '');
+                setSchedule(sched);
+                setOriginalData({ timezone: tz || '', schedule: sched });
+
+                // If no timezone set, automatically enter edit mode
+                if (requiresTimezone) {
+                    setIsEditing(true);
+                }
             }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to load availability');
         } finally {
-            setAvailabilityLoading(false);
+            setLoading(false);
         }
+    };
+
+    // Add time slot to a day
+    const addTimeSlot = (day) => {
+        const newSlot = {
+            id: `${day.toLowerCase()}-${Date.now()}`,
+            startTime: '09:00',
+            endTime: '17:00'
+        };
+
+        setSchedule(prev => ({
+            ...prev,
+            [day]: [...prev[day], newSlot]
+        }));
+    };
+
+    // Remove time slot from a day
+    const removeTimeSlot = (day, slotId) => {
+        setSchedule(prev => ({
+            ...prev,
+            [day]: prev[day].filter(slot => slot.id !== slotId)
+        }));
+    };
+
+    // Update time slot
+    const updateTimeSlot = (day, slotId, field, value) => {
+        setSchedule(prev => ({
+            ...prev,
+            [day]: prev[day].map(slot =>
+                slot.id === slotId
+                    ? { ...slot, [field]: value }
+                    : slot
+            )
+        }));
+    };
+
+    // Check if there are unsaved changes
+    const hasChanges = () => {
+        if (timezone !== originalData.timezone) return true;
+
+        // Check if schedules are different
+        const days = Object.keys(schedule);
+        for (const day of days) {
+            const current = schedule[day];
+            const original = originalData.schedule[day] || [];
+
+            if (current.length !== original.length) return true;
+
+            for (let i = 0; i < current.length; i++) {
+                if (current[i].startTime !== original[i].startTime ||
+                    current[i].endTime !== original[i].endTime) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    // Validate schedule before saving
+    const validateSchedule = () => {
+        // Check timezone is selected
+        if (!timezone) {
+            toast.error('Please select your timezone');
+            return false;
+        }
+
+        // Check if at least one time slot is added
+        const hasSlots = Object.values(schedule).some(slots => slots.length > 0);
+        if (!hasSlots) {
+            toast.error('Please add at least one available time slot');
+            return false;
+        }
+
+        // Validate each time slot
+        for (const [day, slots] of Object.entries(schedule)) {
+            for (const slot of slots) {
+                // Check if start time is before end time
+                if (slot.startTime >= slot.endTime) {
+                    toast.error(`Invalid time slot on ${day}: start time must be before end time`);
+                    return false;
+                }
+
+                // Check time format (HH:MM)
+                const timeRegex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+                if (!timeRegex.test(slot.startTime) || !timeRegex.test(slot.endTime)) {
+                    toast.error(`Invalid time format on ${day}`);
+                    return false;
+                }
+            }
+
+            // Check for overlapping slots
+            const sortedSlots = [...slots].sort((a, b) =>
+                a.startTime.localeCompare(b.startTime)
+            );
+
+            for (let i = 0; i < sortedSlots.length - 1; i++) {
+                if (sortedSlots[i].endTime > sortedSlots[i + 1].startTime) {
+                    toast.error(`Overlapping time slots detected on ${day}`);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    };
+
+    // Save availability
+    const handleSave = async () => {
+        if (!validateSchedule()) {
+            return;
+        }
+
+        setSaving(true);
+        try {
+            // Convert frontend format to backend format
+            const backendSchedule = {};
+            Object.keys(schedule).forEach(day => {
+                const dayLower = day.toLowerCase();
+                backendSchedule[dayLower] = schedule[day].map(slot => ({
+                    start: slot.startTime,
+                    end: slot.endTime
+                }));
+            });
+
+            const response = await api.put('/mentor/availability', {
+                timezone,
+                schedule: backendSchedule
+            });
+
+            if (response.data.success) {
+                toast.success('Availability saved successfully');
+                setOriginalData({ timezone, schedule });
+                setIsEditing(false);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to save availability');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // Cancel editing
+    const handleCancel = () => {
+        if (hasChanges()) {
+            const confirmCancel = window.confirm(
+                'You have unsaved changes. Are you sure you want to cancel?'
+            );
+            if (!confirmCancel) return;
+        }
+
+        setTimezone(originalData.timezone);
+        setSchedule(originalData.schedule);
+        setIsEditing(false);
     };
 
     // Fetch services
     const fetchServices = async () => {
         try {
             const response = await api.get('/mentor/services');
+
             if (response.data.success) {
-                setServices(response.data.services || []);
+                const fetchedServices = response.data.data;
+
+                // If services exist in database, use them; otherwise keep default
+                if (fetchedServices.length > 0) {
+                    setServices(fetchedServices);
+                    setOriginalServices(fetchedServices);
+                }
+                // If no services in database, default service is already initialized in state
             }
         } catch (err) {
-            console.error('Failed to load services:', err);
+            toast.error(err.response?.data?.message || 'Failed to load services');
+            // On error, keep the default service that was initialized
         }
     };
 
-    useEffect(() => {
-        fetchAvailability();
-        fetchServices();
-    }, []);
-
-    useEffect(() => {
-        if (requiresTimezone && !availabilityLoading) {
-            setIsTimezoneDialogOpen(true);
-        }
-    }, [requiresTimezone, availabilityLoading]);
-
-    // Availability management
-    const addTimeSlot = async (day, start, end) => {
-        try {
-            const response = await api.post('/mentor/availability/slot', {
-                day,
-                startTime: start,
-                endTime: end
-            });
-
-            if (response.data.success) {
-                await fetchAvailability();
-                return { success: true };
-            }
-        } catch (err) {
-            return { success: false, error: err.response?.data?.message };
-        }
+    // Update service price
+    const updateServicePrice = (index, price) => {
+        const updatedServices = [...services];
+        // Ensure price is a valid integer
+        const parsedPrice = parseInt(price, 10);
+        updatedServices[index].mentorSessionPrice = isNaN(parsedPrice) ? 0 : parsedPrice;
+        setServices(updatedServices);
     };
 
-    const updateTimeSlot = async (day, slotId, start, end) => {
-        try {
-            const response = await api.put(`/mentor/availability/slot/${slotId}`, {
-                day,
-                startTime: start,
-                endTime: end
-            });
+    // Calculate all fees and total price
+    const calculatePricing = (mentorSessionPrice) => {
+        const feePercentages = getFeePercentages();
+        const platformFee = Math.round(mentorSessionPrice * (feePercentages.platformFee / 100));
+        const taxesFee = Math.round(mentorSessionPrice * (feePercentages.taxes / 100));
+        const totalPrice = mentorSessionPrice + platformFee + taxesFee;
 
-            if (response.data.success) {
-                await fetchAvailability();
-                return { success: true };
-            }
-        } catch (err) {
-            return { success: false, error: err.response?.data?.message };
-        }
+        return {
+            platformFee,
+            taxesFee,
+            totalPrice
+        };
     };
 
-    const deleteTimeSlot = async (day, slotId) => {
+    // Save services
+    const handleSaveServices = async () => {
+        // Validate prices
+        for (const service of services) {
+            if (!service.mentorSessionPrice || service.mentorSessionPrice <= 0) {
+                toast.error('Please set a valid price for all services');
+                return;
+            }
+        }
+
+        // Calculate fees for each service before sending to backend
+        const servicesWithFees = services.map(service => {
+            const pricing = calculatePricing(service.mentorSessionPrice);
+            return {
+                mentorshipService: service.mentorshipService,
+                mentorSessionPrice: service.mentorSessionPrice,
+                platformFee: pricing.platformFee,
+                taxesFee: pricing.taxesFee,
+                totalPrice: pricing.totalPrice
+            };
+        });
+
+        setSavingServices(true);
         try {
-            const response = await api.delete(`/mentor/availability/slot/${slotId}`);
+            const response = await api.put('/mentor/services', { services: servicesWithFees });
 
             if (response.data.success) {
-                await fetchAvailability();
-                return { success: true };
+                toast.success('Services saved successfully');
+                setOriginalServices(services);
+                setIsEditingServices(false);
             }
         } catch (err) {
-            return { success: false, error: err.response?.data?.message };
-        }
-    };
-
-    const updateTimezone = async (offset) => {
-        try {
-            const response = await api.post('/mentor/availability/timezone', {
-                timezoneOffset: offset
-            });
-
-            if (response.data.success) {
-                setTimezoneOffset(offset);
-                setSelectedOffset(offset);
-                setRequiresTimezone(false);
-                return { success: true };
-            }
-        } catch (err) {
-            return { success: false, error: err.response?.data?.message };
-        }
-    };
-
-    // Service management
-    const handleServiceSubmit = async () => {
-        if (!serviceForm.category || !serviceForm.price) {
-            toast.error('Please fill in all required fields');
-            return;
-        }
-
-        setIsSaving(true);
-        try {
-            if (editingService) {
-                await api.put(`/mentor/services/${editingService.id}`, serviceForm);
-                toast.success('Service updated successfully');
-            } else {
-                await api.post('/mentor/services', serviceForm);
-                toast.success('Service added successfully');
-            }
-
-            await fetchServices();
-            setIsServiceDialogOpen(false);
-            setServiceForm({ category: '', description: '', price: '' });
-            setEditingService(null);
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Failed to save service');
+            toast.error(err.response?.data?.message || 'Failed to save services');
         } finally {
-            setIsSaving(false);
+            setSavingServices(false);
         }
     };
 
-    const handleDeleteService = async (serviceId) => {
-        if (!window.confirm('Are you sure you want to delete this service?')) return;
+    // Cancel editing services
+    const handleCancelServices = () => {
+        setServices(originalServices);
+        setIsEditingServices(false);
+    };
 
+    // Fetch payment information
+    const fetchPaymentInfo = async () => {
         try {
-            await api.delete(`/mentor/services/${serviceId}`);
-            toast.success('Service deleted successfully');
-            await fetchServices();
+            const response = await api.get('/mentor/payment-info');
+
+            if (response.data.success) {
+                const info = {
+                    identificationNumber: response.data.identificationNumber || '',
+                    address: response.data.address || '',
+                    bank: response.data.bank || '',
+                    bankRtgsCode: response.data.bankRtgsCode || '',
+                    bankAccountNumber: response.data.bankAccountNumber || ''
+                };
+                setPaymentInfo(info);
+                setOriginalPaymentInfo(info);
+
+                // Check if "Other" bank is selected
+                const predefinedBanks = ['TBC Bank', 'Bank of Georgia', 'Liberty Bank', 'Credo Bank', 'Procredit Bank'];
+                if (info.bank && !predefinedBanks.includes(info.bank)) {
+                    setShowOtherBankInput(true);
+                }
+            }
         } catch (err) {
-            toast.error('Failed to delete service');
+            console.error('Failed to load payment info:', err);
+            // Don't show error toast, payment info might not exist yet
         }
     };
 
-    // Application submission
+    // Save payment information
+    const handleSavePayment = async () => {
+        // Validate all required fields
+        if (!paymentInfo.identificationNumber || paymentInfo.identificationNumber.trim() === '') {
+            toast.error('Please enter your identification number');
+            return;
+        }
+
+        if (!paymentInfo.address || paymentInfo.address.trim() === '') {
+            toast.error('Please enter your address');
+            return;
+        }
+
+        if (!paymentInfo.bank || paymentInfo.bank.trim() === '') {
+            toast.error('Please select a bank');
+            return;
+        }
+
+        if (!paymentInfo.bankRtgsCode || paymentInfo.bankRtgsCode.trim() === '') {
+            toast.error('Please enter the bank RTGS code');
+            return;
+        }
+
+        if (!paymentInfo.bankAccountNumber || paymentInfo.bankAccountNumber.trim() === '') {
+            toast.error('Please enter your bank account number');
+            return;
+        }
+
+        setSavingPayment(true);
+        try {
+            const response = await api.put('/mentor/payment-info', {
+                identificationNumber: paymentInfo.identificationNumber.trim(),
+                address: paymentInfo.address.trim(),
+                bank: paymentInfo.bank.trim(),
+                bankRtgsCode: paymentInfo.bankRtgsCode.trim(),
+                bankAccountNumber: paymentInfo.bankAccountNumber.trim()
+            });
+
+            if (response.data.success) {
+                toast.success('Payment information saved successfully');
+                setOriginalPaymentInfo({
+                    identificationNumber: paymentInfo.identificationNumber.trim(),
+                    address: paymentInfo.address.trim(),
+                    bank: paymentInfo.bank.trim(),
+                    bankRtgsCode: paymentInfo.bankRtgsCode.trim(),
+                    bankAccountNumber: paymentInfo.bankAccountNumber.trim()
+                });
+                setIsEditingPayment(false);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to save payment information');
+        } finally {
+            setSavingPayment(false);
+        }
+    };
+
+    // Cancel editing payment
+    const handleCancelPayment = () => {
+        setPaymentInfo(originalPaymentInfo);
+        setIsEditingPayment(false);
+
+        // Reset "Other" bank input visibility
+        const predefinedBanks = ['TBC Bank', 'Bank of Georgia', 'Liberty Bank', 'Credo Bank', 'Procredit Bank'];
+        if (originalPaymentInfo.bank && !predefinedBanks.includes(originalPaymentInfo.bank)) {
+            setShowOtherBankInput(true);
+        } else {
+            setShowOtherBankInput(false);
+        }
+    };
+
+    // Handle payment info input changes
+    const handlePaymentInfoChange = (field, value) => {
+        setPaymentInfo(prev => ({
+            ...prev,
+            [field]: value
+        }));
+
+        // Handle bank selection
+        if (field === 'bank') {
+            if (value === 'Other') {
+                setShowOtherBankInput(true);
+                setPaymentInfo(prev => ({ ...prev, bank: '' }));
+            } else {
+                setShowOtherBankInput(false);
+                setPaymentInfo(prev => ({ ...prev, bank: value }));
+            }
+        }
+    };
+
+    // Handle document confirmation
+    const handleConfirmDocument = async () => {
+        if (!selectedDocumentType) {
+            toast.error('Please select a document type');
+            return;
+        }
+
+        setConfirmingDocument(true);
+        try {
+            const response = await api.post('/mentor/confirm-document', {
+                documentType: selectedDocumentType
+            });
+
+            if (response.data.success) {
+                toast.success('Document confirmed successfully!');
+                // Refresh document status
+                await fetchDocumentStatus();
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to confirm document');
+        } finally {
+            setConfirmingDocument(false);
+        }
+    };
+
+    // Check if application is ready to send
+    const isApplicationReady = () => {
+        // Must have confirmed documents
+        if (!documentStatus || !documentStatus.hasConfirmed) {
+            return false;
+        }
+
+        // Must have set timezone
+        if (!timezone) {
+            return false;
+        }
+
+        // Must have at least one time slot
+        const hasTimeSlots = Object.values(schedule).some(slots => slots.length > 0);
+        if (!hasTimeSlots) {
+            return false;
+        }
+
+        // Must have set service price
+        if (!services || services.length === 0 || !services[0].mentorSessionPrice || services[0].mentorSessionPrice <= 0) {
+            return false;
+        }
+
+        // Must have completed all payment information
+        if (!paymentInfo.identificationNumber || paymentInfo.identificationNumber.trim() === '' ||
+            !paymentInfo.address || paymentInfo.address.trim() === '' ||
+            !paymentInfo.bank || paymentInfo.bank.trim() === '' ||
+            !paymentInfo.bankRtgsCode || paymentInfo.bankRtgsCode.trim() === '' ||
+            !paymentInfo.bankAccountNumber || paymentInfo.bankAccountNumber.trim() === '') {
+            return false;
+        }
+
+        return true;
+    };
+
+    // Handle send application
     const handleSendApplication = async () => {
-        if (requiresTimezone) {
-            toast.error('Please set your timezone before sending the application');
-            return;
-        }
-
-        const hasAvailability = Object.values(schedule).some(slots => slots.length > 0);
-        if (!hasAvailability) {
-            toast.error('Please add at least one availability slot before sending your application');
-            return;
-        }
-
-        if (!window.confirm('Are you ready to submit your application?')) {
+        if (!isApplicationReady()) {
+            toast.error('Please complete all required sections before sending your application');
             return;
         }
 
         setSendingApplication(true);
         try {
             const response = await api.post('/mentor/send-application');
+
             if (response.data.success) {
-                toast.success('Application sent successfully! 🎉');
-                await refreshProfile();
+                toast.success(response.data.message || 'Application sent successfully! We will review it within 24 hours.');
+
+                // Optionally refresh data
+                await fetchDocumentStatus();
             }
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Failed to send application');
+            toast.error(err.response?.data?.message || 'Failed to send application. Please try again.');
         } finally {
             setSendingApplication(false);
         }
     };
 
-    const canSendApplication = () => {
-        if (!profile?.profileComplete) return false;
-        if (profile?.applicationStatus === 'pending' || profile?.applicationStatus === 'approved') return false;
-        if (requiresTimezone) return false;
-        const hasAvailability = Object.values(schedule).some(slots => slots && slots.length > 0);
-        return hasAvailability;
-    };
-
-    // Dialog handlers
-    const openAddDialog = (day) => {
-        if (requiresTimezone) {
-            toast.error('Please set your timezone before adding availability');
-            setIsTimezoneDialogOpen(true);
-            return;
-        }
-        setSelectedDay(day);
-        setEditingSlot(null);
-        setStartTime("");
-        setEndTime("");
-        setIsDialogOpen(true);
-    };
-
-    const openEditDialog = (day, slot) => {
-        setSelectedDay(day);
-        setEditingSlot(slot);
-        setStartTime(slot.startTime);
-        setEndTime(slot.endTime);
-        setIsDialogOpen(true);
-    };
-
-    const handleSaveSlot = async () => {
-        if (!startTime || !endTime) {
-            toast.error('Please select both start and end times');
-            return;
-        }
-
-        if (startTime >= endTime) {
-            toast.error('End time must be after start time');
-            return;
-        }
-
-        setIsSaving(true);
-        try {
-            const result = editingSlot
-                ? await updateTimeSlot(selectedDay, editingSlot.id, startTime, endTime)
-                : await addTimeSlot(selectedDay, startTime, endTime);
-
-            if (result.success) {
-                toast.success(editingSlot ? 'Time slot updated' : 'Time slot added');
-                setIsDialogOpen(false);
-                setStartTime("");
-                setEndTime("");
-                setEditingSlot(null);
-            } else {
-                toast.error(result.error || 'Failed to save time slot');
-            }
-        } catch (err) {
-            toast.error('An unexpected error occurred');
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleDeleteSlot = async (day, slotId) => {
-        if (!window.confirm('Delete this time slot?')) return;
-
-        setIsDeleting(slotId);
-        try {
-            const result = await deleteTimeSlot(day, slotId);
-            if (result.success) {
-                toast.success('Time slot deleted');
-            } else {
-                toast.error(result.error || 'Failed to delete');
-            }
-        } catch (err) {
-            toast.error('An error occurred');
-        } finally {
-            setIsDeleting(null);
-        }
-    };
-
-    const handleTimezoneChange = async (offsetStr) => {
-        const offset = parseFloat(offsetStr);
-        const result = await updateTimezone(offset);
-
-        if (result.success) {
-            toast.success('Timezone updated');
-            await fetchAvailability();
-        } else {
-            toast.error(result.error || 'Failed to update timezone');
-        }
-    };
-
-    const handleSetupTimezone = async () => {
-        if (!tempSelectedOffset) {
-            toast.error('Please select a timezone');
-            return;
-        }
-
-        setIsSaving(true);
-        const offset = parseFloat(tempSelectedOffset);
-        const result = await updateTimezone(offset);
-
-        if (result.success) {
-            toast.success('Timezone set successfully!');
-            setIsTimezoneDialogOpen(false);
-            setTempSelectedOffset("");
-            await fetchAvailability();
-        } else {
-            toast.error(result.error || 'Failed to set timezone');
-        }
-        setIsSaving(false);
-    };
-
-    if (availabilityLoading) {
+    if (loading) {
         return (
-            <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading availability...</p>
-                </div>
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }
 
+    // Collapsible Section Header Component
+    const SectionHeader = ({ title, isExpanded, onToggle, badge }) => (
+        <button
+            onClick={onToggle}
+            className="w-full flex items-center justify-between p-6 bg-white hover:bg-gray-50 transition-colors rounded-xl shadow-md"
+        >
+            <div className="flex items-center gap-3">
+                <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+                {badge && (
+                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
+                        {badge}
+                    </span>
+                )}
+            </div>
+            <svg
+                className={`w-6 h-6 text-gray-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+    );
+
     return (
-        <div className="space-y-8">
-            {/* Timezone Section */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900">Timezone Settings</h2>
-                        <p className="text-sm text-gray-600 mt-1">Set your timezone for accurate scheduling</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+        <div className="space-y-4">
+            {/* ============ INFO MESSAGE FOR PENDING APPLICATIONS ============ */}
+            {documentStatus && documentStatus.applicationStatus === 'pending' && (
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
+                    <div className="flex items-start">
+                        <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        {requiresTimezone ? (
-                            <button
-                                onClick={() => setIsTimezoneDialogOpen(true)}
-                                className="px-4 py-2 border border-orange-600 text-orange-600 rounded-lg hover:bg-orange-50 transition"
-                            >
-                                Set Timezone
-                            </button>
-                        ) : (
+                        <div>
+                            <h3 className="text-lg font-semibold text-blue-900 mb-2">Complete Your Application</h3>
+                            <p className="text-sm text-blue-800">
+                                Please fill out <span className="font-medium">available times</span>, <span className="font-medium">services</span>, and <span className="font-medium">confirm documents</span>.
+                                Once completed, click <span className="font-medium">"Send Application"</span> and we'll review it in 24 hours.
+                                You'll receive update information on your dashboard and via email.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ============ DOCUMENTS SECTION ============ */}
+            {documentStatus && documentStatus.applicationStatus === 'pending' && (
+                <div>
+                    <SectionHeader
+                        title="Documents"
+                        isExpanded={isDocumentsExpanded}
+                        onToggle={() => setIsDocumentsExpanded(!isDocumentsExpanded)}
+                        badge={!documentStatus.hasConfirmed ? 'Action Required' : null}
+                    />
+
+                    {isDocumentsExpanded && (
+                        <div className="mt-4">
+                            {/* Document not confirmed yet */}
+                            {!documentStatus.hasConfirmed && (
+                                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+                                    <div className="flex items-start mb-4">
+                                        <svg className="w-6 h-6 text-yellow-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-yellow-800 mb-1">Document Confirmation Required</h3>
+                                            <p className="text-sm text-yellow-700">Please select your legal status and confirm the terms before your application can be reviewed.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white rounded-lg p-6 mt-4">
+                                        <h4 className="font-medium text-gray-900 mb-4">Select Your Legal Status</h4>
+
+                                        {/* Radio buttons */}
+                                        <div className="space-y-3 mb-6">
+                                            <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                                <input
+                                                    type="radio"
+                                                    name="documentType"
+                                                    value="individual_entrepreneur"
+                                                    checked={selectedDocumentType === 'individual_entrepreneur'}
+                                                    onChange={(e) => setSelectedDocumentType(e.target.value)}
+                                                    className="mt-1 mr-3"
+                                                />
+                                                <div>
+                                                    <div className="font-medium text-gray-900">Individual Entrepreneur</div>
+                                                    <div className="text-sm text-gray-600">Registered as an individual entrepreneur</div>
+                                                </div>
+                                            </label>
+
+                                            <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                                <input
+                                                    type="radio"
+                                                    name="documentType"
+                                                    value="private_individual"
+                                                    checked={selectedDocumentType === 'private_individual'}
+                                                    onChange={(e) => setSelectedDocumentType(e.target.value)}
+                                                    className="mt-1 mr-3"
+                                                />
+                                                <div>
+                                                    <div className="font-medium text-gray-900">Private Individual</div>
+                                                    <div className="text-sm text-gray-600">Operating as a private individual</div>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        {/* Preview Document Button */}
+                                        {selectedDocumentType && (
+                                            <div className="mb-6">
+                                                <button
+                                                    onClick={() => setIsDocumentModalOpen(true)}
+                                                    className="w-full px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium flex items-center justify-center gap-2"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    Preview Document
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {/* Submit button */}
+                                        <button
+                                            onClick={handleConfirmDocument}
+                                            disabled={!selectedDocumentType || confirmingDocument}
+                                            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                        >
+                                            {confirmingDocument ? 'Confirming...' : 'Confirm Document Type'}
+                                        </button>
+
+                                        <p className="text-xs text-gray-500 mt-3 text-center">
+                                            Note: Once confirmed, you cannot change your selection. Please contact support if you need to make changes.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Document confirmed message */}
+                            {documentStatus.hasConfirmed && (
+                                <div className="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg">
+                                    <div className="flex items-start">
+                                        <svg className="w-6 h-6 text-green-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-green-800 mb-1">Document Confirmed</h3>
+                                            <p className="text-sm text-green-700">
+                                                You have confirmed your legal status as a{' '}
+                                                <span className="font-medium">
+                                                    {documentStatus.documentConfirmation.documentType === 'individual_entrepreneur'
+                                                        ? 'Individual Entrepreneur'
+                                                        : 'Private Individual'}
+                                                </span>
+                                                . Your application is now under review.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* ============ TIMES SECTION ============ */}
+            <div>
+                <SectionHeader
+                    title="Times & Availability"
+                    isExpanded={isTimesExpanded}
+                    onToggle={() => setIsTimesExpanded(!isTimesExpanded)}
+                />
+
+                {isTimesExpanded && (
+                    <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            {!isEditing ? (
+                                <button
+                                    onClick={() => setIsEditing(true)}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit Schedule
+                                </button>
+                            ) : (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={saving || !hasChanges()}
+                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {saving ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                    <button
+                                        onClick={handleCancel}
+                                        disabled={saving}
+                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Timezone Selection */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Your Timezone <span className="text-red-500">*</span>
+                            </label>
                             <select
-                                value={selectedOffset?.toString() || ""}
-                                onChange={(e) => handleTimezoneChange(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                value={timezone}
+                                onChange={(e) => setTimezone(e.target.value)}
+                                disabled={!isEditing}
+                                className={`w-full md:w-1/2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                             >
-                                <option value="">{formatTimezoneOffset(selectedOffset)}</option>
-                                {UTC_OFFSETS.map((tz) => (
-                                    <option key={tz.value} value={tz.value.toString()}>
+                                <option value="">Select your timezone</option>
+                                {timezones.map(tz => (
+                                    <option key={tz.value} value={tz.value}>
                                         {tz.label}
                                     </option>
                                 ))}
                             </select>
-                        )}
-                    </div>
-                </div>
+                            {timezone && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Current timezone: {timezone}
+                                </p>
+                            )}
+                        </div>
 
-                {requiresTimezone ? (
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                        <p className="text-orange-800">
-                            <strong>Action Required:</strong> Please set your timezone to manage availability.
-                        </p>
-                    </div>
-                ) : (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-blue-800">
-                            Current timezone: <strong>{formatTimezoneOffset(timezoneOffset)}</strong>
-                        </p>
-                    </div>
-                )}
-            </div>
-
-            {/* Services Section */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900">Services & Pricing</h2>
-                        <p className="text-sm text-gray-600 mt-1">Configure your mentoring services and rates</p>
-                    </div>
-                    <button
-                        onClick={() => {
-                            setEditingService(null);
-                            setServiceForm({ category: '', description: '', price: '' });
-                            setIsServiceDialogOpen(true);
-                        }}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                        Add Service
-                    </button>
-                </div>
-
-                {services.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                        <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A6.997 6.997 0 0018 8h-1.25C14.679 8 13 6.321 13 4.25V3a1 1 0 00-1-1H8a1 1 0 00-1 1v1.25C7 6.321 5.321 8 3.25 8H2a6.997 6.997 0 00-3 5.745V19a2 2 0 002 2h18a2 2 0 002-2v-5.745z" />
-                        </svg>
-                        <p>No services added yet</p>
-                        <p className="text-sm mt-1">Click "Add Service" to get started</p>
-                    </div>
-                ) : (
-                    <div className="grid gap-4">
-                        {services.map((service) => (
-                            <div key={service.id} className="border rounded-lg p-4 hover:bg-gray-50 transition">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                        <h4 className="font-semibold text-gray-900">{service.category}</h4>
-                                        <p className="text-sm text-gray-600 mt-1">{service.description}</p>
-                                        <p className="text-lg font-bold text-blue-600 mt-2">${service.price}/hour</p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => {
-                                                setEditingService(service);
-                                                setServiceForm({
-                                                    category: service.category,
-                                                    description: service.description,
-                                                    price: service.price
-                                                });
-                                                setIsServiceDialogOpen(true);
-                                            }}
-                                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteService(service.id)}
-                                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Availability Grid */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Weekly Availability</h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {WEEKDAYS.map((day) => (
-                        <div key={day} className={`border rounded-lg p-4 ${requiresTimezone ? 'opacity-60' : ''}`}>
-                            <div className="flex items-center justify-between mb-3">
-                                <h3 className="font-semibold text-gray-900">{day}</h3>
+                        {/* Weekly Schedule */}
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-semibold text-gray-900">Weekly Schedule</h3>
                                 <button
-                                    onClick={() => openAddDialog(day)}
-                                    disabled={requiresTimezone}
-                                    className="p-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
+                                    onClick={() => setIsTimesExpanded(!isTimesExpanded)}
+                                    className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    <span>{isTimesExpanded ? 'Collapse' : 'Expand'}</span>
+                                    <svg
+                                        className={`w-5 h-5 transition-transform duration-200 ${isTimesExpanded ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                             </div>
-
-                            {requiresTimezone ? (
-                                <p className="text-sm text-gray-500 italic">Set timezone first</p>
-                            ) : schedule[day]?.length === 0 || !schedule[day] ? (
-                                <p className="text-sm text-gray-500">No time slots</p>
-                            ) : (
-                                <div className="space-y-2">
-                                    {schedule[day]?.map((slot) => (
-                                        <div key={slot.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                            <span className="text-sm">{slot.startTime} - {slot.endTime}</span>
-                                            <div className="flex gap-1">
-                                                <button
-                                                    onClick={() => openEditDialog(day, slot)}
-                                                    className="p-1 text-gray-600 hover:bg-gray-200 rounded"
-                                                >
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                    </svg>
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDeleteSlot(day, slot.id)}
-                                                    disabled={isDeleting === slot.id}
-                                                    className="p-1 text-red-600 hover:bg-red-50 rounded"
-                                                >
-                                                    {isDeleting === slot.id ? (
-                                                        <div className="animate-spin rounded-full h-3 w-3 border-b border-red-600"></div>
-                                                    ) : (
-                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            {isTimesExpanded && (
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    {Object.keys(schedule).map(day => (
+                                        <div key={day} className="border rounded-lg p-4 bg-gray-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-medium text-gray-900">{day}</h4>
+                                                {isEditing && (
+                                                    <button
+                                                        onClick={() => addTimeSlot(day)}
+                                                        className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                                         </svg>
-                                                    )}
-                                                </button>
+                                                        Add Time Slot
+                                                    </button>
+                                                )}
                                             </div>
+
+                                            {schedule[day].length === 0 ? (
+                                                <p className="text-sm text-gray-500 italic">No availability set</p>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {schedule[day].map((slot, index) => (
+                                                        <div key={slot.id} className="flex items-center gap-3 bg-white p-3 rounded-lg">
+                                                            <span className="text-sm text-gray-600 w-8">#{index + 1}</span>
+                                                            <div className="flex items-center gap-2 flex-1">
+                                                                <input
+                                                                    type="time"
+                                                                    value={slot.startTime}
+                                                                    onChange={(e) => updateTimeSlot(day, slot.id, 'startTime', e.target.value)}
+                                                                    disabled={!isEditing}
+                                                                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                                                        }`}
+                                                                />
+                                                                <span className="text-gray-500">to</span>
+                                                                <input
+                                                                    type="time"
+                                                                    value={slot.endTime}
+                                                                    onChange={(e) => updateTimeSlot(day, slot.id, 'endTime', e.target.value)}
+                                                                    disabled={!isEditing}
+                                                                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                                                        }`}
+                                                                />
+                                                            </div>
+                                                            {isEditing && (
+                                                                <button
+                                                                    onClick={() => removeTimeSlot(day, slot.id)}
+                                                                    className="text-red-600 hover:text-red-700 p-2"
+                                                                    title="Remove time slot"
+                                                                >
+                                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                    </svg>
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
             </div>
 
-            {/* Send Application Section */}
-            {profile && profile.applicationStatus !== 'approved' && (
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 text-center">
-                    <h2 className="text-2xl font-bold mb-4">
-                        {profile.applicationStatus === 'pending' ? 'Application Status' : 'Ready to Start?'}
-                    </h2>
+            {/* ============ PAYMENT SECTION ============ */}
+            <div>
+                <SectionHeader
+                    title="Payment Information"
+                    isExpanded={isPaymentExpanded}
+                    onToggle={() => setIsPaymentExpanded(!isPaymentExpanded)}
+                />
 
-                    {profile.applicationStatus === 'pending' ? (
-                        <div>
-                            <svg className="w-16 h-16 text-yellow-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="text-gray-600">Your application is under review. We'll notify you soon!</p>
+                {isPaymentExpanded && (
+                    <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            {!isEditingPayment ? (
+                                <button
+                                    onClick={() => setIsEditingPayment(true)}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit Payment Info
+                                </button>
+                            ) : (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleSavePayment}
+                                        disabled={savingPayment}
+                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {savingPayment ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                    <button
+                                        onClick={handleCancelPayment}
+                                        disabled={savingPayment}
+                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <>
-                            <p className="text-gray-600 mb-6">
-                                Complete all requirements to submit your mentor application
-                            </p>
-                            <div className="flex justify-center mb-6">
-                                <ul className="text-left space-y-2">
-                                    <li className="flex items-center gap-2">
-                                        {profile.profileComplete ? (
-                                            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        ) : (
-                                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+
+                        {/* Payment Info Instructions */}
+                        <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-100">
+                            <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0 mt-1">
+                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        Payment Information
+                                    </h3>
+                                    <p className="text-sm text-gray-700 mb-2">
+                                        Please provide your complete payment information to receive mentor session payments.
+                                    </p>
+                                    <p className="text-xs text-gray-600">
+                                        Your payment information is securely stored and will only be used for transferring your earnings.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            {/* Identification Number */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Identification Number <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={paymentInfo.identificationNumber}
+                                    onChange={(e) => handlePaymentInfoChange('identificationNumber', e.target.value)}
+                                    disabled={!isEditingPayment}
+                                    placeholder="Enter your ID or passport number"
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                />
+                            </div>
+
+                            {/* Address */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Address <span className="text-red-500">*</span>
+                                </label>
+                                <textarea
+                                    value={paymentInfo.address}
+                                    onChange={(e) => handlePaymentInfoChange('address', e.target.value)}
+                                    disabled={!isEditingPayment}
+                                    placeholder="Enter your full address"
+                                    rows="3"
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                />
+                            </div>
+
+                            {/* Bank Dropdown */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Bank <span className="text-red-500">*</span>
+                                </label>
+                                {!showOtherBankInput ? (
+                                    <select
+                                        value={paymentInfo.bank}
+                                        onChange={(e) => handlePaymentInfoChange('bank', e.target.value)}
+                                        disabled={!isEditingPayment}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                            !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
+                                    >
+                                        <option value="">Select your bank</option>
+                                        <option value="TBC Bank">TBC Bank</option>
+                                        <option value="Bank of Georgia">Bank of Georgia</option>
+                                        <option value="Liberty Bank">Liberty Bank</option>
+                                        <option value="Credo Bank">Credo Bank</option>
+                                        <option value="Procredit Bank">Procredit Bank</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <input
+                                            type="text"
+                                            value={paymentInfo.bank}
+                                            onChange={(e) => handlePaymentInfoChange('bank', e.target.value)}
+                                            disabled={!isEditingPayment}
+                                            placeholder="Enter your bank name"
+                                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                                !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                            }`}
+                                        />
+                                        {isEditingPayment && (
+                                            <button
+                                                onClick={() => {
+                                                    setShowOtherBankInput(false);
+                                                    setPaymentInfo(prev => ({ ...prev, bank: '' }));
+                                                }}
+                                                className="text-sm text-blue-600 hover:text-blue-700"
+                                            >
+                                                ← Back to bank selection
+                                            </button>
                                         )}
-                                        <span>Complete profile</span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        {timezoneOffset !== null ? (
-                                            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Bank RTGS Code */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Bank RTGS Code <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={paymentInfo.bankRtgsCode}
+                                    onChange={(e) => handlePaymentInfoChange('bankRtgsCode', e.target.value)}
+                                    disabled={!isEditingPayment}
+                                    placeholder="Enter bank RTGS/SWIFT code"
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                />
+                                <p className="text-xs text-gray-500 mt-2">
+                                    Find your bank's RTGS code at{' '}
+                                    <a
+                                        href="https://nbg.gov.ge/payment-system/iban"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:text-blue-700 underline"
+                                    >
+                                        nbg.gov.ge/payment-system/iban
+                                    </a>
+                                </p>
+                            </div>
+
+                            {/* Bank Account Number */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Bank Account Number <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={paymentInfo.bankAccountNumber}
+                                    onChange={(e) => handlePaymentInfoChange('bankAccountNumber', e.target.value)}
+                                    disabled={!isEditingPayment}
+                                    placeholder="Enter your bank account number (IBAN or account number)"
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                />
+                                {paymentInfo.bankAccountNumber && (
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Make sure your bank account number is correct. Payments will be sent to this account.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* ============ SERVICES SECTION ============ */}
+            <div>
+                <SectionHeader
+                    title="Services & Pricing"
+                    isExpanded={isServicesExpanded}
+                    onToggle={() => setIsServicesExpanded(!isServicesExpanded)}
+                />
+
+                {isServicesExpanded && (
+                    <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex justify-between items-center mb-6">
+                            {!isEditingServices ? (
+                                <button
+                                    onClick={() => setIsEditingServices(true)}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit Services
+                                </button>
+                            ) : (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleSaveServices}
+                                        disabled={savingServices}
+                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {savingServices ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                    <button
+                                        onClick={handleCancelServices}
+                                        disabled={savingServices}
+                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Service Description */}
+                        <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-100">
+                            <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0 mt-1">
+                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        1. Profession Introduction Session & Ask Me Anything
+                                    </h3>
+                                    <p className="text-sm text-gray-700 mb-3">
+                                        A short, structured session where the mentor:
+                                    </p>
+                                    <ul className="space-y-2 text-sm text-gray-700">
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-blue-600 mt-0.5">•</span>
+                                            <span>Explains what their job actually looks like</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-blue-600 mt-0.5">•</span>
+                                            <span>Breaks down day-to-day tasks</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-blue-600 mt-0.5">•</span>
+                                            <span>Talks about required skills, education, and personality traits</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-blue-600 mt-0.5">•</span>
+                                            <span>Shares real examples from their work</span>
+                                        </li>
+                                    </ul>
+                                    <p className="text-sm font-medium text-blue-900 mt-3">
+                                        <span className="font-semibold">Purpose:</span> Give the student a realistic understanding of the profession.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Services Table */}
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b-2 border-gray-200">
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Service</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Your Session Price</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Platform Fee ({getFeePercentages().platformFee}%)</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Taxes ({getFeePercentages().taxes}%)</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Student Pays (Total)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {services.map((service, index) => {
+                                        const pricing = calculatePricing(service.mentorSessionPrice || 0);
+                                        return (
+                                            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                                                <td className="py-4 px-4">
+                                                    <div className="font-medium text-gray-900">{service.mentorshipService}</div>
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    {isEditingServices ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-gray-600">₾</span>
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                step="1"
+                                                                value={service.mentorSessionPrice || ''}
+                                                                onChange={(e) => updateServicePrice(index, e.target.value)}
+                                                                className="w-32 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                                placeholder="0"
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-gray-900 font-medium">₾{service.mentorSessionPrice || 0}</span>
+                                                    )}
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <span className="text-gray-600">₾{pricing.platformFee}</span>
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <span className="text-gray-600">₾{pricing.taxesFee}</span>
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <span className="text-green-600 font-semibold text-lg">
+                                                        ₾{pricing.totalPrice}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Info Box */}
+                        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                            <div className="flex items-start gap-3">
+                                <svg className="w-5 h-5 text-gray-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div className="text-sm text-gray-700">
+                                    <p className="font-medium mb-1">Pricing Information:</p>
+                                    <ul className="list-disc list-inside space-y-1 text-gray-600">
+                                        <li>Set your base session price (what you'll receive)</li>
+                                        {getFeePercentages().taxes > 0 ? (
+                                            <li>Platform fee ({getFeePercentages().platformFee}%) and taxes ({getFeePercentages().taxes}%) are added for students</li>
                                         ) : (
-                                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
+                                            <li>Platform fee ({getFeePercentages().platformFee}%) is added for students (no taxes for individual entrepreneurs)</li>
                                         )}
-                                        <span>Set timezone</span>
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        {Object.values(schedule).some(slots => slots && slots.length > 0) ? (
-                                            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        ) : (
-                                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        )}
-                                        <span>Add availability</span>
-                                    </li>
+                                        <li>Students pay the total: your price + platform fee{getFeePercentages().taxes > 0 ? ' + taxes' : ''}</li>
+                                        <li>All prices are in GEL (₾) and must be whole numbers</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* ============ SEND APPLICATION BUTTON ============ */}
+            {documentStatus && documentStatus.applicationStatus === 'pending' && (
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="text-center">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Ready to Submit Your Application?</h3>
+                        <p className="text-sm text-gray-600 mb-6">
+                            Make sure you've completed all sections: documents, availability times, and service pricing.
+                        </p>
+
+                        {!isApplicationReady() && (
+                            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <p className="text-sm text-yellow-800">
+                                    <span className="font-medium">Incomplete:</span> Please complete the following:
+                                </p>
+                                <ul className="text-sm text-yellow-700 mt-2 space-y-1 text-left list-disc list-inside">
+                                    {!documentStatus?.hasConfirmed && <li>Confirm your document type</li>}
+                                    {!timezone && <li>Set your timezone</li>}
+                                    {!Object.values(schedule).some(slots => slots.length > 0) && <li>Add at least one available time slot</li>}
+                                    {(!services || services.length === 0 || !services[0].mentorSessionPrice || services[0].mentorSessionPrice <= 0) && <li>Set your service pricing</li>}
+                                    {(!paymentInfo.identificationNumber || paymentInfo.identificationNumber.trim() === '') && <li>Add your identification number</li>}
+                                    {(!paymentInfo.address || paymentInfo.address.trim() === '') && <li>Add your address</li>}
+                                    {(!paymentInfo.bank || paymentInfo.bank.trim() === '') && <li>Select your bank</li>}
+                                    {(!paymentInfo.bankRtgsCode || paymentInfo.bankRtgsCode.trim() === '') && <li>Add your bank RTGS code</li>}
+                                    {(!paymentInfo.bankAccountNumber || paymentInfo.bankAccountNumber.trim() === '') && <li>Add your bank account number</li>}
                                 </ul>
                             </div>
-                            <button
-                                onClick={handleSendApplication}
-                                disabled={!canSendApplication() || sendingApplication}
-                                className={`px-8 py-3 rounded-lg font-semibold transition ${canSendApplication() && !sendingApplication
-                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
-                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    }`}
-                            >
-                                {sendingApplication ? 'Sending...' : 'Send Application'}
-                            </button>
-                        </>
-                    )}
-                </div>
-            )}
+                        )}
 
-            {/* Modals */}
-            {/* Timezone Dialog */}
-            {isTimezoneDialogOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl max-w-md w-full p-6">
-                        <h3 className="text-xl font-bold mb-4">Set Your Timezone</h3>
-                        <select
-                            value={tempSelectedOffset}
-                            onChange={(e) => setTempSelectedOffset(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-lg mb-4"
+                        <button
+                            onClick={handleSendApplication}
+                            disabled={!isApplicationReady() || sendingApplication}
+                            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg shadow-lg"
                         >
-                            <option value="">Select timezone</option>
-                            {UTC_OFFSETS.map((tz) => (
-                                <option key={tz.value} value={tz.value.toString()}>
-                                    {tz.label}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={handleSetupTimezone}
-                                disabled={!tempSelectedOffset || isSaving}
-                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                            >
-                                {isSaving ? 'Setting...' : 'Set Timezone'}
-                            </button>
-                            <button
-                                onClick={() => setIsTimezoneDialogOpen(false)}
-                                className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                        </div>
+                            {sendingApplication ? 'Sending...' : 'Send Application'}
+                        </button>
+
+                        {isApplicationReady() && (
+                            <p className="text-xs text-gray-500 mt-4">
+                                By sending your application, you confirm that all information provided is accurate.
+                            </p>
+                        )}
                     </div>
                 </div>
             )}
 
-            {/* Time Slot Dialog */}
-            {isDialogOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl max-w-md w-full p-6">
-                        <h3 className="text-xl font-bold mb-4">
-                            {editingSlot ? 'Edit' : 'Add'} Time Slot - {selectedDay}
-                        </h3>
-                        <div className="space-y-4">
-                            <select
-                                value={startTime}
-                                onChange={(e) => setStartTime(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg"
+            {/* Document Preview Modal */}
+            {isDocumentModalOpen && (
+                <div className=" fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white h-full rounded-lg shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b">
+                            <h3 className="text-xl font-semibold text-gray-900">Document Preview</h3>
+                            <button
+                                onClick={() => setIsDocumentModalOpen(false)}
+                                className="text-gray-400 hover:text-gray-600 transition"
                             >
-                                <option value="">Start time</option>
-                                {HOURS.map((hour) => (
-                                    <option key={hour} value={hour}>{hour}</option>
-                                ))}
-                            </select>
-                            <select
-                                value={endTime}
-                                onChange={(e) => setEndTime(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg"
-                            >
-                                <option value="">End time</option>
-                                {HOURS.map((hour) => (
-                                    <option key={hour} value={hour}>{hour}</option>
-                                ))}
-                            </select>
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={handleSaveSlot}
-                                    disabled={!startTime || !endTime || isSaving}
-                                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                                >
-                                    {isSaving ? 'Saving...' : 'Save'}
-                                </button>
-                                <button
-                                    onClick={() => setIsDialogOpen(false)}
-                                    className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
-                    </div>
-                </div>
-            )}
 
-            {/* Service Dialog */}
-            {isServiceDialogOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl max-w-md w-full p-6">
-                        <h3 className="text-xl font-bold mb-4">
-                            {editingService ? 'Edit' : 'Add'} Service
-                        </h3>
-                        <div className="space-y-4">
-                            <input
-                                type="text"
-                                value={serviceForm.category}
-                                onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })}
-                                placeholder="Service category"
-                                className="w-full px-4 py-2 border rounded-lg"
+                        {/* Modal Body */}
+                        <div className="flex-1 overflow-hidden">
+                            <iframe
+                                className="h-full w-full"
+                                src={`https://docs.google.com/document/d/14B3LvfJVnP1NV2qIhENuitVYwb0iyu9yFPy3eY-qNOY/edit?tab=t.0#heading=h.aq99z315j4ro`}
+                                title="Document Preview"
                             />
-                            <textarea
-                                value={serviceForm.description}
-                                onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
-                                placeholder="Description"
-                                rows="3"
-                                className="w-full px-4 py-2 border rounded-lg"
-                            />
-                            <input
-                                type="number"
-                                value={serviceForm.price}
-                                onChange={(e) => setServiceForm({ ...serviceForm, price: e.target.value })}
-                                placeholder="Price per hour"
-                                className="w-full px-4 py-2 border rounded-lg"
-                            />
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={handleServiceSubmit}
-                                    disabled={!serviceForm.category || !serviceForm.price || isSaving}
-                                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                                >
-                                    {isSaving ? 'Saving...' : 'Save'}
-                                </button>
-                                <button
-                                    onClick={() => setIsServiceDialogOpen(false)}
-                                    className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex items-center justify-between p-6 border-t bg-gray-50">
+                            <a
+                                href={`https://drive.google.com/drive/u/1/folders/1-zHScd994sYHgPKjpxOPaJG0PxbH_Opc`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Open in Google Drive
+                            </a>
+                            <button
+                                onClick={() => setIsDocumentModalOpen(false)}
+                                className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-medium"
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -28,13 +28,16 @@ const Login = () => {
         setIsLoading(true);
         setError('');
         try {
-            // Add your login API call here
-            console.log('Login:', formData);
-            const response = await login(formData.email, formData.password)
-            console.log('respos', response)
-            navigate('/');
+            const response = await login(formData.email, formData.password);
+
+            // Redirect based on user type
+            if (response.user.user_type === 'mentor') {
+                navigate('/mentor-dashboard');
+            } else {
+                navigate('/student-dashboard');
+            }
         } catch (err) {
-            setError('Invalid email or password');
+            setError(err.message || 'Invalid email or password');
         } finally {
             setIsLoading(false);
         }

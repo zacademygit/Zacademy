@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthProvider';
 
 const RegisterMentor = () => {
     const navigate = useNavigate();
+    const { checkAuth } = useAuth();
     const [step, setStep] = useState(1); // Multi-step form for mentors
 
     const [formData, setFormData] = useState({
@@ -134,20 +136,49 @@ const RegisterMentor = () => {
         setError('');
 
         try {
+            // Note: Photo upload would need to be handled separately (e.g., upload to cloud storage)
+            // For now, we'll send null for photoUrl
             const payload = {
-                ...formData,
-                role: 'mentor',
-                phone: '+995' + formData.phone
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                password: formData.password,
+                phone: formData.phone,
+                dateOfBirth: formData.dateOfBirth,
+                occupationArea: formData.occupationArea,
+                currentPosition: formData.currentPosition,
+                company: formData.company,
+                yearsOfExperience: formData.yearsOfExperience,
+                university: formData.university,
+                faculty: formData.faculty,
+                bio: formData.bio,
+                linkedin: formData.linkedin,
+                photoUrl: null, // TODO: Implement photo upload to cloud storage
+                agreeToTerms: formData.agreeToTerms,
+                agreeToMarketing: formData.agreeToMarketing
             };
-            console.log('Register Mentor:', payload);
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const response = await fetch('/api/auth/register/mentor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
 
-            // Redirect to verification or dashboard
-            navigate('/auth/login');
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Registration failed');
+            }
+
+            // Update auth state with newly registered mentor
+            await checkAuth();
+
+            // Redirect to mentor dashboard after successful registration
+            navigate('/mentor-dashboard');
         } catch (err) {
-            setError('Registration failed. Please try again.');
+            setError(err.message || 'Registration failed. Please try again.');
         } finally {
             setIsLoading(false);
         }

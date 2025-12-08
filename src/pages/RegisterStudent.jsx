@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthProvider';
 
 const RegisterStudent = () => {
     const navigate = useNavigate();
+    const { checkAuth } = useAuth();
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -105,8 +107,17 @@ const RegisterStudent = () => {
                 throw new Error(data.message || 'Registration failed');
             }
 
-            // Redirect to home page after successful registration
-            navigate('/');
+            // Update auth state with newly registered user
+            await checkAuth();
+
+            // Check if user should be redirected back to mentor profile
+            const redirectMentorId = sessionStorage.getItem('redirectToMentor');
+            if (redirectMentorId) {
+                navigate(`/mentor/${redirectMentorId}`);
+            } else {
+                // Default redirect to student dashboard
+                navigate('/student-dashboard');
+            }
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {

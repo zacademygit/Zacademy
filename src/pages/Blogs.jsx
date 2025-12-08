@@ -1,292 +1,354 @@
-// src/pages/Guides.jsx
+// src/pages/Blogs.jsx
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+const blogPosts = [
+    {
+        id: 1,
+        title: 'როგორ ავირჩიოთ სწორი მენტორი კარიერული წინსვლისთვის',
+        excerpt: 'მენტორის არჩევა მნიშვნელოვანი ნაბიჯია პროფესიულ განვითარებაში. განვიხილოთ რა კრიტერიუმებით უნდა ვიხელმძღვანელოთ.',
+        author: 'ნინო გელაშვილი',
+        date: '5 დეკემბერი, 2025',
+        readTime: '5 წუთი',
+        category: 'კარიერა',
+        visualType: 'circles'
+    },
+    {
+        id: 2,
+        title: 'STEM განათლების მომავალი საქართველოში',
+        excerpt: 'ტექნოლოგიური განვითარება სწრაფად ცვლის განათლების ლანდშაფტს. რა შესაძლებლობები გვხვდება STEM სფეროში.',
+        author: 'გიორგი ბერიძე',
+        date: '2 დეკემბერი, 2025',
+        readTime: '7 წუთი',
+        category: 'განათლება',
+        visualType: 'squares'
+    },
+    {
+        id: 3,
+        title: 'ხელოვნური ინტელექტი და კრეატიული ინდუსტრიები',
+        excerpt: 'AI ტექნოლოგიები ახალ შესაძლებლობებს ქმნიან დიზაინერებისა და მედია პროფესიონალებისთვის.',
+        author: 'თამარ ხარაიშვილი',
+        date: '28 ნოემბერი, 2025',
+        readTime: '6 წუთი',
+        category: 'ტექნოლოგია',
+        visualType: 'lines'
+    },
+    {
+        id: 4,
+        title: 'ბიზნეს-განათლება: თეორია vs პრაქტიკა',
+        excerpt: 'როგორ გავაერთიანოთ აკადემიური ცოდნა რეალურ ბიზნეს გამოცდილებასთან მენტორშიპის საშუალებით.',
+        author: 'ლევან კვარაცხელია',
+        date: '25 ნოემბერი, 2025',
+        readTime: '8 წუთი',
+        category: 'ბიზნესი',
+        visualType: 'dots'
+    },
+    {
+        id: 5,
+        title: 'ჯანდაცვის სექტორში კარიერული შესაძლებლობები',
+        excerpt: 'მედიცინისა და ჯანდაცვის სფერო მზარდი პოტენციალით გამოირჩევა. გაეცანით ახალ მიმართულებებს.',
+        author: 'მარიამ ჯავახიშვილი',
+        date: '22 ნოემბერი, 2025',
+        readTime: '5 წუთი',
+        category: 'ჯანდაცვა',
+        visualType: 'wave'
+    },
+    {
+        id: 6,
+        title: 'მომავლის პროფესიები: რისთვის ემზადებოდეს სტუდენტები',
+        excerpt: 'ციფრული ტრანსფორმაცია ქმნის ახალ პროფესიებს. როგორ მოემზადოთ მომავლის გამოწვევებისთვის.',
+        author: 'დავით მესხია',
+        date: '18 ნოემბერი, 2025',
+        readTime: '9 წუთი',
+        category: 'კარიერა',
+        visualType: 'grid'
+    },
+    {
+        id: 7,
+        title: 'დისტანციური სწავლების ეფექტურობა',
+        excerpt: 'როგორ გავხადოთ ონლაინ განათლება უფრო ინტერაქტიული და შედეგიანი. პრაქტიკული რჩევები.',
+        author: 'ანა მიქელაძე',
+        date: '15 ნოემბერი, 2025',
+        readTime: '6 წუთი',
+        category: 'განათლება',
+        visualType: 'circles'
+    },
+    {
+        id: 8,
+        title: 'სტარტაპის დაფუძნება: პირველი ნაბიჯები',
+        excerpt: 'იდეიდან რეალობამდე - რა გზა უნდა გაიაროს მეწარმემ წარმატებული სტარტაპის შესაქმნელად.',
+        author: 'ნიკა ჩხეიძე',
+        date: '12 ნოემბერი, 2025',
+        readTime: '10 წუთი',
+        category: 'ბიზნესი',
+        visualType: 'squares'
+    },
+    {
+        id: 9,
+        title: 'პროგრამირების ენების შერჩევა დამწყებთათვის',
+        excerpt: 'Python, JavaScript თუ Java? რომელი პროგრამირების ენა შეგეფერება თქვენს მიზნებს.',
+        author: 'ლუკა ციხელაშვილი',
+        date: '8 ნოემბერი, 2025',
+        readTime: '7 წუთი',
+        category: 'ტექნოლოგია',
+        visualType: 'lines'
+    },
+    {
+        id: 10,
+        title: 'დიზაინ თინქინგის მეთოდოლოგია ბიზნესში',
+        excerpt: 'როგორ დაგვეხმარება დიზაინ-მიდგომა ბიზნეს პრობლემების შემოქმედებითად გადაჭრაში.',
+        author: 'ეკა გაბრიჩიძე',
+        date: '5 ნოემბერი, 2025',
+        readTime: '8 წუთი',
+        category: 'ბიზნესი',
+        visualType: 'dots'
+    },
+    {
+        id: 11,
+        title: 'თავდაჯერებულობა და პრეზენტაციის უნარები',
+        excerpt: 'ეფექტური კომუნიკაციის ხელოვნება პროფესიულ წარმატებაში. პრაქტიკული რჩევები.',
+        author: 'სალომე ნადიბაიძე',
+        date: '1 ნოემბერი, 2025',
+        readTime: '5 წუთი',
+        category: 'კარიერა',
+        visualType: 'wave'
+    },
+    {
+        id: 12,
+        title: 'კიბერუსაფრთხოების გამოწვევები 2025 წელს',
+        excerpt: 'რა საფრთხეები ემუქრება ციფრულ სამყაროს და როგორ დავიცვათ საკუთარი მონაცემები.',
+        author: 'გიორგი ბერიძე',
+        date: '28 ოქტომბერი, 2025',
+        readTime: '9 წუთი',
+        category: 'ტექნოლოგია',
+        visualType: 'grid'
+    },
+    {
+        id: 13,
+        title: 'ემოციური ინტელექტის როლი ლიდერობაში',
+        excerpt: 'თანამედროვე ლიდერებისთვის ემოციური ინტელექტი არანაკლებ მნიშვნელოვანია ტექნიკურ უნარებზე.',
+        author: 'თამარ ხარაიშვილი',
+        date: '25 ოქტომბერი, 2025',
+        readTime: '7 წუთი',
+        category: 'კარიერა',
+        visualType: 'circles'
+    },
+    {
+        id: 14,
+        title: 'მონაცემთა მეცნიერება: პროფესია მომავლისთვის',
+        excerpt: 'Data Science-ის შესწავლის გზამკვლევი - საიდან დავიწყოთ და რა უნარები გვჭირდება.',
+        author: 'ლუკა ციხელაშვილი',
+        date: '22 ოქტომბერი, 2025',
+        readTime: '11 წუთი',
+        category: 'ტექნოლოგია',
+        visualType: 'squares'
+    },
+    {
+        id: 15,
+        title: 'მარკეტინგის ციფრული ტრანსფორმაცია',
+        excerpt: 'როგორ შეცვალა სოციალურმა მედიამ და AI-მ ტრადიციული მარკეტინგული მიდგომები.',
+        author: 'ნინო გელაშვილი',
+        date: '18 ოქტომბერი, 2025',
+        readTime: '6 წუთი',
+        category: 'ბიზნესი',
+        visualType: 'lines'
+    },
+    {
+        id: 16,
+        title: 'ფინანსური წიგნიერება ახალგაზრდებისთვის',
+        excerpt: 'ფინანსური დაგეგმვის საფუძვლები - როგორ მართოთ ფული და ინვესტიციები სტუდენტურ ასაკში.',
+        author: 'ლევან კვარაცხელია',
+        date: '15 ოქტომბერი, 2025',
+        readTime: '8 წუთი',
+        category: 'ბიზნესი',
+        visualType: 'dots'
+    },
+    {
+        id: 17,
+        title: 'მრავალენოვნება და კარიერული შესაძლებლობები',
+        excerpt: 'რატომ არის მნიშვნელოვანი უცხო ენების ცოდნა გლობალურ სამუშაო ბაზარზე.',
+        author: 'ანა მიქელაძე',
+        date: '12 ოქტომბერი, 2025',
+        readTime: '5 წუთი',
+        category: 'განათლება',
+        visualType: 'wave'
+    },
+    {
+        id: 18,
+        title: 'გრინ ტექნოლოგიები და მდგრადი განვითარება',
+        excerpt: 'ეკოლოგიურად სუფთა ტექნოლოგიები და მათი როლი მომავლის ეკონომიკაში.',
+        author: 'დავით მესხია',
+        date: '8 ოქტომბერი, 2025',
+        readTime: '7 წუთი',
+        category: 'ტექნოლოგია',
+        visualType: 'grid'
+    }
 
-const Guides = () => {
-    const [selectedCategory, setSelectedCategory] = useState('all');
+];
 
-    const categories = [
-        { id: 'all', name: 'All Guides' },
-        { id: 'university', name: 'University Applications' },
-        { id: 'essays', name: 'Essay Writing' },
-        { id: 'interviews', name: 'Interview Prep' },
-        { id: 'careers', name: 'Career Development' },
-        { id: 'scholarships', name: 'Scholarships' },
-        { id: 'student-life', name: 'Student Life' },
-        { id: 'test-prep', name: 'Test Preparation' }
-    ];
+function BlogVisual({ type }) {
+    const visuals = {
+        circles: (
+            <div className="relative w-full h-full">
+                <div className="absolute top-6 left-6 w-16 h-16 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-[#1F3A8A]"></div>
+                <div className="absolute top-1/2 right-12 w-8 h-8 rounded-full bg-white border-2 border-[#1F3A8A]"></div>
+            </div>
+        ),
+        squares: (
+            <div className="relative w-full h-full">
+                <div className="absolute top-8 right-8 w-14 h-14 bg-[#1F3A8A] rotate-12"></div>
+                <div className="absolute bottom-6 left-6 w-16 h-16" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute top-1/2 left-1/3 w-10 h-10 bg-white border-2 border-[#FA8AFF] rotate-45"></div>
+            </div>
+        ),
+        lines: (
+            <div className="relative w-full h-full overflow-hidden">
+                <div className="absolute top-4 left-0 right-0 h-1" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute top-12 left-0 right-0 h-2 bg-[#1F3A8A]"></div>
+                <div className="absolute top-24 left-0 right-0 h-1" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute bottom-8 left-0 w-1 top-0 bg-[#1F3A8A]"></div>
+                <div className="absolute bottom-8 right-12 w-2 top-0" style={{ backgroundColor: '#FA8AFF' }}></div>
+            </div>
+        ),
+        dots: (
+            <div className="relative w-full h-full">
+                <div className="absolute top-4 left-4 w-3 h-3 rounded-full bg-[#1F3A8A]"></div>
+                <div className="absolute top-8 right-8 w-4 h-4 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute bottom-12 left-12 w-3 h-3 rounded-full bg-[#1F3A8A]"></div>
+                <div className="absolute bottom-6 right-6 w-5 h-5 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-[#1F3A8A]"></div>
+                <div className="absolute top-16 left-1/3 w-3 h-3 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
+            </div>
+        ),
+        wave: (
+            <div className="relative w-full h-full overflow-hidden">
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 160" preserveAspectRatio="none">
+                    <path d="M0,80 Q50,40 100,80 T200,80" fill="none" stroke="#FA8AFF" strokeWidth="3" />
+                    <path d="M0,100 Q50,60 100,100 T200,100" fill="none" stroke="#1F3A8A" strokeWidth="4" />
+                    <path d="M0,120 Q50,80 100,120 T200,120" fill="none" stroke="#FA8AFF" strokeWidth="2" />
+                </svg>
+            </div>
+        ),
+        grid: (
+            <div className="relative w-full h-full">
+                <div className="grid grid-cols-4 grid-rows-4 gap-2 p-4 h-full">
+                    <div className="bg-[#1F3A8A]"></div>
+                    <div className="bg-white border border-[#1F3A8A]"></div>
+                    <div style={{ backgroundColor: '#FA8AFF' }}></div>
+                    <div className="bg-white border border-[#FA8AFF]"></div>
+                    <div className="bg-white border border-[#1F3A8A]"></div>
+                    <div style={{ backgroundColor: '#FA8AFF' }}></div>
+                    <div className="bg-white border border-[#1F3A8A]"></div>
+                    <div className="bg-[#1F3A8A]"></div>
+                    <div style={{ backgroundColor: '#FA8AFF' }}></div>
+                    <div className="bg-white border border-[#FA8AFF]"></div>
+                    <div className="bg-[#1F3A8A]"></div>
+                    <div className="bg-white border border-[#1F3A8A]"></div>
+                </div>
+            </div>
+        )
+    };
 
-    const guides = [
-        {
-            id: 1,
-            title: "What Makes a Winning University Application?",
-            description: "Essential components and strategies for crafting standout applications to top universities",
-            category: "university",
-            image: "bg-gradient-to-br from-emerald-400 to-emerald-600",
-            tag: "UNIVERSITY APPLICATIONS",
-            featured: true
-        },
-        {
-            id: 2,
-            title: "Stanford vs MIT: Choosing the Right Tech School",
-            description: "Comprehensive comparison of two leading technology institutions to help you decide",
-            category: "university",
-            image: "bg-gradient-to-br from-blue-400 to-blue-600",
-            tag: "UNIVERSITY GUIDES"
-        },
-        {
-            id: 3,
-            title: "From High School to Harvard: The Ultimate Guide",
-            description: "Step-by-step roadmap for ambitious students aiming for Ivy League admission",
-            category: "university",
-            image: "bg-gradient-to-br from-purple-400 to-purple-600",
-            tag: "UNIVERSITY GUIDES",
-            featured: true
-        },
-        {
-            id: 4,
-            title: "How to Write a Personal Statement That Stands Out",
-            description: "Expert tips and examples for crafting compelling personal narratives",
-            category: "essays",
-            image: "bg-gradient-to-br from-pink-400 to-pink-600",
-            tag: "ESSAY WRITING"
-        },
-        {
-            id: 5,
-            title: "Scholarship Applications: Maximize Your Chances",
-            description: "Proven strategies for securing financial aid and scholarships",
-            category: "scholarships",
-            image: "bg-gradient-to-br from-yellow-400 to-yellow-600",
-            tag: "SCHOLARSHIPS"
-        },
-        {
-            id: 6,
-            title: "Medical School Interview: Complete Preparation Guide",
-            description: "Master the MMI and traditional interview formats with expert guidance",
-            category: "interviews",
-            image: "bg-gradient-to-br from-red-400 to-red-600",
-            tag: "INTERVIEW PREP"
-        },
-        {
-            id: 7,
-            title: "10 Best Study Abroad Programs in 2025",
-            description: "Explore top international education opportunities and how to apply",
-            category: "student-life",
-            image: "bg-gradient-to-br from-indigo-400 to-indigo-600",
-            tag: "STUDENT LIFE"
-        },
-        {
-            id: 8,
-            title: "SAT vs ACT: Which Test is Right for You?",
-            description: "Comprehensive comparison to help you choose the best standardized test",
-            category: "test-prep",
-            image: "bg-gradient-to-br from-teal-400 to-teal-600",
-            tag: "TEST PREPARATION"
-        },
-        {
-            id: 9,
-            title: "Building Your College Resume: A Timeline Guide",
-            description: "Year-by-year plan for developing a competitive extracurricular profile",
-            category: "university",
-            image: "bg-gradient-to-br from-orange-400 to-orange-600",
-            tag: "UNIVERSITY APPLICATIONS"
-        },
-        {
-            id: 10,
-            title: "Common App Essays: 25 Examples That Worked",
-            description: "Real successful essays with expert analysis and tips",
-            category: "essays",
-            image: "bg-gradient-to-br from-cyan-400 to-cyan-600",
-            tag: "ESSAY WRITING"
-        },
-        {
-            id: 11,
-            title: "Investment Banking: Breaking Into the Industry",
-            description: "Complete guide for students targeting top finance careers",
-            category: "careers",
-            image: "bg-gradient-to-br from-gray-600 to-gray-800",
-            tag: "CAREER DEVELOPMENT"
-        },
-        {
-            id: 12,
-            title: "Research Opportunities for High School Students",
-            description: "How to find and secure meaningful research positions",
-            category: "student-life",
-            image: "bg-gradient-to-br from-lime-400 to-lime-600",
-            tag: "STUDENT LIFE"
-        },
-        {
-            id: 13,
-            title: "Letters of Recommendation: Getting Stellar References",
-            description: "How to request and secure impactful recommendation letters",
-            category: "university",
-            image: "bg-gradient-to-br from-rose-400 to-rose-600",
-            tag: "UNIVERSITY APPLICATIONS"
-        },
-        {
-            id: 14,
-            title: "GMAT vs GRE: MBA Application Strategy",
-            description: "Choose the right test for your business school goals",
-            category: "test-prep",
-            image: "bg-gradient-to-br from-violet-400 to-violet-600",
-            tag: "TEST PREPARATION"
-        },
-        {
-            id: 15,
-            title: "Gap Year Guide: Making the Most of Your Time",
-            description: "Strategic planning for a productive and impressive gap year",
-            category: "student-life",
-            image: "bg-gradient-to-br from-amber-400 to-amber-600",
-            tag: "STUDENT LIFE"
-        },
-        {
-            id: 16,
-            title: "Tech Internships: Landing FAANG Opportunities",
-            description: "Complete guide to securing internships at top tech companies",
-            category: "careers",
-            image: "bg-gradient-to-br from-slate-600 to-slate-800",
-            tag: "CAREER DEVELOPMENT"
-        },
-        {
-            id: 17,
-            title: "Rhodes Scholarship: Complete Application Guide",
-            description: "Everything you need to know about this prestigious opportunity",
-            category: "scholarships",
-            image: "bg-gradient-to-br from-emerald-500 to-emerald-700",
-            tag: "SCHOLARSHIPS"
-        },
-        {
-            id: 18,
-            title: "Pre-Med Timeline: From Freshman to Med School",
-            description: "Four-year roadmap for aspiring medical students",
-            category: "careers",
-            image: "bg-gradient-to-br from-blue-500 to-blue-700",
-            tag: "CAREER DEVELOPMENT"
-        }
-    ];
+    return visuals[type] || visuals.circles;
+}
 
-    const popularGuides = [
-        "How to Start a Successful University Application in 2025",
-        "What is financial aid?",
-        "How to Start an Online Application in 11 Steps (+Best Ideas)",
-        "How to turn your skills into a profitable career path",
-        "15 Ways to promote your academic achievements online"
-    ];
-
-    const filteredGuides = selectedCategory === 'all'
-        ? guides
-        : guides.filter(guide => guide.category === selectedCategory);
-
+const Blogs = () => {
     return (
         <div className="min-h-screen bg-white">
-
-            <div className="flex">
-                {/* Left Sidebar */}
-                <div className="w-64 min-h-screen p-6">
-                    <div className="mb-8">
-                        <h3 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4">
-                            Choose Your Topic
-                        </h3>
-                        <ul className="space-y-2">
-                            {categories.map(category => (
-                                <li key={category.id}>
-                                    <button
-                                        onClick={() => setSelectedCategory(category.id)}
-                                        className={`w-full text-left px-3 py-2 rounded-lg transition ${selectedCategory === category.id
-                                            ? 'bg-emerald-50 text-emerald-600 font-medium'
-                                            : 'text-gray-700 hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        {category.name}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h3 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4">
-                            The Most Popular Guides
-                        </h3>
-                        <ul className="space-y-3">
-                            {popularGuides.map((guide, index) => (
-                                <li key={index}>
-                                    <a href="#" className="text-sm text-gray-700 hover:text-emerald-600 hover:underline">
-                                        {guide}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+            {/* Hero Section */}
+            <section className="relative px-8 py-20 bg-[#1F3A8A] overflow-hidden">
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '50px 50px',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'repeat'
+                    }}
+                ></div>
+                <div className="relative z-10 max-w-4xl mx-auto text-center">
+                    <h1 className="text-5xl text-white mb-6">ბლოგი</h1>
+                    <p className="text-xl text-white/80">
+                        გაეცანით უახლეს სტატიებს კარიერის, განათლებისა და პროფესიული განვითარების შესახებ
+                    </p>
                 </div>
+            </section>
 
-                {/* Main Content */}
-                <div className="flex-1 p-8">
-                    {/* Hero Section */}
-                    <div className="mb-12">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                            Academic success and career guidance
-                        </h1>
-                        <p className="text-xl text-gray-600 max-w-3xl">
-                            Everything you need to know to excel in your education
-                        </p>
-                        <p className="text-gray-500 mt-2">
-                            Practical online resources covering everything you need to know about university
-                            applications, essay writing, test preparation, scholarships, and career planning.
-                        </p>
-                    </div>
-
-                    {/* Featured Guides Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredGuides.map((guide) => (
-                            <Link
-                                key={guide.id}
-                                to={`/guides/${guide.id}`}
-                                className="group block overflow-hidden rounded-xl border hover:shadow-lg transition-all"
+            {/* Blog Grid */}
+            <section className="px-8 py-20">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {blogPosts.map((post) => (
+                            <article
+                                key={post.id}
+                                className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-[#FA8AFF] transition-all duration-300 hover:shadow-xl cursor-pointer group"
                             >
-                                {/* Image/Color Block */}
-                                <div className={`h-48 ${guide.image} relative overflow-hidden`}>
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition"></div>
-                                    {guide.featured && (
-                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full">
-                                            <span className="text-xs font-semibold">Featured</span>
-                                        </div>
-                                    )}
-                                    {/* Placeholder graphic elements */}
-                                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                        <div className="w-16 h-16 bg-white/20 rounded-lg"></div>
-                                        <div className="w-12 h-20 bg-white/20 rounded-lg"></div>
-                                    </div>
+                                {/* Visual */}
+                                <div className="h-48 bg-gray-50 relative overflow-hidden">
+                                    <BlogVisual type={post.visualType} />
                                 </div>
 
                                 {/* Content */}
-                                <div className="p-6 bg-white">
-                                    <div className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">
-                                        {guide.tag}
+                                <div className="p-6">
+                                    {/* Category */}
+                                    <div
+                                        className="inline-block px-3 py-1 text-[#FA8AFF] rounded-full text-sm mb-4"
+                                        style={{ backgroundColor: 'rgba(250, 138, 255, 0.1)' }}
+                                    >
+                                        {post.category}
                                     </div>
-                                    <h3 className="font-bold text-lg text-gray-900 mb-2 group-hover:text-emerald-600 transition line-clamp-2">
-                                        {guide.title}
+
+                                    {/* Title */}
+                                    <h3 className="text-xl text-[#1F3A8A] mb-3 group-hover:text-[#FA8AFF] transition-colors">
+                                        {post.title}
                                     </h3>
-                                    <p className="text-gray-600 text-sm line-clamp-2">
-                                        {guide.description}
+
+                                    {/* Excerpt */}
+                                    <p className="text-gray-600 mb-4 line-clamp-3">
+                                        {post.excerpt}
                                     </p>
+
+                                    {/* Meta Info */}
+                                    <div className="flex flex-col gap-2 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-200">
+                                        <div className="flex items-center gap-2">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            <span>{post.author}</span>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>{post.date}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span>{post.readTime}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Read More */}
+                                    <button className="flex items-center gap-2 text-[#1F3A8A] group-hover:text-[#FA8AFF] transition-colors">
+                                        <span>ვრცლად</span>
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </button>
                                 </div>
-                            </Link>
+                            </article>
                         ))}
                     </div>
-
-                    {/* Load More Button */}
-                    <div className="text-center mt-12">
-                        <button className="px-8 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition">
-                            Load More Guides
-                        </button>
-                    </div>
                 </div>
-            </div>
-
+            </section>
         </div>
     );
 };
 
-export default Guides;
+export default Blogs;

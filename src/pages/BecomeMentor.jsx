@@ -2,25 +2,33 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const BecomeMentor = () => {
     const [showFAQ, setShowFAQ] = useState(false);
+    const { language } = useLanguage();
 
     const benefits = [
         {
-            icon: '🎯',
-            title: 'Connect directly with elite students',
-            description: 'Work with motivated students from top universities worldwide, building lasting relationships and helping shape future leaders.'
+            icon: '🤝',
+            title: language === 'en' ? 'Operational Support' : 'ოპერაციული მხარდაჭერა',
+            description: language === 'en'
+                ? 'Z-Academy provides all the essential tools and features needed to simplify your entire mentorship process (registration, scheduling, and communication are all handled).'
+                : 'Z-Academy უზრუნველყოფს ყველა საჭირო ინსტრუმენტსა და ფუნქციას, რომელიც თქვენი მენტორული პროცესის სრულად გასამარტივებლად არის საჭირო (რეგისტრაცია, განრიგის შედგენა და კომუნიკაცია — ყველა ეტაპი მოგვარებულია).'
         },
         {
             icon: '💰',
-            title: 'Set your own rates',
-            description: 'You decide your hourly rate and service offerings. Earn what you\'re worth while maintaining full control over your schedule.'
+            title: language === 'en' ? 'Set your own rates' : 'დაადგინეთ საკუთარი ტარიფები',
+            description: language === 'en'
+                ? 'You decide your hourly rate and service offerings. Earn what you\'re worth while maintaining full control over your schedule.'
+                : 'თქვენ თავად წყვეტთ, როგორი იქნება თქვენი საათობრივი ანაზღაურება და შეთავაზებული სერვისები. მიიღეთ სამართლიანი ანაზღაურება თქვენი სერვისებისთვის და შეინარჩუნეთ სრული თავისუფლება გრაფიკის მართვაში.'
         },
         {
-            icon: '🚀',
-            title: 'Grow and earn more',
-            description: 'As you build your reputation, attract more students and increase your rates. Top mentors earn over $10,000 per month.'
+            icon: '🌟',
+            title: language === 'en' ? 'Exclusive Network' : 'ექსკლუზიური ქსელი',
+            description: language === 'en'
+                ? 'You will join a network of leading, highly qualified mentors, which ensures the quality and reputation of your work.'
+                : 'თქვენ შეუერთდებით წამყვანი, მაღალკვალიფიციური მენტორების ქსელს, რაც უზრუნველყოფს თქვენი საქმიანობის ხარისხსა და რეპუტაციას.'
         }
     ];
 
@@ -91,16 +99,14 @@ const BecomeMentor = () => {
                         <div className="text-sm uppercase tracking-wider mb-4 text-purple-200">
                             Z-ACADEMY MENTORS
                         </div>
-                        <h1 className="text-5xl lg:text-6xl font-bold mb-6">
-                            Ready to grow your<br />
-                            <span className="italic">business as a Z-Academy mentor?</span>
-                        </h1>
                         <p className="text-xl mb-8 text-purple-100">
-                            Join an exclusive network of top educators and start making an impact. Apply today to
-                            help guide the next generation and build your mentoring business.
+                            {language === 'en'
+                                ? 'Share your unique knowledge and experience to help the next generation with their professional and educational development. Receive stable compensation for your mentorship.'
+                                : 'გააზიარეთ თქვენი უნიკალური ცოდნა და გამოცდილება, რათა დაეხმაროთ ახალ თაობას პროფესიულ და საგანმანათლებლო განვითარებაში. მიიღეთ სტაბილური ანაზღაურება თქვენი მენტორული საქმიანობისთვის.'
+                            }
                         </p>
                         <Link to="/register/mentor" className="inline-block bg-pink-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-pink-600 transition text-lg">
-                            Apply Now
+                            {language === 'en' ? 'Apply Now' : 'გამოგვიგზავნე განაცხადი'}
                         </Link>
                     </div>
 
@@ -144,7 +150,10 @@ const BecomeMentor = () => {
             <section className="py-20 bg-gray-50">
                 <div className="container mx-auto px-6">
                     <h2 className="text-4xl font-bold text-center mb-16">
-                        Why choose Z-Academy for your mentoring business?
+                        {language === 'en'
+                            ? 'Why choose Z-Academy?'
+                            : 'რატომ Z-Academy?'
+                        }
                     </h2>
 
                     <div className="space-y-16 max-w-4xl mx-auto">
@@ -218,7 +227,7 @@ const BecomeMentor = () => {
 
                     <div className="text-center mt-12">
                         <Link to="/register/mentor" className="inline-block bg-pink-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-pink-600 transition text-lg">
-                            Apply Now
+                            {language === 'en' ? 'Apply Now' : 'გამოგვიგზავნე განაცხადი'}
                         </Link>
                     </div>
                 </div>
@@ -229,10 +238,16 @@ const BecomeMentor = () => {
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold mb-4">
-                            Equip your business with the tools for success
+                            {language === 'en'
+                                ? 'Tools for your success'
+                                : 'ყველა ინსტრუმენტი შენი წარმატებისთვის'
+                            }
                         </h2>
                         <p className="text-xl text-gray-600">
-                            Everything you need to build and grow your mentoring practice
+                            {language === 'en'
+                                ? 'Everything you need to build and grow your mentoring practice'
+                                : 'ყველაფერი, რაც გჭირდებათ თქვენი მენტორული საქმიანობის შესაქმნელად და გასავითარებლად.'
+                            }
                         </p>
                     </div>
 
@@ -258,7 +273,7 @@ const BecomeMentor = () => {
                         Join Z-Academy and start building your mentoring business today
                     </p>
                     <Link to="/register/mentor" className="inline-block bg-white text-purple-900 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition text-lg">
-                        Apply Now
+                        {language === 'en' ? 'Apply Now' : 'გამოგვიგზავნე განაცხადი'}
                     </Link>
                 </div>
             </section>
@@ -370,7 +385,7 @@ const BecomeMentor = () => {
                         Join our exclusive network of mentors and start making an impact today
                     </p>
                     <Link to="/register/mentor" className="inline-block bg-white text-purple-900 px-10 py-5 rounded-lg font-bold hover:bg-gray-100 transition text-xl">
-                        Apply Now
+                        {language === 'en' ? 'Apply Now' : 'გამოგვიგზავნე განაცხადი'}
                     </Link>
                 </div>
             </section>

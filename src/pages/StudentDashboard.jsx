@@ -6,10 +6,8 @@ import { useAuth } from '../contexts/AuthProvider';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = '/api'
-
 const api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: '/api/dashboard',
     withCredentials: true,
 });
 
@@ -19,57 +17,23 @@ const StudentDashboard = () => {
     const [profile, setProfile] = useState(null);
     const [upcomingSessions, setUpcomingSessions] = useState([]);
     const [openSessions, setOpenSessions] = useState({});
-    const [activeSection, setActiveSection] = useState('dashboard');
-    console.log('rere')
-    useEffect(() => {
-        if (user?.id) {
-            fetchStudentData(user.id);
-        }
-    }, [user]);
+    const [activeSection, setActiveSection] = useState('profile');
 
-    const fetchStudentData = async (id) => {
+    useEffect(() => {
+        fetchProfile();
+        // TODO: Fetch sessions when endpoint is ready
+    }, []);
+
+    const fetchProfile = async () => {
         try {
             setLoading(true);
-            console.log("Fetching data for student ID:", id);
+            const response = await api.get('/student/profile');
 
-            // Fetch student profile
-            const { data } = await api.get(`/student/${id}`);
-            console.log('Fetched student data:', data);
-
-            if (data.success) {
-                setProfile({
-                    firstName: data.student.firstName,
-                    lastName: data.student.lastName,
-                    email: data.student.email,
-                    phone: data.student.phone,
-                    id: data.student.id,
-                    countryCode: data.student.countryCode,
-                    university: data.student.university,
-                    verified: data.student.verified
-                });
-            }
-
-            // Fetch student's upcoming sessions
-            try {
-                const sessionResponse = await api.get(`/student/${id}/bookings`);
-                console.log('Fetched session data:', sessionResponse.data.sessions);
-                const sessions = sessionResponse.data.sessions || [];
-                setUpcomingSessions(sessions);
-
-                // Auto-open only confirmed sessions
-                const initialOpenState = {};
-                sessions.forEach((session) => {
-                    initialOpenState[session.id] = session.status === "confirmed";
-                });
-                setOpenSessions(initialOpenState);
-            } catch (sessionError) {
-                console.log('No sessions found or error fetching sessions:', sessionError);
-                setUpcomingSessions([]);
+            if (response.data.success) {
+                setProfile(response.data.data);
             }
         } catch (err) {
-            const errorMessage = err.response?.data?.message || err.message || "Failed to load profile";
-            toast.error(errorMessage);
-            console.error("Error fetching student data:", err);
+            toast.error(err.response?.data?.message || 'Failed to load profile');
         } finally {
             setLoading(false);
         }
@@ -95,24 +59,14 @@ const StudentDashboard = () => {
 
     const menuItems = [
         {
-            id: 'dashboard',
-            label: 'Dashboard',
-            icon: (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-            ),
-            description: 'View your sessions overview'
-        },
-        {
             id: 'profile',
-            label: 'My Profile',
+            label: 'Profile Settings',
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
             ),
-            description: 'Manage your information'
+            description: 'Manage your personal information'
         },
         {
             id: 'sessions',
@@ -124,16 +78,6 @@ const StudentDashboard = () => {
             ),
             description: 'View all your sessions'
         },
-        {
-            id: 'bookings',
-            label: 'Book a Session',
-            icon: (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-            ),
-            description: 'Find and book mentors'
-        }
     ];
 
     if (loading) {
@@ -310,13 +254,6 @@ const StudentDashboard = () => {
                             <div className="relative w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-xl">
                                 {profile && getInitials(profile.firstName, profile.lastName)}
                             </div>
-                            {profile?.verified && (
-                                <div className="absolute bottom-0 right-0 bg-green-500 rounded-full p-2 border-4 border-white">
-                                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                                    </svg>
-                                </div>
-                            )}
                         </div>
                     </div>
 
@@ -325,21 +262,8 @@ const StudentDashboard = () => {
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">
                             {profile?.firstName} {profile?.lastName}
                         </h2>
-                        {profile?.verified && (
-                            <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
-                                Verified Student
-                            </span>
-                        )}
-                    </div>
 
-                    {/* University */}
-                    {profile?.university && (
-                        <div className="text-center pb-4 mb-4 border-b border-gray-200">
-                            <p className="text-sm text-gray-600">
-                                Student at <span className="font-semibold">{profile.university}</span>
-                            </p>
-                        </div>
-                    )}
+                    </div>
 
                     {/* Contact Info */}
                     <div className="space-y-4">
@@ -422,74 +346,298 @@ const StudentDashboard = () => {
         </div>
     );
 
-    const ProfileContent = () => (
-        <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h2>
+    const ProfileContent = () => {
+        const [isEditing, setIsEditing] = useState(false);
+        const [saving, setSaving] = useState(false);
+        const [formData, setFormData] = useState({
+            firstName: profile?.firstName || '',
+            lastName: profile?.lastName || '',
+            email: profile?.email || '',
+            phone: profile?.phone || '',
+            countryCode: profile?.countryCode || '+995',
+            dateOfBirth: profile?.dateOfBirth || ''
+        });
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                        <input
-                            type="text"
-                            value={profile?.firstName || ''}
-                            disabled
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                        <input
-                            type="text"
-                            value={profile?.lastName || ''}
-                            disabled
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input
-                            type="email"
-                            value={profile?.email || ''}
-                            disabled
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={profile?.countryCode || ''}
-                                disabled
-                                className="w-24 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                            />
-                            <input
-                                type="text"
-                                value={profile?.phone || ''}
-                                disabled
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                            />
+        useEffect(() => {
+            if (profile) {
+                setFormData({
+                    firstName: profile.firstName || '',
+                    lastName: profile.lastName || '',
+                    email: profile.email || '',
+                    phone: profile.phone || '',
+                    countryCode: profile.countryCode || '+995',
+                    dateOfBirth: profile.dateOfBirth || ''
+                });
+            }
+        }, [profile]);
+
+        const handleInputChange = (e) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        };
+
+        const hasChanges = () => {
+            if (!profile) return false;
+            return (
+                formData.firstName !== (profile.firstName || '') ||
+                formData.lastName !== (profile.lastName || '') ||
+                formData.email !== (profile.email || '') ||
+                formData.phone !== (profile.phone || '') ||
+                formData.countryCode !== (profile.countryCode || '+995') ||
+                formData.dateOfBirth !== (profile.dateOfBirth || '')
+            );
+        };
+
+        const validateForm = () => {
+            if (!formData.firstName?.trim()) {
+                toast.error('First name is required');
+                return false;
+            }
+            if (!formData.lastName?.trim()) {
+                toast.error('Last name is required');
+                return false;
+            }
+            if (!formData.email?.trim()) {
+                toast.error('Email is required');
+                return false;
+            }
+            if (!formData.phone?.trim()) {
+                toast.error('Phone number is required');
+                return false;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                toast.error('Please enter a valid email address');
+                return false;
+            }
+
+            return true;
+        };
+
+        const handleSave = async () => {
+            if (!validateForm()) return;
+
+            setSaving(true);
+            try {
+                const response = await api.put('/student/profile', formData);
+
+                if (response.data.success) {
+                    toast.success('Profile updated successfully');
+                    await fetchProfile();
+                    setIsEditing(false);
+                }
+            } catch (err) {
+                toast.error(err.response?.data?.message || 'Failed to update profile');
+            } finally {
+                setSaving(false);
+            }
+        };
+
+        const handleCancel = () => {
+            if (hasChanges()) {
+                const confirmCancel = window.confirm(
+                    'You have unsaved changes. Are you sure you want to cancel?'
+                );
+                if (!confirmCancel) return;
+            }
+
+            setFormData({
+                firstName: profile?.firstName || '',
+                lastName: profile?.lastName || '',
+                email: profile?.email || '',
+                phone: profile?.phone || '',
+                countryCode: profile?.countryCode || '+995',
+                dateOfBirth: profile?.dateOfBirth || ''
+            });
+            setIsEditing(false);
+        };
+
+        return (
+            <div className="max-w-4xl mx-auto space-y-6">
+                {/* Unsaved Changes Warning */}
+                {isEditing && hasChanges() && (
+                    <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+                        <div className="flex items-center">
+                            <svg className="w-5 h-5 text-orange-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div>
+                                <p className="text-sm font-medium text-orange-800">You have unsaved changes</p>
+                                <p className="text-xs text-orange-700 mt-1">Remember to save your changes before leaving this page</p>
+                            </div>
                         </div>
                     </div>
-                    {profile?.university && (
+                )}
+
+                <div className="bg-white rounded-xl shadow-lg p-8">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900">Profile Information</h2>
+                        {!isEditing ? (
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="px-4 py-2 bg-blue-600rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit Profile
+                            </button>
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={saving || !hasChanges()}
+                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {saving ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                    <button
+                                        onClick={handleCancel}
+                                        disabled={saving}
+                                        className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                                {hasChanges() && !saving && (
+                                    <span className="text-xs text-gray-500">
+                                        Press <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Ctrl+S</kbd> to save
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                First Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="firstName"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
+                                disabled={!isEditing}
+                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Last Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="lastName"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
+                                disabled={!isEditing}
+                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Email <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                disabled={!isEditing}
+                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Phone <span className="text-red-500">*</span>
+                            </label>
+                            <div className="flex gap-2">
+                                <select
+                                    name="countryCode"
+                                    value={formData.countryCode}
+                                    onChange={handleInputChange}
+                                    disabled={!isEditing}
+                                    className={`w-24 px-2 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
+                                >
+                                    <option value="+995">+995</option>
+                                    <option value="+1">+1</option>
+                                    <option value="+44">+44</option>
+                                    <option value="+49">+49</option>
+                                    <option value="+33">+33</option>
+                                </select>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    disabled={!isEditing}
+                                    className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
+                                    required
+                                />
+                            </div>
+                        </div>
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">University</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Date of Birth
+                            </label>
                             <input
-                                type="text"
-                                value={profile.university}
-                                disabled
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                                type="date"
+                                name="dateOfBirth"
+                                value={formData.dateOfBirth || ''}
+                                onChange={handleInputChange}
+                                disabled={!isEditing}
+                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                             />
                         </div>
-                    )}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     const SessionsContent = () => (
         <div className="space-y-6">
+            {/* Support Notice */}
+            <div className="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-4">
+                <div className="flex items-start gap-3">
+                    <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <h3 className="text-sm font-semibold text-blue-900 mb-1">Need Session Support?</h3>
+                        <p className="text-sm text-blue-800 mb-2">
+                            For assistance with scheduling, cancellations, or if a mentor does not attend your session, please contact our customer support portal.
+                        </p>
+                        <a
+                            href="https://z-academy.atlassian.net/servicedesk/customer/portal/1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+                        >
+                            Contact Support
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <div className="bg-white rounded-xl shadow-lg p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">All Sessions</h2>
 
@@ -546,14 +694,6 @@ const StudentDashboard = () => {
                                 <p className="text-sm text-gray-600">Student Dashboard</p>
                             </div>
                         </div>
-                        {profile?.verified && (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                                </svg>
-                                Verified Student
-                            </span>
-                        )}
                     </div>
 
                     {/* Navigation Menu */}
@@ -596,23 +736,25 @@ const StudentDashboard = () => {
                         </ul>
                     </nav>
 
-                    {/* Quick Actions */}
+                    {/* Help Section */}
                     <div className="p-6 border-t">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Quick Actions</h4>
-                        <div className="space-y-2">
-                            <Link
-                                to="/mentors"
-                                className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition"
-                            >
-                                Find a Mentor
-                            </Link>
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+                            <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Need Help?
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Check our documentation or contact support
+                            </p>
                             <a
                                 href="https://z-academy.atlassian.net/servicedesk/customer/portal/1"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="block w-full text-center px-4 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+                                className="text-sm text-blue-600 font-medium hover:text-blue-700"
                             >
-                                Get Support
+                                View Help Center →
                             </a>
                         </div>
                     </div>
@@ -621,22 +763,7 @@ const StudentDashboard = () => {
                 {/* Main Content Area */}
                 <div className="flex-1">
                     <div className="p-8">
-                        {/* Page Header */}
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                {activeSection === 'dashboard' && 'My Dashboard'}
-                                {activeSection === 'profile' && 'My Profile'}
-                                {activeSection === 'sessions' && 'My Sessions'}
-                            </h1>
-                            <p className="text-gray-600">
-                                {activeSection === 'dashboard' && 'View and manage your upcoming sessions'}
-                                {activeSection === 'profile' && 'Manage your personal information'}
-                                {activeSection === 'sessions' && 'View all your mentoring sessions'}
-                            </p>
-                        </div>
-
                         {/* Dynamic Content */}
-                        {activeSection === 'dashboard' && <DashboardContent />}
                         {activeSection === 'profile' && <ProfileContent />}
                         {activeSection === 'sessions' && <SessionsContent />}
                     </div>

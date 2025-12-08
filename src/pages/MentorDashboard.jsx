@@ -167,12 +167,6 @@ const MentorDashboard = () => {
                         <h4 className="text-sm font-semibold text-gray-700 mb-3">Quick Stats</h4>
                         <div className="space-y-3">
                             <div className="flex justify-between">
-                                <span className="text-sm text-gray-600">Profile Status</span>
-                                <span className={`text-sm font-medium ${profile?.profileComplete ? 'text-green-600' : 'text-yellow-600'}`}>
-                                    {profile?.profileComplete ? 'Complete' : 'Incomplete'}
-                                </span>
-                            </div>
-                            <div className="flex justify-between">
                                 <span className="text-sm text-gray-600">Member Since</span>
                                 <span className="text-sm font-medium text-gray-900">
                                     {profile?.memberSince ? new Date(profile.memberSince).toLocaleDateString() : 'N/A'}
@@ -193,9 +187,14 @@ const MentorDashboard = () => {
                             <p className="text-sm text-gray-600 mb-3">
                                 Check our documentation or contact support
                             </p>
-                            <button className="text-sm text-blue-600 font-medium hover:text-blue-700">
+                            <a
+                                href="https://z-academy.atlassian.net/servicedesk/customer/portal/1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 font-medium hover:text-blue-700"
+                            >
                                 View Help Center →
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -203,17 +202,6 @@ const MentorDashboard = () => {
                 {/* Main Content Area */}
                 <div className="flex-1">
                     <div className="p-8">
-                        {/* Page Header */}
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                {activeSection === 'profile' ? 'Profile Settings' : 'Timezone & Services'}
-                            </h1>
-                            <p className="text-gray-600">
-                                {activeSection === 'profile'
-                                    ? 'Update your personal information and mentor profile'
-                                    : 'Manage your availability schedule and service offerings'}
-                            </p>
-                        </div>
 
                         {/* Dynamic Content */}
                         {activeSection === 'profile' ? (
