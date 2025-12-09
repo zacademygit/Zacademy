@@ -427,6 +427,13 @@ const Mentors = () => {
                                                         </span>
                                                     )}
                                                 </div>
+
+                                                <button
+                                                    onClick={() => handleMentorClick(mentor.id)}
+                                                    className="px-6 py-3 bg-[#FA8AFF] text-white rounded-lg hover:bg-[#e07ae6] transition-colors font-medium"
+                                                >
+                                                    პროფილის ნახვა
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

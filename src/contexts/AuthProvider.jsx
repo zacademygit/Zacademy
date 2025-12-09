@@ -15,7 +15,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const API_BASE_URL = "/api";
+    const API_BASE_URL = import.meta.env.HEROKU_APP_API_URL;
 
     console.log('user state in AuthProvider:', user);
 
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuth = async () => {
         try {
-            const response = await fetch(`/api/auth/me`, {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
                 credentials: 'include', // Important for cookies
             });
             console.log('response from /auth/me:', response);
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const login = async (email, password, userType) => {
-        const response = await fetch(`/api/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
