@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(undefined);
+console.log('here')
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
