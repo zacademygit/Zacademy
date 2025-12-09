@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuth = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/me`, {
+            const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
                 credentials: 'include', // Important for cookies
             });
             console.log('response from /auth/me:', response);
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const login = async (email, password, userType) => {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch(`${API_BASE_URL}/auth/logout`, {
+            await fetch(`${API_BASE_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
             });
