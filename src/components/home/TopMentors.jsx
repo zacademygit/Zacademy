@@ -45,7 +45,7 @@ const mentors = [
 
 const TopMentors = () => {
     return (
-        <section className="px-8 py-32 bg-white">
+        <section className="bg-white px-8 py-32">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-16">
                     <h2 className="text-5xl mb-4 text-primary">ჩვენი საუკეთესო მენტორები</h2>

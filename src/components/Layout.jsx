@@ -76,24 +76,24 @@ const Layout = () => {
                         {/* Desktop Navigation (Hidden on dashboard pages) */}
                         {/* {!isDashboardPage && ( */}
                         <div className="hidden md:flex items-center gap-8">
-                            <Link to="/mentors" className="text-light hover:text-light/80 transition-colors">
+                            <Link to="/mentors" className="text-light-text hover:text-light-text/80 transition-colors">
                                 {language === "en" ? "Mentorship" : "მენტორები"}
                             </Link>
-                            <Link to="/blogs" className="text-light hover:text-light/80 transition-colors">
+                            <Link to="/blogs" className="text-light-text hover:text-light-text/80 transition-colors">
                                 {language === "en" ? "Blog" : "ბლოგი"}
                             </Link>
-                            <Link to="/about" className="text-light hover:text-light/80 transition-colors">
+                            <Link to="/about" className="text-light-text hover:text-light-text/80 transition-colors">
                                 {language === "en" ? "About Us" : "ჩვენს შესახებ"}
                             </Link>
                             {/* {user?.userType !== 'mentor' && (
-                                    <Link to="/become-mentor" className="text-light hover:text-light/80 transition-colors">
+                                    <Link to="/become-mentor" className="text-light-text hover:text-light-text/80 transition-colors">
                                         {language === "en" ? "Become Mentor" : "გახდი მენტორი"}
                                     </Link>
                                 )} */}
-                            <Link to="/faq" className="text-light hover:text-light/80 transition-colors">
+                            <Link to="/faq" className="text-light-text hover:text-light-text/80 transition-colors">
                                 {language === "en" ? "FAQ" : "კითხვები"}
                             </Link>
-                            <Link to="/support" className="text-light hover:text-light/80 transition-colors">
+                            <Link to="/support" className="text-light-text hover:text-light-text/80 transition-colors">
                                 {language === "en" ? "Support" : "დახმარება"}
                             </Link>
 
@@ -102,7 +102,7 @@ const Layout = () => {
                                 <button
                                     onClick={() => switchLanguage("en")}
                                     className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "en"
-                                        ? "text-light"
+                                        ? "text-light-text"
                                         : "text-black hover:text-gray-700"
                                         }`}
                                 >
@@ -111,7 +111,7 @@ const Layout = () => {
                                 <button
                                     onClick={() => switchLanguage("ka")}
                                     className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "ka"
-                                        ? "text-light"
+                                        ? "text-light-text"
                                         : "text-black hover:text-gray-700"
                                         }`}
                                 >
@@ -130,18 +130,18 @@ const Layout = () => {
                                             >
                                                 {/* User Avatar */}
                                                 <div
-                                                    className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-light font-semibold text-sm"
+                                                    className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-light-text font-semibold text-sm"
                                                 >
                                                     {user.firstName?.[0]}{user.lastName?.[0]}
                                                 </div>
 
                                                 {/* User Name */}
-                                                <span className="text-light font-medium">
+                                                <span className="text-light-text font-medium">
                                                     {user.firstName} {user.lastName}
                                                 </span>
 
                                                 {/* Dropdown Arrow */}
-                                                <svg className={`w-4 h-4 text-light transition-transform ${showDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className={`w-4 h-4 text-light-text transition-transform ${showDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                                 </svg>
                                             </button>
@@ -216,7 +216,7 @@ const Layout = () => {
                                     ) : (
                                         <Link
                                             to="/auth"
-                                            className="px-6 py-2 bg-secondary text-light rounded-full hover:opacity-90 transition-opacity"
+                                            className="px-6 py-2 bg-secondary text-light-text rounded-full hover:opacity-90 transition-opacity"
                                         >
                                             {language === "en" ? "Get started" : "შესვლა"}
                                         </Link>
@@ -230,7 +230,7 @@ const Layout = () => {
                         {!isDashboardPage && (
                             <button
                                 onClick={() => setShowMobileMenu(!showMobileMenu)}
-                                className="md:hidden text-light"
+                                className="md:hidden text-light-text"
                             >
                                 {showMobileMenu ? (
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +248,7 @@ const Layout = () => {
                         {!loading && user && !isDashboardPage && (
                             <div className="md:hidden flex items-center gap-3">
                                 <div
-                                    className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-light font-semibold text-sm"
+                                    className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-light-text font-semibold text-sm"
                                 >
                                     {user.firstName?.[0]}{user.lastName?.[0]}
                                 </div>
@@ -262,21 +262,21 @@ const Layout = () => {
                             <Link
                                 to="/mentors"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light hover:text-light/80 transition-colors text-left"
+                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
                             >
                                 {language === "en" ? "Mentorship" : "მენტორები"}
                             </Link>
                             <Link
                                 to="/blogs"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light hover:text-light/80 transition-colors text-left"
+                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
                             >
                                 {language === "en" ? "Blog" : "ბლოგი"}
                             </Link>
                             <Link
                                 to="/about"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light hover:text-light/80 transition-colors text-left"
+                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
                             >
                                 {language === "en" ? "About Us" : "ჩვენს შესახებ"}
                             </Link>
@@ -284,7 +284,7 @@ const Layout = () => {
                                 <Link
                                     to="/become-mentor"
                                     onClick={() => setShowMobileMenu(false)}
-                                    className="text-light hover:text-light/80 transition-colors text-left"
+                                    className="text-light-text hover:text-light-text/80 transition-colors text-left"
                                 >
                                     {language === "en" ? "Become Mentor" : "გახდი მენტორი"}
                                 </Link>
@@ -292,14 +292,14 @@ const Layout = () => {
                             <Link
                                 to="/faq"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light hover:text-light/80 transition-colors text-left"
+                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
                             >
                                 {language === "en" ? "FAQ" : "კითხვები"}
                             </Link>
                             <Link
                                 to="/support"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light hover:text-light/80 transition-colors text-left"
+                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
                             >
                                 {language === "en" ? "Support" : "დახმარება"}
                             </Link>
@@ -309,7 +309,7 @@ const Layout = () => {
                                 <button
                                     onClick={() => switchLanguage("en")}
                                     className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "en"
-                                        ? "text-light bg-secondary"
+                                        ? "text-light-text bg-secondary"
                                         : "text-black hover:text-gray-700"
                                         }`}
                                 >
@@ -318,7 +318,7 @@ const Layout = () => {
                                 <button
                                     onClick={() => switchLanguage("ka")}
                                     className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "ka"
-                                        ? "text-light bg-secondary"
+                                        ? "text-light-text bg-secondary"
                                         : "text-black hover:text-gray-700"
                                         }`}
                                 >
@@ -330,7 +330,7 @@ const Layout = () => {
                                 <>
                                     <button
                                         onClick={() => { navigateToDashboard(); setShowMobileMenu(false); }}
-                                        className="text-light hover:text-light/80 transition-colors text-left pt-2 border-t border-white/20"
+                                        className="text-light-text hover:text-light-text/80 transition-colors text-left pt-2 border-t border-white/20"
                                     >
                                         Dashboard
                                     </button>
@@ -345,7 +345,7 @@ const Layout = () => {
                                 <Link
                                     to="/auth"
                                     onClick={() => setShowMobileMenu(false)}
-                                    className="px-6 py-2 bg-secondary text-light rounded-lg text-center"
+                                    className="px-6 py-2 bg-secondary text-light-text rounded-lg text-center"
                                 >
                                     {language === "en" ? "Get started" : "შესვლა"}
                                 </Link>
@@ -364,7 +364,7 @@ const Layout = () => {
             <Footer />
 
             {/* Fixed Support Button */}
-            <button className="fixed bottom-8 right-8 bg-blue-600 text-light p-4 rounded-full shadow-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 z-40">
+            <button className="fixed bottom-8 right-8 bg-blue-600 text-light-text p-4 rounded-full shadow-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 z-40">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>

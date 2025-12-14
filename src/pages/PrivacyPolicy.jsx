@@ -22,8 +22,8 @@ const PrivacyPolicy = () => {
         <div className="relative z-10 px-8 py-16">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
-              <Shield className="w-12 h-12 text-light" />
-              <h1 className="text-5xl text-light">
+              <Shield className="w-12 h-12 text-light-text" />
+              <h1 className="text-5xl text-light-text">
                 პერსონალურ მონაცემთა დაცვა
               </h1>
             </div>
@@ -130,7 +130,7 @@ const PrivacyPolicy = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse border border-gray-300 mt-6">
                     <thead>
-                      <tr className="bg-primary text-light">
+                      <tr className="bg-primary text-light-text">
                         <th className="border border-gray-300 px-4 py-3 text-left">მონაცემთა კატეგორია</th>
                         <th className="border border-gray-300 px-4 py-3 text-left">შენახვის ვადა</th>
                       </tr>

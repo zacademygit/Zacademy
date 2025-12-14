@@ -22,8 +22,8 @@ const CookiePolicy = () => {
         <div className="relative z-10 px-8 py-16">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
-              <Cookie className="w-12 h-12 text-light" />
-              <h1 className="text-5xl text-light">
+              <Cookie className="w-12 h-12 text-light-text" />
+              <h1 className="text-5xl text-light-text">
                 „მზა ჩანაწერების" (Cookies) პოლიტიკა
               </h1>
             </div>
@@ -114,15 +114,15 @@ const CookiePolicy = () => {
             </section>
 
             {/* Visual Element: Cookie Info Card */}
-            <div className="bg-gradient-to-r from-primary to-[#2a4fa8] text-light p-8 rounded-2xl mb-12">
+            <div className="bg-gradient-to-r from-primary to-[#2a4fa8] text-light-text p-8 rounded-2xl mb-12">
               <div className="flex items-start gap-4">
                 <Cookie className="w-12 h-12 flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-2xl mb-3">რას აკეთებს Cookie?</h3>
-                  <p className="text-light/90 mb-3">
+                  <p className="text-light-text/90 mb-3">
                     Cookie ფაილები გეხმარებათ უკეთ იმოქმედოთ პლატფორმაზე და დაიმახსოვროთ თქვენი პარამეტრები შემდეგი ვიზიტისთვის.
                   </p>
-                  <p className="text-light/90">
+                  <p className="text-light-text/90">
                     ჩვენ ვიყენებთ მხოლოდ Google Analytics-ს, რომელიც აგროვებს ანონიმურ სტატისტიკას პლატფორმის გასაუმჯობესებლად.
                   </p>
                 </div>

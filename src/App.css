@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: orange;
+  --color-primary: #2764F3;
   --color-secondary: rgba(195, 196, 199, 1);
-  --color-light: white
+  --color-light-text: white;
+  --color-neutral-bg: #E5E5E5
 }
 
 #root {
