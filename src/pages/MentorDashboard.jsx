@@ -6,12 +6,13 @@ import axios from 'axios';
 import ProfileSettings from '../components/mentor/ProfileSettings';
 import TimezoneServices from '../components/mentor/TimezoneServices';
 import toast from 'react-hot-toast';
+import { User, Clock, HelpCircle } from 'lucide-react';
 
-// const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 const api = axios.create({
     // baseURL: API_BASE_URL,
-    baseURL: '/api/dashboard',
+    baseURL: `${API_BASE_URL}/api/dashboard`,
     withCredentials: true,
 });
 
@@ -50,7 +51,7 @@ const MentorDashboard = () => {
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Application Pending
+                    განხილვაში
                 </span>
             );
         } else if (profile.applicationStatus === 'approved') {
@@ -59,7 +60,7 @@ const MentorDashboard = () => {
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Approved Mentor
+                    დამტკიცებული
                 </span>
             );
         } else if (profile.applicationStatus === 'rejected') {
@@ -68,7 +69,7 @@ const MentorDashboard = () => {
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Application Rejected
+                    უარყოფილი
                 </span>
             );
         }
@@ -83,23 +84,13 @@ const MentorDashboard = () => {
     const menuItems = [
         {
             id: 'profile',
-            label: 'Profile Settings',
-            icon: (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-            ),
-            description: 'Manage your personal information'
+            label: 'პროფილის პარამეტრები',
+            icon: <User size={20} />
         },
         {
             id: 'availability',
-            label: 'Timezone & Services',
-            icon: (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            ),
-            description: 'Set availability and services'
+            label: 'დროის ზონა და სერვისები',
+            icon: <Clock size={20} />
         }
     ];
 
@@ -107,8 +98,8 @@ const MentorDashboard = () => {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading your dashboard...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-gray-600">იტვირთება...</p>
                 </div>
             </div>
         );
@@ -118,21 +109,19 @@ const MentorDashboard = () => {
         <div className="min-h-screen bg-gray-50">
             <div className="flex">
                 {/* Sidebar */}
-                <div className="w-80 bg-white shadow-xl h-screen sticky top-0 overflow-y-auto">
+                <div className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 overflow-y-auto">
                     {/* Profile Header */}
-                    <div className="p-6 border-b">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                    <div className="p-6 border-b border-gray-200">
+                        <div className="flex flex-col items-center text-center mb-4">
+                            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-xl font-bold mb-3">
                                 {profile && getInitials(profile.firstName, profile.lastName)}
                             </div>
-                            <div className="flex-1">
-                                <h3 className="font-bold text-gray-900">
-                                    {profile?.firstName} {profile?.lastName}
-                                </h3>
-                                <p className="text-sm text-gray-600">Mentor Dashboard</p>
-                            </div>
+                            <h3 className="font-bold text-gray-900 text-lg">
+                                {profile?.firstName} {profile?.lastName}
+                            </h3>
+                            <p className="text-sm text-gray-500 mb-2">მენტორი</p>
+                            {getApplicationStatusBadge()}
                         </div>
-                        {getApplicationStatusBadge()}
                     </div>
 
                     {/* Navigation Menu */}
@@ -142,20 +131,16 @@ const MentorDashboard = () => {
                                 <li key={item.id}>
                                     <button
                                         onClick={() => setActiveSection(item.id)}
-                                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${activeSection === item.id
-                                            ? 'bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-blue-600 text-blue-700'
-                                            : 'hover:bg-gray-50 text-gray-700'
-                                            }`}
+                                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3 ${
+                                            activeSection === item.id
+                                                ? 'bg-primary text-white'
+                                                : 'hover:bg-gray-100 text-gray-700'
+                                        }`}
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <span className={activeSection === item.id ? 'text-blue-600' : 'text-gray-500'}>
-                                                {item.icon}
-                                            </span>
-                                            <div>
-                                                <div className="font-medium">{item.label}</div>
-                                                <div className="text-xs text-gray-500">{item.description}</div>
-                                            </div>
-                                        </div>
+                                        <span className={activeSection === item.id ? 'text-white' : 'text-gray-500'}>
+                                            {item.icon}
+                                        </span>
+                                        <span className="font-medium">{item.label}</span>
                                     </button>
                                 </li>
                             ))}
@@ -163,37 +148,33 @@ const MentorDashboard = () => {
                     </nav>
 
                     {/* Quick Stats */}
-                    <div className="p-6 border-t">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Quick Stats</h4>
+                    <div className="p-6 border-t border-gray-200">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-3">სტატისტიკა</h4>
                         <div className="space-y-3">
-                            <div className="flex justify-between">
-                                <span className="text-sm text-gray-600">Member Since</span>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">წევრობა დაიწყო</span>
                                 <span className="text-sm font-medium text-gray-900">
-                                    {profile?.memberSince ? new Date(profile.memberSince).toLocaleDateString() : 'N/A'}
+                                    {profile?.memberSince ? new Date(profile.memberSince).toLocaleDateString('ka-GE') : 'N/A'}
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     {/* Help Section */}
-                    <div className="p-6 border-t">
-                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+                    <div className="p-6 border-t border-gray-200">
+                        <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg p-4">
                             <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Need Help?
+                                <HelpCircle size={20} className="text-primary" />
+                                დახმარება
                             </h4>
                             <p className="text-sm text-gray-600 mb-3">
-                                Check our documentation or contact support
+                                იხილეთ დოკუმენტაცია ან დაუკავშირდით მხარდაჭერას
                             </p>
                             <a
-                                href="https://z-academy.atlassian.net/servicedesk/customer/portal/1"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm text-blue-600 font-medium hover:text-blue-700"
+                                href="/support"
+                                className="text-sm text-primary font-medium hover:text-secondary transition-colors"
                             >
-                                View Help Center →
+                                დახმარების ცენტრი →
                             </a>
                         </div>
                     </div>
@@ -202,7 +183,6 @@ const MentorDashboard = () => {
                 {/* Main Content Area */}
                 <div className="flex-1">
                     <div className="p-8">
-
                         {/* Dynamic Content */}
                         {activeSection === 'profile' ? (
                             <ProfileSettings profile={profile} refreshProfile={fetchProfile} api={api} />

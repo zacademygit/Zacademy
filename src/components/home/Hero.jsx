@@ -1,11 +1,26 @@
 // src/components/home/Hero.jsx
 
+import { motion } from 'framer-motion';
+
 const Hero = () => {
+    // Animation variant for entire content to fade in together
+    const headingVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
         <section id="home" className="relative px-8 py-32 bg-white overflow-hidden">
             {/* Decorative Background Shape with Grid Pattern */}
             <div
-                className="absolute bg-[#1F3A8A] z-0"
+                className="absolute bg-primary z-0"
                 style={{
                     left: '0',
                     right: '0',
@@ -23,7 +38,13 @@ const Hero = () => {
             ></div>
 
             <div className="max-w-6xl mx-auto relative z-10">
-                <div className="text-center mb-12">
+                <motion.div
+                    className="text-center mb-12"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.3 }}
+                    variants={headingVariants}
+                >
                     <h1 className="text-6xl mb-6 text-white">
                         იპოვე შენი იდეალური მენტორი
                     </h1>
@@ -43,8 +64,7 @@ const Hero = () => {
                             <option>კარიერული განვითარება</option>
                         </select>
                         <button
-                            className="text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2"
-                            style={{ backgroundColor: '#FA8AFF' }}
+                            className="bg-secondary text-white px-8 py-3 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -52,7 +72,7 @@ const Hero = () => {
                             მოძებნე
                         </button>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
     );

@@ -1,5 +1,7 @@
 // src/components/home/WhyDifferent.jsx
 
+import { motion } from 'framer-motion';
+
 const differences = [
     {
         icon: (
@@ -58,29 +60,86 @@ const differences = [
 ];
 
 const WhyDifferent = () => {
+    // Animation variants for container
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15
+            }
+        }
+    };
+
+    // PowerPoint-style float in animation for each card
+    const cardVariants = {
+        hidden: {
+            opacity: 0,
+            y: 50,
+            scale: 0.9
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                duration: 0.6,
+                ease: [0.25, 0.46, 0.45, 0.94]
+            }
+        }
+    };
+
+    // Animation for heading
+    const headingVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
         <section className="px-8 py-32 bg-white">
             <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-5xl mb-4 text-[#1F3A8A]">რა გვაქცევს განსხვავებულებად?</h2>
+                <motion.div
+                    className="text-center mb-16"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.3 }}
+                    variants={headingVariants}
+                >
+                    <h2 className="text-5xl mb-4 text-primary">რა გვაქცევს განსხვავებულებად?</h2>
                     <p className="text-xl text-gray-600">
                         ჩვენ არ ვართ უბრალო სასწავლო პლატფორმა - ჩვენ ვქმნით მომავალს
                     </p>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </motion.div>
+                <motion.div
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                    variants={containerVariants}
+                >
                     {differences.map((item, index) => (
-                        <div key={index} className="p-8 bg-white rounded-2xl border-2 border-gray-200 hover:shadow-xl transition-shadow">
+                        <motion.div
+                            key={index}
+                            className="p-8 bg-white rounded-2xl border-2 border-gray-200 hover:shadow-xl transition-shadow"
+                            variants={cardVariants}
+                        >
                             <div
-                                className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
-                                style={{ backgroundColor: index % 3 === 0 ? '#1F3A8A' : index % 3 === 1 ? '#FA8AFF' : '#1F3A8A' }}
+                                className={`w-16 h-16 rounded-full flex items-center justify-center mb-6 ${index % 3 === 1 ? 'bg-secondary' : 'bg-primary'}`}
                             >
                                 {item.icon}
                             </div>
-                            <h3 className="text-2xl mb-3 text-[#1F3A8A]">{item.title}</h3>
+                            <h3 className="text-2xl mb-3 text-primary">{item.title}</h3>
                             <p className="text-gray-600">{item.description}</p>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );

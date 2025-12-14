@@ -1,0 +1,127 @@
+{
+  "faculties": [
+    {
+      "category": "Engineering & Technology",
+      "items": [
+        "Computer Science & Information Technology",
+        "Software Engineering",
+        "Electrical Engineering",
+        "Mechanical Engineering",
+        "Civil Engineering",
+        "Chemical Engineering",
+        "Industrial Engineering",
+        "Aerospace Engineering",
+        "Biomedical Engineering",
+        "Environmental Engineering",
+        "Architecture & Urban Planning"
+      ]
+    },
+    {
+      "category": "Business & Economics",
+      "items": [
+        "Business Administration",
+        "Economics",
+        "Finance & Accounting",
+        "Marketing",
+        "International Business",
+        "Management",
+        "Entrepreneurship",
+        "Human Resources Management"
+      ]
+    },
+    {
+      "category": "Arts & Humanities",
+      "items": [
+        "Literature & Languages",
+        "History",
+        "Philosophy",
+        "Fine Arts",
+        "Music",
+        "Theatre & Performing Arts",
+        "Visual Arts & Design",
+        "Graphic Design",
+        "Film & Media Studies"
+      ]
+    },
+    {
+      "category": "Natural Sciences",
+      "items": [
+        "Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Environmental Science",
+        "Geology & Earth Sciences",
+        "Astronomy & Astrophysics"
+      ]
+    },
+    {
+      "category": "Medicine & Health Sciences",
+      "items": [
+        "Medicine",
+        "Dentistry",
+        "Pharmacy",
+        "Nursing",
+        "Public Health",
+        "Veterinary Medicine",
+        "Physiotherapy",
+        "Nutrition & Dietetics",
+        "Medical Laboratory Sciences"
+      ]
+    },
+    {
+      "category": "Social Sciences",
+      "items": [
+        "Psychology",
+        "Sociology",
+        "Political Science",
+        "International Relations",
+        "Anthropology",
+        "Geography",
+        "Social Work",
+        "Communication & Media Studies",
+        "Journalism"
+      ]
+    },
+    {
+      "category": "Law & Legal Studies",
+      "items": [
+        "Law",
+        "International Law",
+        "Criminal Justice",
+        "Legal Studies"
+      ]
+    },
+    {
+      "category": "Education",
+      "items": [
+        "Education & Teaching",
+        "Early Childhood Education",
+        "Special Education",
+        "Educational Leadership",
+        "Sports Education & Physical Education"
+      ]
+    },
+    {
+      "category": "Agriculture & Life Sciences",
+      "items": [
+        "Agriculture",
+        "Forestry",
+        "Food Science & Technology",
+        "Animal Science",
+        "Horticulture"
+      ]
+    },
+    {
+      "category": "Other Professional Fields",
+      "items": [
+        "Hospitality & Tourism Management",
+        "Sports Science & Kinesiology",
+        "Library & Information Science",
+        "Fashion Design & Textile",
+        "Culinary Arts",
+        "Aviation & Aerospace Studies"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 // src/components/home/Testimonials.jsx
 
+import { motion } from 'framer-motion';
+
 const testimonials = [
     {
         name: 'ნინო ბერიძე',
@@ -46,21 +48,78 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+    // Animation variants for container
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.15
+            }
+        }
+    };
+
+    // PowerPoint-style float in animation for each card
+    const cardVariants = {
+        hidden: {
+            opacity: 0,
+            y: 50,
+            scale: 0.9
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                duration: 0.6,
+                ease: [0.25, 0.46, 0.45, 0.94]
+            }
+        }
+    };
+
+    // Animation for heading
+    const headingVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
         <section id="testimonials" className="px-8 py-32 bg-white">
             <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-16">
-                    <h2 className="text-5xl mb-4 text-[#1F3A8A]">რას ამბობენ ჩვენი კლიენტები</h2>
+                <motion.div
+                    className="text-center mb-16"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.3 }}
+                    variants={headingVariants}
+                >
+                    <h2 className="text-5xl mb-4 text-primary">რას ამბობენ ჩვენი კლიენტები</h2>
                     <p className="text-xl text-gray-600">
                         ნუ მიიღებთ მხოლოდ ჩვენს სიტყვას - მოისმინეთ ჩვენი კმაყოფილი კლიენტებისგან
                     </p>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </motion.div>
+                <motion.div
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                    variants={containerVariants}
+                >
                     {testimonials.map((testimonial, index) => (
-                        <div key={index} className="p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow border-2 border-gray-200">
+                        <motion.div
+                            key={index}
+                            className="p-8 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow border-2 border-gray-200"
+                            variants={cardVariants}
+                        >
                             <svg
-                                className="mb-4"
-                                style={{ color: index % 4 === 0 ? '#FA8AFF' : '#1F3A8A' }}
+                                className={`mb-4 ${index % 4 === 0 ? 'text-secondary' : 'text-primary'}`}
                                 width="32"
                                 height="32"
                                 fill="none"
@@ -73,8 +132,7 @@ const Testimonials = () => {
                                 {[...Array(testimonial.rating)].map((_, i) => (
                                     <svg
                                         key={i}
-                                        className="fill-current"
-                                        style={{ color: '#FA8AFF' }}
+                                        className="fill-current text-secondary"
                                         width="18"
                                         height="18"
                                         viewBox="0 0 24 24"
@@ -91,13 +149,13 @@ const Testimonials = () => {
                                     className="w-12 h-12 rounded-full object-cover"
                                 />
                                 <div>
-                                    <div className="font-semibold text-[#1F3A8A]">{testimonial.name}</div>
+                                    <div className="font-semibold text-primary">{testimonial.name}</div>
                                     <div className="text-gray-600 text-sm">{testimonial.role}</div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );

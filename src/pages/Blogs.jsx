@@ -1,5 +1,8 @@
 // src/pages/Blogs.jsx
 
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
 const blogPosts = [
     {
         id: 1,
@@ -188,61 +191,61 @@ function BlogVisual({ type }) {
     const visuals = {
         circles: (
             <div className="relative w-full h-full">
-                <div className="absolute top-6 left-6 w-16 h-16 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
-                <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-[#1F3A8A]"></div>
-                <div className="absolute top-1/2 right-12 w-8 h-8 rounded-full bg-white border-2 border-[#1F3A8A]"></div>
+                <div className="absolute top-6 left-6 w-16 h-16 rounded-full bg-secondary"></div>
+                <div className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-primary"></div>
+                <div className="absolute top-1/2 right-12 w-8 h-8 rounded-full bg-white border-2 border-primary"></div>
             </div>
         ),
         squares: (
             <div className="relative w-full h-full">
-                <div className="absolute top-8 right-8 w-14 h-14 bg-[#1F3A8A] rotate-12"></div>
-                <div className="absolute bottom-6 left-6 w-16 h-16" style={{ backgroundColor: '#FA8AFF' }}></div>
-                <div className="absolute top-1/2 left-1/3 w-10 h-10 bg-white border-2 border-[#FA8AFF] rotate-45"></div>
+                <div className="absolute top-8 right-8 w-14 h-14 bg-primary rotate-12"></div>
+                <div className="absolute bottom-6 left-6 w-16 h-16 bg-secondary"></div>
+                <div className="absolute top-1/2 left-1/3 w-10 h-10 bg-white border-2 border-secondary rotate-45"></div>
             </div>
         ),
         lines: (
             <div className="relative w-full h-full overflow-hidden">
-                <div className="absolute top-4 left-0 right-0 h-1" style={{ backgroundColor: '#FA8AFF' }}></div>
-                <div className="absolute top-12 left-0 right-0 h-2 bg-[#1F3A8A]"></div>
-                <div className="absolute top-24 left-0 right-0 h-1" style={{ backgroundColor: '#FA8AFF' }}></div>
-                <div className="absolute bottom-8 left-0 w-1 top-0 bg-[#1F3A8A]"></div>
-                <div className="absolute bottom-8 right-12 w-2 top-0" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute top-4 left-0 right-0 h-1 bg-secondary"></div>
+                <div className="absolute top-12 left-0 right-0 h-2 bg-primary"></div>
+                <div className="absolute top-24 left-0 right-0 h-1 bg-secondary"></div>
+                <div className="absolute bottom-8 left-0 w-1 top-0 bg-primary"></div>
+                <div className="absolute bottom-8 right-12 w-2 top-0 bg-secondary"></div>
             </div>
         ),
         dots: (
             <div className="relative w-full h-full">
-                <div className="absolute top-4 left-4 w-3 h-3 rounded-full bg-[#1F3A8A]"></div>
-                <div className="absolute top-8 right-8 w-4 h-4 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
-                <div className="absolute bottom-12 left-12 w-3 h-3 rounded-full bg-[#1F3A8A]"></div>
-                <div className="absolute bottom-6 right-6 w-5 h-5 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
-                <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-[#1F3A8A]"></div>
-                <div className="absolute top-16 left-1/3 w-3 h-3 rounded-full" style={{ backgroundColor: '#FA8AFF' }}></div>
+                <div className="absolute top-4 left-4 w-3 h-3 rounded-full bg-primary"></div>
+                <div className="absolute top-8 right-8 w-4 h-4 rounded-full bg-secondary"></div>
+                <div className="absolute bottom-12 left-12 w-3 h-3 rounded-full bg-primary"></div>
+                <div className="absolute bottom-6 right-6 w-5 h-5 rounded-full bg-secondary"></div>
+                <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-primary"></div>
+                <div className="absolute top-16 left-1/3 w-3 h-3 rounded-full bg-secondary"></div>
             </div>
         ),
         wave: (
             <div className="relative w-full h-full overflow-hidden">
                 <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 160" preserveAspectRatio="none">
-                    <path d="M0,80 Q50,40 100,80 T200,80" fill="none" stroke="#FA8AFF" strokeWidth="3" />
-                    <path d="M0,100 Q50,60 100,100 T200,100" fill="none" stroke="#1F3A8A" strokeWidth="4" />
-                    <path d="M0,120 Q50,80 100,120 T200,120" fill="none" stroke="#FA8AFF" strokeWidth="2" />
+                    <path d="M0,80 Q50,40 100,80 T200,80" fill="none" className="stroke-secondary" strokeWidth="3" />
+                    <path d="M0,100 Q50,60 100,100 T200,100" fill="none" className="stroke-primary" strokeWidth="4" />
+                    <path d="M0,120 Q50,80 100,120 T200,120" fill="none" className="stroke-secondary" strokeWidth="2" />
                 </svg>
             </div>
         ),
         grid: (
             <div className="relative w-full h-full">
                 <div className="grid grid-cols-4 grid-rows-4 gap-2 p-4 h-full">
-                    <div className="bg-[#1F3A8A]"></div>
-                    <div className="bg-white border border-[#1F3A8A]"></div>
-                    <div style={{ backgroundColor: '#FA8AFF' }}></div>
-                    <div className="bg-white border border-[#FA8AFF]"></div>
-                    <div className="bg-white border border-[#1F3A8A]"></div>
-                    <div style={{ backgroundColor: '#FA8AFF' }}></div>
-                    <div className="bg-white border border-[#1F3A8A]"></div>
-                    <div className="bg-[#1F3A8A]"></div>
-                    <div style={{ backgroundColor: '#FA8AFF' }}></div>
-                    <div className="bg-white border border-[#FA8AFF]"></div>
-                    <div className="bg-[#1F3A8A]"></div>
-                    <div className="bg-white border border-[#1F3A8A]"></div>
+                    <div className="bg-primary"></div>
+                    <div className="bg-white border border-primary"></div>
+                    <div className="bg-secondary"></div>
+                    <div className="bg-white border border-secondary"></div>
+                    <div className="bg-white border border-primary"></div>
+                    <div className="bg-secondary"></div>
+                    <div className="bg-white border border-primary"></div>
+                    <div className="bg-primary"></div>
+                    <div className="bg-secondary"></div>
+                    <div className="bg-white border border-secondary"></div>
+                    <div className="bg-primary"></div>
+                    <div className="bg-white border border-primary"></div>
                 </div>
             </div>
         )
@@ -252,10 +255,29 @@ function BlogVisual({ type }) {
 }
 
 const Blogs = () => {
+    const navigate = useNavigate();
+
+    const handleBlogClick = (postId) => {
+        navigate(`/blog/${postId}`);
+    };
+
+    // Animation for heading
+    const headingVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="relative px-8 py-20 bg-[#1F3A8A] overflow-hidden">
+            <section className="relative px-8 py-20 bg-primary overflow-hidden">
                 <div
                     className="absolute inset-0"
                     style={{
@@ -268,12 +290,17 @@ const Blogs = () => {
                         backgroundRepeat: 'repeat'
                     }}
                 ></div>
-                <div className="relative z-10 max-w-4xl mx-auto text-center">
+                <motion.div
+                    className="relative z-10 max-w-4xl mx-auto text-center"
+                    initial="hidden"
+                    animate="visible"
+                    variants={headingVariants}
+                >
                     <h1 className="text-5xl text-white mb-6">ბლოგი</h1>
                     <p className="text-xl text-white/80">
                         გაეცანით უახლეს სტატიებს კარიერის, განათლებისა და პროფესიული განვითარების შესახებ
                     </p>
-                </div>
+                </motion.div>
             </section>
 
             {/* Blog Grid */}
@@ -281,68 +308,66 @@ const Blogs = () => {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {blogPosts.map((post) => (
-                            <article
-                                key={post.id}
-                                className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-[#FA8AFF] transition-all duration-300 hover:shadow-xl cursor-pointer group"
-                            >
-                                {/* Visual */}
-                                <div className="h-48 bg-gray-50 relative overflow-hidden">
-                                    <BlogVisual type={post.visualType} />
+                        <article
+                            key={post.id}
+                            onClick={() => handleBlogClick(post.id)}
+                            className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-secondary transition-all duration-300 hover:shadow-xl cursor-pointer group"
+                        >
+                            {/* Visual */}
+                            <div className="h-48 bg-gray-50 relative overflow-hidden">
+                                <BlogVisual type={post.visualType} />
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-6">
+                                {/* Category */}
+                                <div className="inline-block px-3 py-1 text-secondary bg-secondary/10 rounded-full text-sm mb-4">
+                                    {post.category}
                                 </div>
 
-                                {/* Content */}
-                                <div className="p-6">
-                                    {/* Category */}
-                                    <div
-                                        className="inline-block px-3 py-1 text-[#FA8AFF] rounded-full text-sm mb-4"
-                                        style={{ backgroundColor: 'rgba(250, 138, 255, 0.1)' }}
-                                    >
-                                        {post.category}
+                                {/* Title */}
+                                <h3 className="text-xl text-primary mb-3 group-hover:text-secondary transition-colors">
+                                    {post.title}
+                                </h3>
+
+                                {/* Excerpt */}
+                                <p className="text-gray-600 mb-4 line-clamp-3">
+                                    {post.excerpt}
+                                </p>
+
+                                {/* Meta Info */}
+                                <div className="flex flex-col gap-2 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-200">
+                                    <div className="flex items-center gap-2">
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        <span>{post.author}</span>
                                     </div>
-
-                                    {/* Title */}
-                                    <h3 className="text-xl text-[#1F3A8A] mb-3 group-hover:text-[#FA8AFF] transition-colors">
-                                        {post.title}
-                                    </h3>
-
-                                    {/* Excerpt */}
-                                    <p className="text-gray-600 mb-4 line-clamp-3">
-                                        {post.excerpt}
-                                    </p>
-
-                                    {/* Meta Info */}
-                                    <div className="flex flex-col gap-2 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-200">
+                                    <div className="flex items-center gap-4">
                                         <div className="flex items-center gap-2">
                                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            <span>{post.author}</span>
+                                            <span>{post.date}</span>
                                         </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex items-center gap-2">
-                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                <span>{post.date}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span>{post.readTime}</span>
-                                            </div>
+                                        <div className="flex items-center gap-2">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>{post.readTime}</span>
                                         </div>
                                     </div>
-
-                                    {/* Read More */}
-                                    <button className="flex items-center gap-2 text-[#1F3A8A] group-hover:text-[#FA8AFF] transition-colors">
-                                        <span>ვრცლად</span>
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
-                                    </button>
                                 </div>
-                            </article>
+
+                                {/* Read More */}
+                                <button className="flex items-center gap-2 text-primary group-hover:text-secondary transition-colors">
+                                    <span>ვრცლად</span>
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </article>
                         ))}
                     </div>
                 </div>

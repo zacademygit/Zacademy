@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { Camera, Save, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ProfileSettings = ({ profile, refreshProfile, api }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -69,54 +70,54 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
     const validateForm = () => {
         // Check required personal fields
         if (!formData.firstName?.trim()) {
-            toast.error('First name is required');
+            toast.error('სახელი აუცილებელია');
             return false;
         }
         if (!formData.lastName?.trim()) {
-            toast.error('Last name is required');
+            toast.error('გვარი აუცილებელია');
             return false;
         }
         if (!formData.email?.trim()) {
-            toast.error('Email is required');
+            toast.error('ელ-ფოსტა აუცილებელია');
             return false;
         }
         if (!formData.phone?.trim()) {
-            toast.error('Phone number is required');
+            toast.error('ტელეფონის ნომერი აუცილებელია');
             return false;
         }
 
         // Check required professional fields
         if (!formData.occupationArea) {
-            toast.error('Occupation area is required');
+            toast.error('საქმიანობის სფერო აუცილებელია');
             return false;
         }
         if (!formData.currentPosition?.trim()) {
-            toast.error('Current position is required');
+            toast.error('მიმდინარე პოზიცია აუცილებელია');
             return false;
         }
         if (!formData.university?.trim()) {
-            toast.error('University is required');
+            toast.error('უნივერსიტეტი აუცილებელია');
             return false;
         }
         if (!formData.faculty?.trim()) {
-            toast.error('Faculty is required');
+            toast.error('ფაკულტეტი აუცილებელია');
             return false;
         }
 
         // Check bio
         if (!formData.bio?.trim()) {
-            toast.error('Bio is required');
+            toast.error('ბიოგრაფია აუცილებელია');
             return false;
         }
         if (formData.bio.trim().length < 100) {
-            toast.error('Bio must be at least 100 characters long');
+            toast.error('ბიოგრაფია უნდა იყოს მინიმუმ 100 სიმბოლო');
             return false;
         }
 
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            toast.error('Please enter a valid email address');
+            toast.error('გთხოვთ, შეიყვანოთ სწორი ელ-ფოსტა');
             return false;
         }
 
@@ -125,7 +126,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
             try {
                 new URL(formData.linkedin);
             } catch (e) {
-                toast.error('Please enter a valid LinkedIn URL');
+                toast.error('გთხოვთ, შეიყვანოთ სწორი LinkedIn ბმული');
                 return false;
             }
         }
@@ -144,12 +145,12 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
             const response = await api.put('/mentor/profile', formData);
 
             if (response.data.success) {
-                toast.success('Profile updated successfully');
+                toast.success('პროფილი წარმატებით განახლდა');
                 await refreshProfile();
                 setIsEditing(false);
             }
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Failed to update profile');
+            toast.error(err.response?.data?.message || 'პროფილის განახლება ვერ მოხერხდა');
         } finally {
             setSaving(false);
         }
@@ -178,7 +179,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
     const handleCancel = () => {
         if (hasChanges()) {
             const confirmCancel = window.confirm(
-                'You have unsaved changes. Are you sure you want to cancel?'
+                'თქვენ გაქვთ შეუნახავი ცვლილებები. დარწმუნებული ხართ, რომ გსურთ გაუქმება?'
             );
             if (!confirmCancel) return;
         }
@@ -203,6 +204,41 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
 
     return (
         <div className="space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-gray-900">პროფილის პარამეტრები</h1>
+                {!isEditing ? (
+                    <button
+                        onClick={() => setIsEditing(true)}
+                        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        პროფილის რედაქტირება
+                    </button>
+                ) : (
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleSave}
+                            disabled={saving || !hasChanges()}
+                            className="px-6 py-2 bg-secondary text-primary rounded-lg hover:bg-secondary/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                            <Save size={16} />
+                            {saving ? 'ინახება...' : 'შენახვა'}
+                        </button>
+                        <button
+                            onClick={handleCancel}
+                            disabled={saving}
+                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50 flex items-center gap-2"
+                        >
+                            <X size={16} />
+                            გაუქმება
+                        </button>
+                    </div>
+                )}
+            </div>
+
             {/* Unsaved Changes Warning */}
             {isEditing && hasChanges() && (
                 <div className="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
@@ -211,79 +247,46 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                         <div>
-                            <p className="text-sm font-medium text-orange-800">You have unsaved changes</p>
-                            <p className="text-xs text-orange-700 mt-1">Remember to save your changes before leaving this page</p>
+                            <p className="text-sm font-medium text-orange-800">თქვენ გაქვთ შეუნახავი ცვლილებები</p>
+                            <p className="text-xs text-orange-700 mt-1">გთხოვთ შეინახოთ ცვლილებები გვერდის დატოვებამდე</p>
                         </div>
                     </div>
                 </div>
             )}
 
             {/* Profile Photo Section */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Photo</h2>
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <h2 className="text-lg font-bold text-gray-900 mb-4">პროფილის ფოტო</h2>
                 <div className="flex items-center gap-6">
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                    <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold">
                         {profile?.firstName?.[0]}{profile?.lastName?.[0]}
                     </div>
                     <div>
                         <p className="text-sm text-gray-600 mb-3">
-                            Upload a professional photo to help students connect with you
+                            ატვირთეთ პროფესიონალური ფოტო სტუდენტებთან დასაკავშირებლად
                         </p>
                         <button
                             disabled={!isEditing}
-                            className={`px-4 py-2 border border-gray-300 rounded-lg transition ${isEditing ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
-                                }`}
+                            className={`px-4 py-2 border border-gray-300 rounded-lg transition flex items-center gap-2 ${
+                                isEditing ? 'hover:bg-gray-50 text-gray-700' : 'opacity-50 cursor-not-allowed text-gray-400'
+                            }`}
                         >
-                            Upload Photo
+                            <Camera size={16} />
+                            ფოტოს ატვირთვა
                         </button>
                     </div>
                 </div>
             </div>
+
             {/* Personal Information Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                    {!isEditing ? (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="px-4 py-2 bg-blue-600rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                            Edit Profile
-                        </button>
-                    ) : (
-                        <div className="flex items-center gap-3">
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={handleSave}
-                                    disabled={saving || !hasChanges()}
-                                    className="px-4 py-2 bg-green-600  rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {saving ? 'Saving...' : 'Save Changes'}
-                                </button>
-                                <button
-                                    onClick={handleCancel}
-                                    disabled={saving}
-                                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                            {hasChanges() && !saving && (
-                                <span className="text-xs text-gray-500">
-                                    Press <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Ctrl+S</kbd> to save
-                                </span>
-                            )}
-                        </div>
-                    )}
-                </div>
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <h2 className="text-lg font-bold text-gray-900 mb-6">პირადი ინფორმაცია</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* First Name */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            First Name <span className="text-red-500">*</span>
+                            სახელი <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
@@ -291,8 +294,9 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             value={formData.firstName}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                }`}
+                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                            }`}
                             required
                         />
                     </div>
@@ -300,7 +304,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                     {/* Last Name */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Last Name <span className="text-red-500">*</span>
+                            გვარი <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
@@ -308,8 +312,9 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             value={formData.lastName}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                }`}
+                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                            }`}
                             required
                         />
                     </div>
@@ -317,7 +322,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                     {/* Email */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Email Address <span className="text-red-500">*</span>
+                            ელ-ფოსტა <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="email"
@@ -325,8 +330,9 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             value={formData.email}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                }`}
+                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                            }`}
                             required
                         />
                     </div>
@@ -334,7 +340,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                     {/* Phone */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Phone Number <span className="text-red-500">*</span>
+                            ტელეფონი <span className="text-red-500">*</span>
                         </label>
                         <div className="flex gap-2">
                             <select
@@ -342,8 +348,9 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                 value={formData.countryCode}
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
-                                className={`w-24 px-2 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                className={`w-24 px-2 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                }`}
                             >
                                 <option value="+995">+995</option>
                                 <option value="+1">+1</option>
@@ -357,8 +364,9 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                 value={formData.phone}
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
-                                className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                className={`flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                }`}
                                 required
                             />
                         </div>
@@ -367,22 +375,15 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
             </div>
 
             {/* Academic & Professional Information */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-gray-900">Academic & Professional Information</h2>
+                    <h2 className="text-lg font-bold text-gray-900">აკადემიური და პროფესიული ინფორმაცია</h2>
                     <button
                         onClick={() => setIsProfessionalExpanded(!isProfessionalExpanded)}
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition"
                     >
-                        <span>{isProfessionalExpanded ? 'Collapse' : 'Expand'}</span>
-                        <svg
-                            className={`w-5 h-5 transition-transform duration-200 ${isProfessionalExpanded ? 'rotate-180' : ''}`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <span>{isProfessionalExpanded ? 'ჩაკეცვა' : 'გაშლა'}</span>
+                        {isProfessionalExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                     </button>
                 </div>
 
@@ -392,18 +393,19 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             {/* Occupation Area */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Occupation Area <span className="text-red-500">*</span>
+                                    საქმიანობის სფერო <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     name="occupationArea"
                                     value={formData.occupationArea}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                     required
                                 >
-                                    <option value="">Select occupation area</option>
+                                    <option value="">აირჩიეთ სფერო</option>
                                     {occupationAreaOptions.map(area => (
                                         <option key={area} value={area}>{area}</option>
                                     ))}
@@ -413,7 +415,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             {/* Current Position */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Current Position <span className="text-red-500">*</span>
+                                    მიმდინარე პოზიცია <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -421,9 +423,10 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     value={formData.currentPosition}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    placeholder="e.g., Senior Engineer"
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    placeholder="მაგ., Senior Engineer"
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                     required
                                 />
                             </div>
@@ -431,7 +434,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             {/* Company */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Company/Organization
+                                    კომპანია/ორგანიზაცია
                                 </label>
                                 <input
                                     type="text"
@@ -439,37 +442,39 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     value={formData.company}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    placeholder="e.g., Google"
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    placeholder="მაგ., Google"
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                 />
                             </div>
 
                             {/* Years of Experience */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Years of Experience
+                                    გამოცდილების წლები
                                 </label>
                                 <select
                                     name="yearsOfExperience"
                                     value={formData.yearsOfExperience}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                 >
-                                    <option value="">Select years</option>
-                                    <option value="0-2">0-2 years</option>
-                                    <option value="3-5">3-5 years</option>
-                                    <option value="6-10">6-10 years</option>
-                                    <option value="10+">10+ years</option>
+                                    <option value="">აირჩიეთ წლები</option>
+                                    <option value="0-2">0-2 წელი</option>
+                                    <option value="3-5">3-5 წელი</option>
+                                    <option value="6-10">6-10 წელი</option>
+                                    <option value="10+">10+ წელი</option>
                                 </select>
                             </div>
 
                             {/* University */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    University/Institution <span className="text-red-500">*</span>
+                                    უნივერსიტეტი <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -477,9 +482,10 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     value={formData.university}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    placeholder="e.g., Harvard University"
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    placeholder="მაგ., თსუ"
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                     required
                                 />
                             </div>
@@ -487,7 +493,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             {/* Faculty */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Faculty <span className="text-red-500">*</span>
+                                    ფაკულტეტი <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -495,9 +501,10 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     value={formData.faculty}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    placeholder="e.g., Computer Science"
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    placeholder="მაგ., ინფორმატიკა"
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                     required
                                 />
                             </div>
@@ -505,7 +512,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             {/* LinkedIn */}
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    LinkedIn Profile
+                                    LinkedIn პროფილი
                                 </label>
                                 <input
                                     type="url"
@@ -514,8 +521,9 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
                                     placeholder="https://linkedin.com/in/yourprofile"
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                 />
                             </div>
                         </div>
@@ -523,7 +531,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                         {/* Bio */}
                         <div className="mt-6">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Bio / About You <span className="text-red-500">*</span>
+                                ბიოგრაფია <span className="text-red-500">*</span>
                             </label>
                             <textarea
                                 name="bio"
@@ -531,19 +539,21 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
                                 rows="5"
-                                placeholder="Tell students about your experience, expertise, and what you can help them with..."
-                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                placeholder="მოგვიყევით თქვენი გამოცდილების, ექსპერტიზისა და თქვენი დახმარების შესახებ..."
+                                className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
+                                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                }`}
                                 required
                             />
                             <div className="flex justify-between items-center mt-1">
-                                <p className="text-sm text-gray-500">Minimum 100 characters</p>
-                                <p className={`text-sm font-medium ${formData.bio.length >= 100
-                                    ? 'text-green-600'
-                                    : formData.bio.length > 0
-                                        ? 'text-orange-600'
-                                        : 'text-gray-500'
-                                    }`}>
+                                <p className="text-sm text-gray-500">მინიმუმ 100 სიმბოლო</p>
+                                <p className={`text-sm font-medium ${
+                                    formData.bio.length >= 100
+                                        ? 'text-green-600'
+                                        : formData.bio.length > 0
+                                            ? 'text-orange-600'
+                                            : 'text-gray-500'
+                                }`}>
                                     {formData.bio.length} / 100
                                 </p>
                             </div>
@@ -551,8 +561,6 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                     </>
                 )}
             </div>
-
-
         </div>
     );
 };

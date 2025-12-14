@@ -29,7 +29,7 @@ const reasons = [
 
 const WhyUs = () => {
     return (
-        <section className="px-8 py-32 bg-[#1F3A8A]">
+        <section className="px-8 py-32 bg-primary">
             <div className="max-w-6xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
@@ -41,7 +41,7 @@ const WhyUs = () => {
                             {reasons.map((reason, index) => (
                                 <div key={index} className="flex gap-4">
                                     <div className="flex-shrink-0">
-                                        <svg className="text-[#FA8AFF]" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="text-secondary" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
@@ -56,15 +56,15 @@ const WhyUs = () => {
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
                         <div className="space-y-8">
                             <div className="text-center">
-                                <div className="text-6xl mb-2 text-[#FA8AFF]">95%</div>
+                                <div className="text-6xl mb-2 text-secondary">95%</div>
                                 <p className="text-white/80">წარმატების მაჩვენებელი</p>
                             </div>
                             <div className="text-center">
-                                <div className="text-6xl mb-2 text-[#FA8AFF]">500+</div>
+                                <div className="text-6xl mb-2 text-secondary">500+</div>
                                 <p className="text-white/80">აქტიური სტუდენტი</p>
                             </div>
                             <div className="text-center">
-                                <div className="text-6xl mb-2 text-[#FA8AFF]">100+</div>
+                                <div className="text-6xl mb-2 text-secondary">100+</div>
                                 <p className="text-white/80">პროფესიონალი მენტორი</p>
                             </div>
                         </div>

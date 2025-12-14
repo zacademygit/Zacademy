@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: orange;
+  --color-secondary: rgba(195, 196, 199, 1);
+  --color-light: white
+}
+
 #root {
   /* max-width: 1280px; */
   margin: 0 auto;

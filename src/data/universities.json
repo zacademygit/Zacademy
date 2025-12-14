@@ -1,0 +1,148 @@
+{
+  "universities": [
+    {
+      "country": "Georgia",
+      "name": "Ivane Javakhishvili Tbilisi State University"
+    },
+    {
+      "country": "Georgia",
+      "name": "Ilia State University"
+    },
+    {
+      "country": "Georgia",
+      "name": "Georgian Technical University"
+    },
+    {
+      "country": "Georgia",
+      "name": "The University of Georgia (UG)"
+    },
+    {
+      "country": "Georgia",
+      "name": "Tbilisi State Medical University"
+    },
+    {
+      "country": "Georgia",
+      "name": "Caucasus University"
+    },
+    {
+      "country": "UK",
+      "name": "University of Oxford"
+    },
+    {
+      "country": "UK",
+      "name": "University of Cambridge"
+    },
+    {
+      "country": "UK",
+      "name": "Imperial College London"
+    },
+    {
+      "country": "UK",
+      "name": "London School of Economics and Political Science (LSE)"
+    },
+    {
+      "country": "UK",
+      "name": "University College London (UCL)"
+    },
+    {
+      "country": "UK",
+      "name": "The University of Edinburgh"
+    },
+    {
+      "country": "UK",
+      "name": "King's College London"
+    },
+    {
+      "country": "UK",
+      "name": "The University of Manchester"
+    },
+    {
+      "country": "USA",
+      "name": "Massachusetts Institute of Technology (MIT)"
+    },
+    {
+      "country": "USA",
+      "name": "Harvard University"
+    },
+    {
+      "country": "USA",
+      "name": "Stanford University"
+    },
+    {
+      "country": "USA",
+      "name": "Princeton University"
+    },
+    {
+      "country": "USA",
+      "name": "Yale University"
+    },
+    {
+      "country": "USA",
+      "name": "Columbia University"
+    },
+    {
+      "country": "USA",
+      "name": "University of California, Berkeley (UCB)"
+    },
+    {
+      "country": "USA",
+      "name": "University of Chicago"
+    },
+    {
+      "country": "France",
+      "name": "Université PSL (Paris Sciences et Lettres)"
+    },
+    {
+      "country": "France",
+      "name": "Sorbonne University"
+    },
+    {
+      "country": "France",
+      "name": "Paris-Saclay University"
+    },
+    {
+      "country": "France",
+      "name": "Sciences Po"
+    },
+    {
+      "country": "France",
+      "name": "Institut Polytechnique de Paris"
+    },
+    {
+      "country": "France",
+      "name": "Université Paris Cité"
+    },
+    {
+      "country": "France",
+      "name": "Aix-Marseille University"
+    },
+    {
+      "country": "Germany",
+      "name": "Technical University of Munich (TUM)"
+    },
+    {
+      "country": "Germany",
+      "name": "Ludwig Maximilian University of Munich (LMU)"
+    },
+    {
+      "country": "Germany",
+      "name": "Heidelberg University"
+    },
+    {
+      "country": "Germany",
+      "name": "Freie Universität Berlin"
+    },
+    {
+      "country": "Germany",
+      "name": "RWTH Aachen University"
+    },
+    {
+      "country": "Germany",
+      "name": "Humboldt University of Berlin"
+    },
+    {
+      "country": "Germany",
+      "name": "Karlsruhe Institute of Technology (KIT)"
+    }
+  ]
+}

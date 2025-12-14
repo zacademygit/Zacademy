@@ -1,167 +1,169 @@
 // src/pages/Support.jsx
 
-import { Link } from 'react-router-dom';
+import { Mail, Clock, FileText, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+const faqs = [
+    {
+        question: 'როგორ დავჯავშნო მენტორინგ სესია?',
+        answer: 'დაათვალიერე ჩვენი მენტორების პროფილები, აირჩიე მენტორი რომელიც შეესაბამება შენს საჭიროებებს და დააჭირე ხელმისაწვდომ დროს რომ დაჯავშნო სესია.'
+    },
+    {
+        question: 'რა მოხდება თუ მჭირდება სესიის გაუქმება?',
+        answer: 'შეგიძლია გააუქმო სესია 24 საათით ადრე დაჯავშნის დაშბორდიდან და დაბრუნდება გადახდა ყოველგვარი პირგასამტეხლოების გარეშე.'
+    },
+    {
+        question: 'როგორ გავხდე მენტორი?',
+        answer: 'ეწვიე "გახდი მენტორი" გვერდს, შეავსე განაცხადის ფორმა და ჩვენი გუნდი განიხილავს შენს პროფილს 3-5 სამუშაო დღის განმავლობაში.'
+    },
+    {
+        question: 'დაცულია თუ არა ჩემი გადახდის ინფორმაცია?',
+        answer: 'დიახ, ჩვენ ვიყენებთ ინდუსტრიის სტანდარტულ დაშიფვრას და უსაფრთხო გადახდის დამუშავებას თქვენი ფინანსური ინფორმაციის დასაცავად.'
+    },
+    {
+        question: 'შემიძლია თუ არა დაბრუნება მოვითხოვო?',
+        answer: 'დიახ, თუ არ ხარ კმაყოფილი მინიმუმ 48 საათით ადრე გაუქმებულ სესიაზე, გთხოვთ დაუკავშირდი მხარდაჭერას დახმარებისთვის.'
+    }
+];
 
 const Support = () => {
-    const faqs = [
-        {
-            question: "How do I book a mentoring session?",
-            answer: "Browse our mentor profiles, select a mentor that matches your needs, and click on their available time slots to book a session."
-        },
-        {
-            question: "What if I need to cancel a session?",
-            answer: "You can cancel a session up to 24 hours before the scheduled time from your dashboard without any penalties."
-        },
-        {
-            question: "How do I become a mentor?",
-            answer: "Visit our 'Become a Mentor' page, fill out the application form, and our team will review your profile within 3-5 business days."
-        },
-        {
-            question: "Is my payment information secure?",
-            answer: "Yes, we use industry-standard encryption and secure payment processing to protect all your financial information."
-        },
-        {
-            question: "Can I get a refund?",
-            answer: "Refunds are available if requested at least 48 hours before your scheduled session. Please contact support for assistance."
+    const [openFaqIndex, setOpenFaqIndex] = useState(null);
+
+    const toggleFaq = (index) => {
+        setOpenFaqIndex(openFaqIndex === index ? null : index);
+    };
+
+    // Animation for heading
+    const headingVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
         }
-    ];
+    };
 
     return (
         <div className="min-h-screen bg-white">
+            {/* Hero Section */}
+            <section className="px-8 py-16 text-center">
+                <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={headingVariants}
+                >
+                    <h1 className="text-5xl mb-4 text-gray-900">
+                        როგორ შეგვიძლია <span className="text-secondary">დაგეხმაროთ?</span>
+                    </h1>
+                    <p className="text-xl text-gray-600">
+                        დაუკავშირდი ჩვენს მხარდაჭერის გუნდს. ჩვენ აქ ვართ, რომ დაგეხმაროთ წარმატებაში.
+                    </p>
+                </motion.div>
+            </section>
 
-            <main className="pt-24 pb-16">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-6xl mx-auto">
-                        {/* Header */}
-                        <div className="text-center mb-16 space-y-4">
-                            <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
-                                How Can We <span className="text-emerald-600">Help You?</span>
-                            </h1>
-                            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                                Get in touch with our support team. We're here to help you succeed.
-                            </p>
+            {/* Contact Cards */}
+            <section className="px-8 py-8">
+                <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Email Support Card */}
+                    <div className="border-2 border-gray-200 rounded-2xl p-8 hover:border-secondary transition-colors">
+                        <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
+                            <Mail className="text-secondary" size={24} />
                         </div>
+                        <h3 className="text-xl mb-2 text-gray-900">ელ-ფოსტის მხარდაჭერა</h3>
+                        <p className="text-gray-600 mb-4">მოგვწერე ნებისმიერ დროს</p>
+                        <a href="mailto:support@academy.ge" className="text-primary hover:text-secondary transition-colors">
+                            support@academy.ge
+                        </a>
+                    </div>
 
-                        <div className="grid lg:grid-cols-2 gap-8 mb-12 max-w-3xl mx-auto">
-                            {/* Contact Info Cards */}
-                            <div className="bg-white border rounded-xl p-6 hover:shadow-lg transition-shadow">
-                                <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center mb-4">
-                                    <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-bold mb-2">Email Support</h3>
-                                <p className="text-gray-600 mb-4">Send us an email anytime</p>
-                                <a href="mailto:support@lesgo.ge" className="text-emerald-600 hover:underline text-lg font-medium">
-                                    support@lesgo.ge
-                                </a>
-                            </div>
-
-                            <div className="bg-white border rounded-xl p-6 hover:shadow-lg transition-shadow">
-                                <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center mb-4">
-                                    <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-bold mb-2">Response Time</h3>
-                                <p className="text-gray-600 mb-4">We typically respond within</p>
-                                <p className="text-gray-900 font-semibold text-lg">24 hours</p>
-                            </div>
+                    {/* Response Time Card */}
+                    <div className="border-2 border-gray-200 rounded-2xl p-8 hover:border-secondary transition-colors">
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                            <Clock className="text-primary" size={24} />
                         </div>
+                        <h3 className="text-xl mb-2 text-gray-900">პასუხის დრო</h3>
+                        <p className="text-gray-600 mb-4">ჩვეულებრივ ვპასუხობთ შემდეგში</p>
+                        <p className="text-2xl text-primary">24 საათი</p>
+                    </div>
+                </div>
+            </section>
 
-                        {/* Support Portal and FAQ */}
-                        <div className="grid lg:grid-cols-2 gap-12 items-start">
-                            <div className="lg:sticky lg:top-24 bg-gradient-to-br from-emerald-50 to-white border-2 border-emerald-200 rounded-xl p-8">
-                                <div className="text-center space-y-4 mb-8">
-                                    <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto">
-                                        <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h2 className="text-3xl font-bold mb-2">Submit a Support Ticket</h2>
-                                        <p className="text-gray-600">
-                                            Open a ticket in our support portal and our team will assist you promptly.
-                                        </p>
-                                    </div>
-                                </div>
+            {/* Main Content Section */}
+            <section className="px-8 py-12">
+                <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Submit Support Ticket Card */}
+                    <div className="bg-primary/5 border-2 border-primary/20 rounded-2xl p-8">
+                        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-6">
+                            <FileText className="text-white" size={24} />
+                        </div>
+                        <h2 className="text-2xl mb-4 text-primary">მხარდაჭერის ბილეთის გაგზავნა</h2>
+                        <p className="text-gray-700 mb-6">
+                            გახსენი ბილეთი ჩვენს მხარდაჭერის პორტალში და ჩვენი გუნდი დაგეხმარება შენს პრობლემაში.
+                        </p>
+                        <ul className="space-y-3 mb-8">
+                            <li className="flex items-start gap-3 text-gray-700">
+                                <span className="text-secondary mt-1">✓</span>
+                                <span>თვალყური ადევნე შენს მხარდაჭერის მოთხოვნებს ერთ ადგილას</span>
+                            </li>
+                            <li className="flex items-start gap-3 text-gray-700">
+                                <span className="text-secondary mt-1">✓</span>
+                                <span>მიიღე განახლებები მეილით და შეტყობინებებით</span>
+                            </li>
+                            <li className="flex items-start gap-3 text-gray-700">
+                                <span className="text-secondary mt-1">✓</span>
+                                <span>წვდომა ცოდნის ბაზაზე და რესურსებზე</span>
+                            </li>
+                            <li className="flex items-start gap-3 text-gray-700">
+                                <span className="text-secondary mt-1">✓</span>
+                                <span>დაათვალიერე წინა ბილეთების ისტორია და ეკრანზე გადაღებული სურათები</span>
+                            </li>
+                        </ul>
+                        <button className="w-full bg-secondary text-white py-4 rounded-xl hover:opacity-90 transition-opacity">
+                            გახსენი მხარდაჭერის ბილეთი
+                        </button>
+                        <p className="text-sm text-gray-500 mt-4 text-center">
+                            შენ უნდა იყო რეგისტრირებული რომ გამოიყენო მხარდაჭერის პორტალი
+                        </p>
+                    </div>
 
-                                <div className="space-y-3 text-sm text-gray-600 mb-8">
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <p>Track your support requests in one place</p>
-                                    </div>
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <p>Get updates via email notifications</p>
-                                    </div>
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <p>Access our knowledge base and resources</p>
-                                    </div>
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <svg className="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <p>Attach files and screenshots to your tickets</p>
-                                    </div>
-                                </div>
+                    {/* FAQ Section */}
+                    <div>
+                        <h2 className="text-2xl mb-6 text-gray-900 text-center">ხშირად დასმული კითხვები</h2>
+                        <p className="text-gray-600 mb-6 text-center">დააჭირე კითხვას რომ იხილო პასუხი</p>
 
-                                <a
-                                    href="https://z-academy.atlassian.net/servicedesk/customer/portal/1"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-full bg-emerald-600 text-white py-4 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition flex items-center justify-center gap-2"
+                        <div className="space-y-4">
+                            {faqs.map((faq, index) => (
+                                <div
+                                    key={index}
+                                    className="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-primary transition-colors"
                                 >
-                                    Open Support Portal
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                </a>
-
-                                <p className="text-xs text-center text-gray-500 mt-4">
-                                    You'll be redirected to our secure support portal
-                                </p>
-                            </div>
-
-                            {/* FAQ Section */}
-                            <div className="space-y-6">
-                                <div>
-                                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                                        Frequently Asked Questions
-                                    </h2>
-                                    <p className="text-gray-600">
-                                        Quick answers to common questions
-                                    </p>
-                                </div>
-
-                                <div className="space-y-4">
-                                    {faqs.map((faq, index) => (
-                                        <div key={index} className="bg-white border rounded-xl p-6 hover:shadow-lg transition-shadow">
-                                            <h3 className="text-lg font-bold mb-2">{faq.question}</h3>
-                                            <p className="text-gray-600">{faq.answer}</p>
+                                    <button
+                                        onClick={() => toggleFaq(index)}
+                                        className="w-full px-6 py-4 flex items-center justify-between text-left bg-white hover:bg-gray-50 transition-colors"
+                                    >
+                                        <span className="text-gray-900 pr-4">{faq.question}</span>
+                                        <ChevronDown
+                                            size={20}
+                                            className={`text-primary flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-180' : ''
+                                                }`}
+                                        />
+                                    </button>
+                                    {openFaqIndex === index && (
+                                        <div className="px-6 py-4 bg-gray-50 border-t-2 border-gray-200">
+                                            <p className="text-gray-700">{faq.answer}</p>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
-            </main>
+            </section>
+
         </div>
     );
 };

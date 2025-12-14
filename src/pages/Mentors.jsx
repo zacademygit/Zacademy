@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
-// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 const Mentors = () => {
     const navigate = useNavigate();
@@ -48,7 +49,7 @@ const Mentors = () => {
 
     const fetchFilterOptions = async () => {
         try {
-            const response = await axios.get('/api/mentors/filter-options');
+            const response = await axios.get(`${API_BASE_URL}/api/mentors/filter-options`);
             if (response.data.success) {
                 setFilterOptions(response.data.filterOptions);
             }
@@ -72,7 +73,7 @@ const Mentors = () => {
                 ...(filters.faculty && { faculty: filters.faculty })
             });
 
-            const response = await axios.get(`/api/mentors?${params}`);
+            const response = await axios.get(`${API_BASE_URL}/api/mentors?${params}`);
 
             if (response.data.success) {
                 setMentors(response.data.mentors);
@@ -93,6 +94,19 @@ const Mentors = () => {
             [filterName]: value
         }));
         setCurrentPage(1); // Reset to first page when filters change
+    };
+
+    // Animation for heading
+    const headingVariants = {
+        hidden: { opacity: 0, y: -30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.8,
+                ease: "easeOut"
+            }
+        }
     };
 
     const clearFilters = () => {
@@ -120,7 +134,7 @@ const Mentors = () => {
                 }
             `}</style>
             {/* Hero Section */}
-            <section className="relative px-8 py-16 bg-[#1F3A8A] overflow-hidden">
+            <section className="relative px-8 py-16 bg-primary overflow-hidden">
                 <div
                     className="absolute inset-0"
                     style={{
@@ -133,14 +147,19 @@ const Mentors = () => {
                         backgroundRepeat: 'repeat'
                     }}
                 ></div>
-                <div className="relative z-10 max-w-4xl mx-auto text-center">
+                <motion.div
+                    className="relative z-10 max-w-4xl mx-auto text-center"
+                    initial="hidden"
+                    animate="visible"
+                    variants={headingVariants}
+                >
                     <h1 className="text-5xl text-white mb-4">
                         იპოვე შენი იდეალური მენტორი
                     </h1>
                     <p className="text-xl text-white/90">
                         დაუკავშირდი პროფესიონალებს და მიაღწიე შენს კარიერულ მიზნებს
                     </p>
-                </div>
+                </motion.div>
             </section>
 
             <div className="grid grid-cols-12 gap-0">
@@ -148,12 +167,12 @@ const Mentors = () => {
                 <div className="col-span-3 bg-white min-h-screen px-6 py-8 border-r-2 border-gray-200">
                     {/* Occupation Area */}
                     <div className="mb-8">
-                        <h3 className="text-[#1F3A8A] mb-4">მიმართულებები</h3>
+                        <h3 className="text-primary text-left mb-4">მიმართულებები</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
                                 placeholder="მოძებნე მიმართულება"
-                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-[#FA8AFF] focus:outline-none"
+                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-secondary focus:outline-none"
                             />
                         </div>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -164,7 +183,7 @@ const Mentors = () => {
                                             type="checkbox"
                                             checked={filters.occupation === occ}
                                             onChange={() => handleFilterChange('occupation', filters.occupation === occ ? '' : occ)}
-                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-[#FA8AFF] relative cursor-pointer
+                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-secondary relative cursor-pointer
                                             before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
                                             before:w-3 before:h-3 before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         />
@@ -177,12 +196,12 @@ const Mentors = () => {
 
                     {/* Position */}
                     <div className="mb-8">
-                        <h3 className="text-[#1F3A8A] mb-4">პოზიცია</h3>
+                        <h3 className="text-primary mb-4">პოზიცია</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
                                 placeholder="მოძებნე პოზიცია"
-                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-[#FA8AFF] focus:outline-none"
+                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-secondary focus:outline-none"
                             />
                         </div>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -193,7 +212,7 @@ const Mentors = () => {
                                             type="checkbox"
                                             checked={filters.position === pos}
                                             onChange={() => handleFilterChange('position', filters.position === pos ? '' : pos)}
-                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-[#FA8AFF] relative cursor-pointer
+                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-secondary relative cursor-pointer
                                             before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
                                             before:w-3 before:h-3 before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         />
@@ -206,12 +225,12 @@ const Mentors = () => {
 
                     {/* Company */}
                     <div className="mb-8">
-                        <h3 className="text-[#1F3A8A] mb-4">კომპანია</h3>
+                        <h3 className="text-primary mb-4">კომპანია</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
                                 placeholder="მოძებნე კომპანია"
-                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-[#FA8AFF] focus:outline-none"
+                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-secondary focus:outline-none"
                             />
                         </div>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -222,7 +241,7 @@ const Mentors = () => {
                                             type="checkbox"
                                             checked={filters.company === comp}
                                             onChange={() => handleFilterChange('company', filters.company === comp ? '' : comp)}
-                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-[#FA8AFF] relative cursor-pointer
+                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-secondary relative cursor-pointer
                                             before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
                                             before:w-3 before:h-3 before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         />
@@ -235,7 +254,7 @@ const Mentors = () => {
 
                     {/* Years of Experience */}
                     <div className="mb-8">
-                        <h3 className="text-[#1F3A8A] mb-4">გამოცდილება</h3>
+                        <h3 className="text-primary mb-4">გამოცდილება</h3>
                         <div className="space-y-2">
                             {filterOptions.yearsOfExperience.map((exp) => (
                                 <label key={exp} className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded group">
@@ -244,7 +263,7 @@ const Mentors = () => {
                                             type="checkbox"
                                             checked={filters.yearsOfExperience === exp}
                                             onChange={() => handleFilterChange('yearsOfExperience', filters.yearsOfExperience === exp ? '' : exp)}
-                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-[#FA8AFF] relative cursor-pointer
+                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-secondary relative cursor-pointer
                                             before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
                                             before:w-3 before:h-3 before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         />
@@ -257,12 +276,12 @@ const Mentors = () => {
 
                     {/* University */}
                     <div className="mb-8">
-                        <h3 className="text-[#1F3A8A] mb-4">უნივერსიტეტი</h3>
+                        <h3 className="text-primary mb-4">უნივერსიტეტი</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
                                 placeholder="მოძებნე უნივერსიტეტი"
-                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-[#FA8AFF] focus:outline-none"
+                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-secondary focus:outline-none"
                             />
                         </div>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -273,7 +292,7 @@ const Mentors = () => {
                                             type="checkbox"
                                             checked={filters.university === uni}
                                             onChange={() => handleFilterChange('university', filters.university === uni ? '' : uni)}
-                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-[#FA8AFF] relative cursor-pointer
+                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-secondary relative cursor-pointer
                                             before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
                                             before:w-3 before:h-3 before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         />
@@ -286,12 +305,12 @@ const Mentors = () => {
 
                     {/* Faculty */}
                     <div>
-                        <h3 className="text-[#1F3A8A] mb-4">ფაკულტეტი</h3>
+                        <h3 className="text-primary mb-4">ფაკულტეტი</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
                                 placeholder="მოძებნე ფაკულტეტი"
-                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-[#FA8AFF] focus:outline-none"
+                                className="w-full px-4 py-2 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-secondary focus:outline-none"
                             />
                         </div>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -302,7 +321,7 @@ const Mentors = () => {
                                             type="checkbox"
                                             checked={filters.faculty === fac}
                                             onChange={() => handleFilterChange('faculty', filters.faculty === fac ? '' : fac)}
-                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-[#FA8AFF] relative cursor-pointer
+                                            className="mentor-checkbox w-5 h-5 flex-shrink-0 bg-white border-2 border-gray-300 rounded-sm appearance-none checked:bg-white checked:border-secondary relative cursor-pointer
                                             before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
                                             before:w-3 before:h-3 before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         />
@@ -331,13 +350,13 @@ const Mentors = () => {
                                         setSearchQuery(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-[#FA8AFF] focus:outline-none"
+                                    className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-secondary focus:outline-none"
                                 />
                             </div>
                         </div>
                         <div className="flex items-center justify-between">
                             <p className="text-gray-700">{totalMentors} მენტორი ნაპოვნია</p>
-                            <button onClick={clearFilters} className="text-[#FA8AFF] hover:underline">
+                            <button onClick={clearFilters} className="text-secondary hover:underline">
                                 ყველა ფილტრის გასუფთავება
                             </button>
                         </div>
@@ -346,7 +365,7 @@ const Mentors = () => {
                     {/* Mentor Cards */}
                     {loading ? (
                         <div className="flex justify-center items-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FA8AFF]"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
                         </div>
                     ) : mentors.length === 0 ? (
                         <div className="bg-white rounded-2xl border-2 border-gray-200 p-12 text-center">
@@ -372,7 +391,7 @@ const Mentors = () => {
                                                         }}
                                                     />
                                                 ) : (
-                                                    <div className="w-44 h-56 rounded-lg bg-gradient-to-br from-[#1F3A8A] to-[#FA8AFF] flex items-center justify-center">
+                                                    <div className="w-44 h-56 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                                                         <svg className="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                         </svg>
@@ -385,7 +404,7 @@ const Mentors = () => {
                                                 <div className="flex items-start justify-between mb-3">
                                                     <div>
                                                         <div className="flex items-center gap-3 mb-2">
-                                                            <h3 className="text-3xl text-[#1F3A8A]">{mentor.name}</h3>
+                                                            <h3 className="text-3xl text-primary">{mentor.name}</h3>
                                                             <span className="text-2xl">🇬🇪</span>
                                                         </div>
                                                     </div>
@@ -407,22 +426,22 @@ const Mentors = () => {
 
                                                 <div className="flex flex-wrap gap-2 mb-4">
                                                     {mentor.occupationArea && (
-                                                        <span className="px-4 py-2 bg-[#1F3A8A]/10 text-[#1F3A8A] rounded-lg text-sm border border-[#1F3A8A]/20">
+                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
                                                             {mentor.occupationArea}
                                                         </span>
                                                     )}
                                                     {mentor.university && (
-                                                        <span className="px-4 py-2 bg-[#1F3A8A]/10 text-[#1F3A8A] rounded-lg text-sm border border-[#1F3A8A]/20">
+                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
                                                             {mentor.university}
                                                         </span>
                                                     )}
                                                     {mentor.faculty && (
-                                                        <span className="px-4 py-2 bg-[#1F3A8A]/10 text-[#1F3A8A] rounded-lg text-sm border border-[#1F3A8A]/20">
+                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
                                                             {mentor.faculty}
                                                         </span>
                                                     )}
                                                     {mentor.yearsOfExperience && (
-                                                        <span className="px-4 py-2 bg-[#1F3A8A]/10 text-[#1F3A8A] rounded-lg text-sm border border-[#1F3A8A]/20">
+                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
                                                             {mentor.yearsOfExperience} წლიანი გამოცდილება
                                                         </span>
                                                     )}
@@ -430,7 +449,7 @@ const Mentors = () => {
 
                                                 <button
                                                     onClick={() => handleMentorClick(mentor.id)}
-                                                    className="px-6 py-3 bg-[#FA8AFF] text-white rounded-lg hover:bg-[#e07ae6] transition-colors font-medium"
+                                                    className="px-6 py-3 bg-secondary text-white rounded-lg hover:bg-[#e07ae6] transition-colors font-medium"
                                                 >
                                                     პროფილის ნახვა
                                                 </button>

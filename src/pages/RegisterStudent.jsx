@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthProvider';
+import { ArrowLeft } from 'lucide-react';
 
 const RegisterStudent = () => {
     const navigate = useNavigate();
     const { checkAuth } = useAuth();
+    const API_BASE_URL = import.meta.env.VITE_API_URL
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -22,6 +24,7 @@ const RegisterStudent = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [selectedRole, setSelectedRole] = useState('student');
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -34,14 +37,27 @@ const RegisterStudent = () => {
                 phone: numbersOnly
             });
         } else if (name === 'dateOfBirth') {
-            // Format date as DD/MM/YYYY
+            // Format date as DD/MM/YYYY with validation
             let formattedValue = value.replace(/\D/g, '');
+
+            // Validate day (DD) - max 31
             if (formattedValue.length >= 2) {
+                const day = parseInt(formattedValue.slice(0, 2), 10);
+                if (day > 31) {
+                    formattedValue = '31' + formattedValue.slice(2);
+                }
                 formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2);
             }
+
+            // Validate month (MM) - max 12
             if (formattedValue.length >= 5) {
+                const month = parseInt(formattedValue.slice(3, 5), 10);
+                if (month > 12) {
+                    formattedValue = formattedValue.slice(0, 3) + '12' + formattedValue.slice(5);
+                }
                 formattedValue = formattedValue.slice(0, 5) + '/' + formattedValue.slice(5, 9);
             }
+
             setFormData({
                 ...formData,
                 dateOfBirth: formattedValue
@@ -59,6 +75,27 @@ const RegisterStudent = () => {
         }
     };
 
+    // Helper function to calculate age from DD/MM/YYYY format
+    const calculateAge = (dateString) => {
+        const parts = dateString.split('/');
+        if (parts.length !== 3) return null;
+
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JavaScript
+        const year = parseInt(parts[2], 10);
+
+        const birthDate = new Date(year, month, day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -71,20 +108,52 @@ const RegisterStudent = () => {
             return;
         }
 
+        // Age validation - Students must be 16 or older
+        const age = calculateAge(formData.dateOfBirth);
+        if (age === null) {
+            setError('Invalid date of birth format');
+            setIsLoading(false);
+            return;
+        }
+        if (age < 16) {
+            setError('You must be at least 16 years old to register as a student');
+            setIsLoading(false);
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             setIsLoading(false);
             return;
         }
 
+        // Password validation
         if (formData.password.length < 8) {
             setError('Password must be at least 8 characters long');
             setIsLoading(false);
             return;
         }
 
+        if (formData.password.length > 64) {
+            setError('Password must not exceed 64 characters');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!/[A-Z]/.test(formData.password)) {
+            setError('Password must contain at least one uppercase letter');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!/[0-9]/.test(formData.password)) {
+            setError('Password must contain at least one number');
+            setIsLoading(false);
+            return;
+        }
+
         try {
-            const response = await fetch('/api/auth/register/user', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register/user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,13 +180,13 @@ const RegisterStudent = () => {
             await checkAuth();
 
             // Check if user should be redirected back to mentor profile
-            const redirectMentorId = sessionStorage.getItem('redirectToMentor');
-            if (redirectMentorId) {
-                navigate(`/mentor/${redirectMentorId}`);
-            } else {
-                // Default redirect to student dashboard
-                navigate('/student-dashboard');
-            }
+            // const redirectMentorId = sessionStorage.getItem('redirectToMentor');
+            // if (redirectMentorId) {
+            //     navigate(`/mentor/${redirectMentorId}`);
+            // } else {
+            //     // Default redirect to student dashboard
+            //     navigate('/student-dashboard');
+            // }
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {
@@ -125,200 +194,219 @@ const RegisterStudent = () => {
         }
     };
 
+    const handleRoleSelect = (role) => {
+        setSelectedRole(role);
+        if (role === 'mentor') {
+            navigate('/auth/register/mentor');
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 flex flex-col">
-            {/* Header */}
-            <div className="flex justify-between items-center p-6 text-white">
-                <Link to="/" className="text-sm hover:underline">
-                    ← Back to home
-                </Link>
-                <Link to="/support" className="text-sm hover:underline">
-                    Need help?
+        <div className="min-h-screen bg-primary relative overflow-hidden">
+            {/* Grid Pattern Background */}
+            <div
+                className="absolute inset-0 opacity-10"
+                style={{
+                    backgroundImage: `
+                        linear-gradient(to right, white 1px, transparent 1px),
+                        linear-gradient(to bottom, white 1px, transparent 1px)
+                    `,
+                    backgroundSize: '50px 50px'
+                }}
+            />
+
+            {/* Top Navigation */}
+            <div className="relative z-10 max-w-[1440px] mx-auto px-8 py-4 flex justify-between items-center">
+                <button
+                    onClick={() => navigate('/auth')}
+                    className="bg-primary text-white hover:text-secondary transition-colors flex items-center gap-2 text-sm"
+                >
+                    <ArrowLeft size={16} />
+                    <span>უკან</span>
+                </button>
+                <Link to="/support" className="text-white hover:text-secondary transition-colors text-sm">
+                    დახმარება?
                 </Link>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex items-center justify-center px-4 py-8">
-                <div className="w-full max-w-xl">
-                    {/* Title */}
-                    <div className="text-center mb-8">
-                        <h1 className="text-5xl md:text-7xl font-bold mb-4">
-                            <span className="text-lime-400">START YOUR</span>
-                            <br />
-                            <span className="text-lime-400">JOURNEY WITH US</span>
-                        </h1>
-                    </div>
+            <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-8 py-8">
+                <div className="text-center max-w-md w-full">
+                    {/* Heading */}
+                    <h1 className="text-3xl text-secondary mb-8">
+                        დაიწყე შენი მოგზაურობა ჩვენთან
+                    </h1>
 
-                    {/* Registration Form Card */}
-                    <div className="bg-blue-800/30 backdrop-blur-sm border-2 border-blue-500/50 rounded-3xl p-8 md:p-10">
-                        <h2 className="text-3xl font-bold text-lime-400 text-center mb-2">SIGN UP</h2>
+                    {/* Sign Up Card */}
+                    <div className="bg-primary/60 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/20">
+                        <h2 className="text-xl text-secondary mb-6">
+                            რეგისტრაცია
+                        </h2>
 
-                        {/* Role Toggle */}
-                        <div className="text-center mb-6">
+                        {/* Role Tabs */}
+                        <div className="flex gap-2 mb-6 bg-white/10 p-1 rounded-full">
                             <button
-                                onClick={() => navigate('/auth')}
-                                className=" hover:text-lime-400 text-sm transition"
+                                onClick={() => handleRoleSelect('student')}
+                                className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'student'
+                                    ? 'bg-white text-primary'
+                                    : 'text-white hover:bg-white/20'
+                                    }`}
                             >
-                                ← Change role
+                                როგორც სტუდენტი
+                            </button>
+                            <button
+                                onClick={() => handleRoleSelect('mentor')}
+                                className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'mentor'
+                                    ? 'bg-white text-primary'
+                                    : 'text-white hover:bg-white/20'
+                                    }`}
+                            >
+                                როგორც მენტორი
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Form */}
+                        <form className="space-y-4 text-left" onSubmit={handleSubmit}>
                             {error && (
                                 <div className="bg-red-500/20 border border-red-500/50 text-white px-4 py-3 rounded-full text-sm">
                                     {error}
                                 </div>
                             )}
 
-                            {/* First Name */}
                             <input
                                 type="text"
                                 name="firstName"
-                                placeholder="First name *"
+                                placeholder="სახელი *"
                                 value={formData.firstName}
                                 onChange={handleChange}
-                                className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                 required
                                 disabled={isLoading}
                             />
-
-                            {/* Last Name */}
                             <input
                                 type="text"
                                 name="lastName"
-                                placeholder="Last name *"
+                                placeholder="გვარი *"
                                 value={formData.lastName}
                                 onChange={handleChange}
-                                className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                 required
                                 disabled={isLoading}
                             />
-
-                            {/* Email */}
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="Email *"
+                                placeholder="ელ-ფოსტა *"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                 required
                                 disabled={isLoading}
                             />
-
-                            {/* Phone with Country Code */}
                             <div className="flex gap-2">
-                                <div className="bg-transparent border-2 border-white/40 text-white rounded-full h-14 w-24 flex items-center justify-center font-medium">
+                                <div className="w-20 px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white text-sm flex items-center justify-center">
                                     +995
                                 </div>
                                 <input
                                     type="tel"
                                     name="phone"
-                                    placeholder="Phone *"
+                                    placeholder="ტელეფონი *"
                                     value={formData.phone}
                                     onChange={handleChange}
                                     maxLength={9}
-                                    className="flex-1 bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                    className="flex-1 px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                     required
                                     disabled={isLoading}
                                 />
                             </div>
-
-                            {/* Date of Birth */}
                             <input
                                 type="text"
                                 name="dateOfBirth"
-                                placeholder="Date of birth (DD/MM/YYYY) *"
+                                placeholder="დაბადების თარიღი (დდ/თთ/წწწწ) *"
                                 value={formData.dateOfBirth}
                                 onChange={handleChange}
                                 maxLength={10}
-                                className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                 required
                                 disabled={isLoading}
                             />
-
-                            {/* Password */}
                             <input
                                 type="password"
                                 name="password"
-                                placeholder="Password (min 8 characters) *"
+                                placeholder="პაროლი (მინ 8 სიმბოლო, 1 დიდი ასო, 1 ციფრი) *"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                maxLength={64}
+                                className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                 required
                                 disabled={isLoading}
                             />
-
-                            {/* Confirm Password */}
                             <input
                                 type="password"
                                 name="confirmPassword"
-                                placeholder="Confirm Password *"
+                                placeholder="გაიმეორე პაროლი *"
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                 required
                                 disabled={isLoading}
                             />
 
-                            {/* Terms and Privacy */}
-                            <div className="space-y-3 pt-2">
-                                <div className="flex items-start gap-3">
+                            {/* Checkboxes */}
+                            <div className="space-y-2 text-xs">
+                                <label className="flex items-start gap-2 text-white/80 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         id="terms"
                                         name="agreeToTerms"
                                         checked={formData.agreeToTerms}
                                         onChange={handleChange}
-                                        className="mt-1 w-4 h-4 rounded border-white/40 bg-transparent text-lime-400 focus:ring-lime-400 cursor-pointer"
+                                        className="mt-0.5 w-4 h-4 flex-shrink-0 bg-white border-2 border-white rounded-sm appearance-none checked:bg-white checked:border-white relative cursor-pointer
+                                        before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
+                                        before:w-2.5 before:h-2.5 before:bg-secondary before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         required
                                         disabled={isLoading}
                                     />
-                                    <label htmlFor="terms" className="text-white text-sm leading-relaxed cursor-pointer">
-                                        I agree to the{' '}
-                                        <Link to="/terms" target="_blank" className="underline hover:text-lime-400">
-                                            Terms of Service
-                                        </Link>{' '}
-                                        and{' '}
-                                        <Link to="/privacy" target="_blank" className="underline hover:text-lime-400">
-                                            Privacy Policy
-                                        </Link>.
-                                    </label>
-                                </div>
-
-                                <div className="flex items-start gap-3">
+                                    <span>
+                                        ვეთანხმები{' '}
+                                        <Link to="/terms-of-service" target="_blank" className="underline hover:text-secondary">
+                                            გამოყენების წესებს
+                                        </Link>
+                                    </span>
+                                </label>
+                                <label className="flex items-start gap-2 text-white/80 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         id="marketing"
                                         name="agreeToMarketing"
                                         checked={formData.agreeToMarketing}
                                         onChange={handleChange}
-                                        className="mt-1 w-4 h-4 rounded border-white/40 bg-transparent text-lime-400 focus:ring-lime-400 cursor-pointer"
+                                        className="mt-0.5 w-4 h-4 flex-shrink-0 bg-white border-2 border-white rounded-sm appearance-none checked:bg-white checked:border-white relative cursor-pointer
+                                        before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
+                                        before:w-2.5 before:h-2.5 before:bg-secondary before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                         disabled={isLoading}
                                     />
-                                    <label htmlFor="marketing" className="text-white text-sm leading-relaxed cursor-pointer">
-                                        I agree to receive the direct marketing campaign messages.
-                                    </label>
-                                </div>
+                                    <span>ვეთანხმები მივიღო გუნდისგან მარკეტინგული კამპანიები</span>
+                                </label>
                             </div>
 
                             {/* Submit Button */}
                             <button
                                 type="submit"
                                 disabled={isLoading || !formData.agreeToTerms}
-                                className="w-full bg-white/80 hover:bg-white text-blue-700 font-bold py-4 rounded-full transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                                className="w-full py-3 bg-white text-primary rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isLoading ? 'Processing...' : 'Register'}
+                                {isLoading ? 'იტვირთება...' : 'შემდეგი'}
                             </button>
-                        </form>
 
-                        {/* Already have an account */}
-                        <div className="mt-6 text-center text-white">
-                            <span className="text-sm">Already have an account? </span>
-                            <Link to="/auth/login" className="text-lime-400 hover:underline font-semibold">
-                                Sign in
-                            </Link>
-                        </div>
+                            {/* Sign In Link */}
+                            <p className="text-white/80 text-xs text-center pt-2">
+                                უკვე გაქვს ანგარიში?{' '}
+                                <Link to="/auth/login" className="text-secondary hover:underline">
+                                    შესვლა
+                                </Link>
+                            </p>
+                        </form>
                     </div>
                 </div>
             </div>

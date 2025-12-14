@@ -40,21 +40,23 @@ const Auth = () => {
                     </h1>
 
                     {/* Role Selection Card */}
+
                     <div className="bg-blue-800/50 backdrop-blur-sm border-2 border-blue-600 rounded-2xl p-8 md:p-12 mt-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-lime-400 mb-8">
-                            SELECT YOUR ROLE
+                        <h2 className="text-2xl text-secondary mb-6">
+                            აირჩიე შენი როლი
                         </h2>
+
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button
                                 onClick={() => handleRoleSelect('student')}
-                                className="px-8 py-4 bg-white text-blue-700 font-semibold rounded-full hover:bg-lime-400 hover:text-blue-800 transition-all transform hover:scale-105"
+                                className="px-8 py-3 rounded-full transition-all bg-secondary text-white hover:bg-white hover:text-primary hover:scale-105"
                             >
                                 Student
                             </button>
                             <button
                                 onClick={() => handleRoleSelect('mentor')}
-                                className="px-8 py-4 bg-white text-blue-700 font-semibold rounded-full hover:bg-lime-400 hover:text-blue-800 transition-all transform hover:scale-105"
+                                className="px-8 py-3 rounded-full transition-all bg-secondary text-white hover:bg-white hover:text-primary hover:scale-105"
                             >
                                 Mentor
                             </button>

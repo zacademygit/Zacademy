@@ -3,11 +3,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthProvider';
+import { ArrowLeft } from 'lucide-react';
+import universitiesData from '../data/universities.json';
+import facultiesData from '../data/faculties.json';
 
 const RegisterMentor = () => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL
+
     const navigate = useNavigate();
     const { checkAuth } = useAuth();
     const [step, setStep] = useState(1); // Multi-step form for mentors
+    const [showOtherUniversity, setShowOtherUniversity] = useState(false);
+    const [showOtherFaculty, setShowOtherFaculty] = useState(false);
 
     const [formData, setFormData] = useState({
         // Step 1: Basic Info
@@ -38,19 +45,20 @@ const RegisterMentor = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [selectedRole, setSelectedRole] = useState('mentor');
 
     const occupationAreaOptions = [
         'STEM (Science, Technology, Engineering, Mathematics)',
-        'Business & Finance',
-        'Healthcare & Life Sciences',
-        'International Relations & Public Policy',
-        'Creative & Media Industries',
-        'Education & Research',
-        'Law & Governance',
-        'Environmental & Sustainability',
-        'Social Impact & Human Services',
-        'Digital Economy & E-commerce',
-        'Advanced Manufacturing & Logistics'
+        'Business, Finance & Management',
+        'Creative Arts, Media & Design',
+        'Healthcare & Medicine',
+        'Education & Social Sciences',
+        'Law, Government & Public Policy',
+        'Trades, Vocational & Technical Careers',
+        'Hospitality, Tourism & Customer Experience',
+        'Environment, Agriculture & Sustainability',
+        'Sports, Fitness & Wellness',
+        'Emerging & Future-Forward Fields'
     ];
 
     const handleChange = (e) => {
@@ -63,18 +71,61 @@ const RegisterMentor = () => {
                 phone: numbersOnly
             });
         } else if (name === 'dateOfBirth') {
-            // Format date as DD/MM/YYYY
+            // Format date as DD/MM/YYYY with validation
             let formattedValue = value.replace(/\D/g, '');
+
+            // Validate day (DD) - max 31
             if (formattedValue.length >= 2) {
+                const day = parseInt(formattedValue.slice(0, 2), 10);
+                if (day > 31) {
+                    formattedValue = '31' + formattedValue.slice(2);
+                }
                 formattedValue = formattedValue.slice(0, 2) + '/' + formattedValue.slice(2);
             }
+
+            // Validate month (MM) - max 12
             if (formattedValue.length >= 5) {
+                const month = parseInt(formattedValue.slice(3, 5), 10);
+                if (month > 12) {
+                    formattedValue = formattedValue.slice(0, 3) + '12' + formattedValue.slice(5);
+                }
                 formattedValue = formattedValue.slice(0, 5) + '/' + formattedValue.slice(5, 9);
             }
+
             setFormData({
                 ...formData,
                 dateOfBirth: formattedValue
             });
+        } else if (name === 'university') {
+            // Handle university selection
+            if (value === 'Other') {
+                setShowOtherUniversity(true);
+                setFormData({
+                    ...formData,
+                    university: ''
+                });
+            } else {
+                // Don't toggle showOtherUniversity here - only the "Back" button should do that
+                setFormData({
+                    ...formData,
+                    university: value
+                });
+            }
+        } else if (name === 'faculty') {
+            // Handle faculty selection
+            if (value === 'Other') {
+                setShowOtherFaculty(true);
+                setFormData({
+                    ...formData,
+                    faculty: ''
+                });
+            } else {
+                // Don't toggle showOtherFaculty here - only the "Back" button should do that
+                setFormData({
+                    ...formData,
+                    faculty: value
+                });
+            }
         } else if (type === 'file') {
             setFormData({
                 ...formData,
@@ -93,6 +144,27 @@ const RegisterMentor = () => {
         }
     };
 
+    // Helper function to calculate age from DD/MM/YYYY format
+    const calculateAge = (dateString) => {
+        const parts = dateString.split('/');
+        if (parts.length !== 3) return null;
+
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JavaScript
+        const year = parseInt(parts[2], 10);
+
+        const birthDate = new Date(year, month, day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
+
     const handleNextStep = () => {
         // Validate current step before proceeding
         if (step === 1) {
@@ -100,12 +172,35 @@ const RegisterMentor = () => {
                 setError('Please fill in all required fields');
                 return;
             }
+            // Age validation - Mentors must be 18 or older
+            const age = calculateAge(formData.dateOfBirth);
+            if (age === null) {
+                setError('Invalid date of birth format');
+                return;
+            }
+            if (age < 18) {
+                setError('You must be at least 18 years old to register as a mentor');
+                return;
+            }
             if (formData.password !== formData.confirmPassword) {
                 setError('Passwords do not match');
                 return;
             }
+            // Password validation
             if (formData.password.length < 8) {
                 setError('Password must be at least 8 characters long');
+                return;
+            }
+            if (formData.password.length > 64) {
+                setError('Password must not exceed 64 characters');
+                return;
+            }
+            if (!/[A-Z]/.test(formData.password)) {
+                setError('Password must contain at least one uppercase letter');
+                return;
+            }
+            if (!/[0-9]/.test(formData.password)) {
+                setError('Password must contain at least one number');
                 return;
             }
         } else if (step === 2) {
@@ -158,7 +253,7 @@ const RegisterMentor = () => {
                 agreeToMarketing: formData.agreeToMarketing
             };
 
-            const response = await fetch('/api/auth/register/mentor', {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register/mentor`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,7 +271,7 @@ const RegisterMentor = () => {
             await checkAuth();
 
             // Redirect to mentor dashboard after successful registration
-            navigate('/mentor-dashboard');
+            // navigate('/mentor-dashboard');
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {
@@ -184,62 +279,96 @@ const RegisterMentor = () => {
         }
     };
 
+    const handleRoleSelect = (role) => {
+        setSelectedRole(role);
+        if (role === 'student') {
+            navigate('/auth/register/student');
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 flex flex-col">
-            {/* Header */}
-            <div className="flex justify-between items-center p-6 text-white">
-                <Link to="/" className="text-sm hover:underline">
-                    ← Back to home
-                </Link>
-                <Link to="/support" className="text-sm hover:underline">
-                    Need help?
+        <div className="min-h-screen bg-primary relative overflow-hidden">
+            {/* Grid Pattern Background */}
+            <div
+                className="absolute inset-0 opacity-10"
+                style={{
+                    backgroundImage: `
+                        linear-gradient(to right, white 1px, transparent 1px),
+                        linear-gradient(to bottom, white 1px, transparent 1px)
+                    `,
+                    backgroundSize: '50px 50px'
+                }}
+            />
+
+            {/* Top Navigation */}
+            <div className="relative z-10 max-w-[1440px] mx-auto px-8 py-4 flex justify-between items-center">
+                <button
+                    onClick={() => navigate('/auth')}
+                    className="bg-primary text-white hover:text-secondary transition-colors flex items-center gap-2 text-sm"
+                >
+                    <ArrowLeft size={16} />
+                    <span>უკან</span>
+                </button>
+                <Link to="/support" className="text-white hover:text-secondary transition-colors text-sm">
+                    დახმარება?
                 </Link>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex items-center justify-center px-4 py-8">
-                <div className="w-full max-w-2xl">
-                    {/* Title */}
-                    <div className="text-center mb-8">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                            <span className="text-lime-400">BECOME A MENTOR</span>
-                        </h1>
-                        <p className="text-white/80">Join our community of expert mentors</p>
-                    </div>
+            <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-8 py-8">
+                <div className="text-center max-w-2xl w-full">
+                    {/* Heading */}
+                    <h1 className="text-3xl text-secondary mb-8">
+                        დაიწყე შენი მოგზაურობა ჩვენთან
+                    </h1>
 
                     {/* Progress Indicator */}
                     <div className="flex justify-center mb-8">
                         <div className="flex items-center space-x-4">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-lime-400 text-blue-700' : 'bg-white/20 text-white'} font-bold`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-secondary text-primary' : 'bg-white/20 text-white'} font-bold`}>
                                 1
                             </div>
-                            <div className={`w-20 h-1 ${step >= 2 ? 'bg-lime-400' : 'bg-white/20'}`}></div>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-lime-400 text-blue-700' : 'bg-white/20 text-white'} font-bold`}>
+                            <div className={`w-20 h-1 ${step >= 2 ? 'bg-secondary' : 'bg-white/20'}`}></div>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-secondary text-primary' : 'bg-white/20 text-white'} font-bold`}>
                                 2
                             </div>
-                            <div className={`w-20 h-1 ${step >= 3 ? 'bg-lime-400' : 'bg-white/20'}`}></div>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-lime-400 text-blue-700' : 'bg-white/20 text-white'} font-bold`}>
+                            <div className={`w-20 h-1 ${step >= 3 ? 'bg-secondary' : 'bg-white/20'}`}></div>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-secondary text-primary' : 'bg-white/20 text-white'} font-bold`}>
                                 3
                             </div>
                         </div>
                     </div>
 
                     {/* Registration Form Card */}
-                    <div className="bg-blue-800/30 backdrop-blur-sm border-2 border-blue-500/50 rounded-3xl p-8 md:p-10">
-                        <h2 className="text-2xl font-bold text-lime-400 text-center mb-6">
-                            {step === 1 && 'Basic Information'}
-                            {step === 2 && 'Professional Background'}
-                            {step === 3 && 'Mentoring Details'}
+                    <div className="bg-primary/60 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/20">
+                        <h2 className="text-xl text-secondary mb-6">
+                            {step === 1 && 'ძირითადი ინფორმაცია'}
+                            {step === 2 && 'პროფესიული გამოცდილება'}
+                            {step === 3 && 'მენტორობის დეტალები'}
                         </h2>
 
                         {/* Role Toggle */}
                         {step === 1 && (
-                            <div className="text-center mb-6">
+                            <div className="flex gap-2 mb-6 bg-white/10 p-1 rounded-full">
                                 <button
-                                    onClick={() => navigate('/auth')}
-                                    className=" hover:text-lime-400 text-sm transition"
+                                    onClick={() => handleRoleSelect('student')}
+                                    className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${
+                                        selectedRole === 'student'
+                                            ? 'bg-white text-primary'
+                                            : 'text-white hover:bg-white/20'
+                                    }`}
                                 >
-                                    ← Register as student instead
+                                    როგორც სტუდენტი
+                                </button>
+                                <button
+                                    onClick={() => handleRoleSelect('mentor')}
+                                    className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${
+                                        selectedRole === 'mentor'
+                                            ? 'bg-white text-primary'
+                                            : 'text-white hover:bg-white/20'
+                                    }`}
+                                >
+                                    როგორც მენტორი
                                 </button>
                             </div>
                         )}
@@ -257,45 +386,45 @@ const RegisterMentor = () => {
                                     <input
                                         type="text"
                                         name="firstName"
-                                        placeholder="First name *"
+                                        placeholder="სახელი *"
                                         value={formData.firstName}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
                                     <input
                                         type="text"
                                         name="lastName"
-                                        placeholder="Last name *"
+                                        placeholder="გვარი *"
                                         value={formData.lastName}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
                                     <input
                                         type="email"
                                         name="email"
-                                        placeholder="Email *"
+                                        placeholder="ელ-ფოსტა *"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
                                     <div className="flex gap-2">
-                                        <div className="bg-transparent border-2 border-white/40 text-white rounded-full h-14 w-24 flex items-center justify-center font-medium">
+                                        <div className="w-20 px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white text-sm flex items-center justify-center">
                                             +995
                                         </div>
                                         <input
                                             type="tel"
                                             name="phone"
-                                            placeholder="Phone *"
+                                            placeholder="ტელეფონი *"
                                             value={formData.phone}
                                             onChange={handleChange}
                                             maxLength={9}
-                                            className="flex-1 bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                            className="flex-1 px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                             required
                                         />
                                     </div>
@@ -303,40 +432,41 @@ const RegisterMentor = () => {
                                     <input
                                         type="text"
                                         name="dateOfBirth"
-                                        placeholder="Date of birth (DD/MM/YYYY) *"
+                                        placeholder="დაბადების თარიღი (დდ/თთ/წწწწ) *"
                                         value={formData.dateOfBirth}
                                         onChange={handleChange}
                                         maxLength={10}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
                                     <input
                                         type="password"
                                         name="password"
-                                        placeholder="Password (min 8 characters) *"
+                                        placeholder="პაროლი (მინ 8 სიმბოლო, 1 დიდი ასო, 1 ციფრი) *"
                                         value={formData.password}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        maxLength={64}
+                                        className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
                                     <input
                                         type="password"
                                         name="confirmPassword"
-                                        placeholder="Confirm Password *"
+                                        placeholder="გაიმეორე პაროლი *"
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-2.5 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
                                     <button
                                         type="button"
                                         onClick={handleNextStep}
-                                        className="w-full bg-lime-400 hover:bg-lime-300 text-blue-700 font-bold py-4 rounded-full transition duration-200 text-lg"
+                                        className="w-full py-3 bg-white text-primary rounded-full hover:bg-white/90 transition-colors"
                                     >
-                                        Next
+                                        შემდეგი
                                     </button>
                                 </>
                             )}
@@ -348,11 +478,11 @@ const RegisterMentor = () => {
                                         name="occupationArea"
                                         value={formData.occupationArea}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white rounded-full h-14 px-6 focus:outline-none transition appearance-none cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 focus:outline-none focus:border-secondary text-sm appearance-none cursor-pointer"
                                         required
                                         style={{
-                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                                            backgroundPosition: 'right 1.5rem center',
+                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.6)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                            backgroundPosition: 'right 1rem center',
                                             backgroundRepeat: 'no-repeat',
                                             backgroundSize: '1.5rem',
                                             paddingRight: '3rem'
@@ -370,7 +500,7 @@ const RegisterMentor = () => {
                                         placeholder="Current Position/Title *"
                                         value={formData.currentPosition}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                         required
                                     />
 
@@ -380,17 +510,17 @@ const RegisterMentor = () => {
                                         placeholder="Company/Organization"
                                         value={formData.company}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                     />
 
                                     <select
                                         name="yearsOfExperience"
                                         value={formData.yearsOfExperience}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white rounded-full h-14 px-6 focus:outline-none transition appearance-none cursor-pointer"
+                                        className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 focus:outline-none focus:border-secondary text-sm appearance-none cursor-pointer"
                                         style={{
-                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                                            backgroundPosition: 'right 1.5rem center',
+                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.6)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                            backgroundPosition: 'right 1rem center',
                                             backgroundRepeat: 'no-repeat',
                                             backgroundSize: '1.5rem',
                                             paddingRight: '3rem'
@@ -403,40 +533,151 @@ const RegisterMentor = () => {
                                         <option value="10+" className="bg-blue-700 text-white">10+ years</option>
                                     </select>
 
-                                    <input
-                                        type="text"
-                                        name="university"
-                                        placeholder="University/Institution *"
-                                        value={formData.university}
-                                        onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
-                                        required
-                                    />
+                                    {/* University Dropdown */}
+                                    {!showOtherUniversity ? (
+                                        <select
+                                            name="university"
+                                            value={formData.university}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 focus:outline-none focus:border-secondary text-sm"
+                                            required
+                                        >
+                                            <option value="" className="bg-blue-700 text-white">Select University *</option>
+                                            <optgroup label="Georgia" className="bg-blue-700 text-white">
+                                                {universitiesData.universities
+                                                    .filter(uni => uni.country === 'Georgia')
+                                                    .map((uni, idx) => (
+                                                        <option key={idx} value={uni.name} className="bg-blue-700 text-white">
+                                                            {uni.name}
+                                                        </option>
+                                                    ))
+                                                }
+                                            </optgroup>
+                                            <optgroup label="United Kingdom" className="bg-blue-700 text-white">
+                                                {universitiesData.universities
+                                                    .filter(uni => uni.country === 'UK')
+                                                    .map((uni, idx) => (
+                                                        <option key={idx} value={uni.name} className="bg-blue-700 text-white">
+                                                            {uni.name}
+                                                        </option>
+                                                    ))
+                                                }
+                                            </optgroup>
+                                            <optgroup label="United States" className="bg-blue-700 text-white">
+                                                {universitiesData.universities
+                                                    .filter(uni => uni.country === 'USA')
+                                                    .map((uni, idx) => (
+                                                        <option key={idx} value={uni.name} className="bg-blue-700 text-white">
+                                                            {uni.name}
+                                                        </option>
+                                                    ))
+                                                }
+                                            </optgroup>
+                                            <optgroup label="France" className="bg-blue-700 text-white">
+                                                {universitiesData.universities
+                                                    .filter(uni => uni.country === 'France')
+                                                    .map((uni, idx) => (
+                                                        <option key={idx} value={uni.name} className="bg-blue-700 text-white">
+                                                            {uni.name}
+                                                        </option>
+                                                    ))
+                                                }
+                                            </optgroup>
+                                            <optgroup label="Germany" className="bg-blue-700 text-white">
+                                                {universitiesData.universities
+                                                    .filter(uni => uni.country === 'Germany')
+                                                    .map((uni, idx) => (
+                                                        <option key={idx} value={uni.name} className="bg-blue-700 text-white">
+                                                            {uni.name}
+                                                        </option>
+                                                    ))
+                                                }
+                                            </optgroup>
+                                            <option value="Other" className="bg-blue-700 text-white font-semibold">Other (Enter Manually)</option>
+                                        </select>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <input
+                                                type="text"
+                                                name="university"
+                                                placeholder="Enter your university name *"
+                                                value={formData.university}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setShowOtherUniversity(false);
+                                                    setFormData({ ...formData, university: '' });
+                                                }}
+                                                className="text-lime-400 hover:text-lime-300 text-sm"
+                                            >
+                                                ← Back to university list
+                                            </button>
+                                        </div>
+                                    )}
 
-                                    <input
-                                        type="text"
-                                        name="faculty"
-                                        placeholder="Faculty *"
-                                        value={formData.faculty}
-                                        onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
-                                        required
-                                    />
+                                    {/* Faculty Dropdown */}
+                                    {!showOtherFaculty ? (
+                                        <select
+                                            name="faculty"
+                                            value={formData.faculty}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 focus:outline-none focus:border-secondary text-sm"
+                                            required
+                                        >
+                                            <option value="" className="bg-blue-700 text-white">Select Faculty *</option>
+                                            {facultiesData.faculties.map((category, catIdx) => (
+                                                <optgroup key={catIdx} label={category.category} className="bg-blue-700 text-white">
+                                                    {category.items.map((faculty, idx) => (
+                                                        <option key={idx} value={faculty} className="bg-blue-700 text-white">
+                                                            {faculty}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+                                            ))}
+                                            <option value="Other" className="bg-blue-700 text-white font-semibold">Other (Enter Manually)</option>
+                                        </select>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <input
+                                                type="text"
+                                                name="faculty"
+                                                placeholder="Enter your faculty name *"
+                                                value={formData.faculty}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setShowOtherFaculty(false);
+                                                    setFormData({ ...formData, faculty: '' });
+                                                }}
+                                                className="text-lime-400 hover:text-lime-300 text-sm"
+                                            >
+                                                ← Back to faculty list
+                                            </button>
+                                        </div>
+                                    )}
 
                                     <div className="flex gap-3">
                                         <button
                                             type="button"
                                             onClick={handlePrevStep}
-                                            className="flex-1 bg-white/20 hover:bg-white/30 text-white font-bold py-4 rounded-full transition duration-200 text-lg"
+                                            className="flex-1 bg-white/20 hover:bg-white/30 text-white py-3 rounded-full transition"
                                         >
-                                            Back
+                                            უკან
                                         </button>
                                         <button
                                             type="button"
                                             onClick={handleNextStep}
-                                            className="flex-1 bg-lime-400 hover:bg-lime-300 text-blue-700 font-bold py-4 rounded-full transition duration-200 text-lg"
+                                            className="flex-1 bg-white text-primary py-3 rounded-full hover:bg-white/90 transition-colors"
                                         >
-                                            Next
+                                            შემდეგი
                                         </button>
                                     </div>
                                 </>
@@ -451,7 +692,7 @@ const RegisterMentor = () => {
                                         value={formData.bio}
                                         onChange={handleChange}
                                         rows={4}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-2xl px-6 py-3 focus:outline-none transition resize-none"
+                                        className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/30 text-white/60 placeholder-white/60 focus:outline-none focus:border-secondary text-sm resize-none"
                                         required
                                     />
 
@@ -461,11 +702,11 @@ const RegisterMentor = () => {
                                         placeholder="LinkedIn Profile"
                                         value={formData.linkedin}
                                         onChange={handleChange}
-                                        className="w-full bg-transparent border-2 border-white/40 text-white placeholder:text-white/70 focus:border-white rounded-full h-14 px-6 focus:outline-none transition"
+                                        className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 placeholder-white/60 focus:outline-none focus:border-secondary text-sm"
                                     />
 
                                     <div className="space-y-2">
-                                        <label htmlFor="photo" className="text-white text-sm font-semibold">
+                                        <label htmlFor="photo" className="text-white/60 text-sm font-semibold">
                                             Upload Photo
                                         </label>
                                         <input
@@ -474,68 +715,65 @@ const RegisterMentor = () => {
                                             name="photo"
                                             accept="image/*"
                                             onChange={handleChange}
-                                            className="w-full bg-transparent border-2 border-white/40 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-lime-400 file:text-blue-700 hover:file:bg-lime-300 file:cursor-pointer rounded-full h-14 px-6 focus:outline-none transition flex items-center"
+                                            className="w-full px-4 py-3 rounded-full bg-white/10 border border-white/30 text-white/60 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-white hover:file:opacity-90 file:cursor-pointer focus:outline-none focus:border-secondary text-sm flex items-center"
                                         />
                                         {formData.photo && (
-                                            <p className="text-white text-xs">
+                                            <p className="text-white/60 text-xs">
                                                 Selected: {formData.photo.name}
                                             </p>
                                         )}
                                     </div>
 
                                     {/* Terms and Privacy */}
-                                    <div className="space-y-3 pt-2">
-                                        <div className="flex items-start gap-3">
+                                    <div className="space-y-2 text-xs">
+                                        <label className="flex items-start gap-2 text-white/80 cursor-pointer">
                                             <input
                                                 type="checkbox"
                                                 id="terms"
                                                 name="agreeToTerms"
                                                 checked={formData.agreeToTerms}
                                                 onChange={handleChange}
-                                                className="mt-1 w-4 h-4 rounded border-white/40 bg-transparent text-lime-400 focus:ring-lime-400 cursor-pointer"
+                                                className="mt-0.5 w-4 h-4 flex-shrink-0 bg-white border-2 border-white rounded-sm appearance-none checked:bg-white checked:border-white relative cursor-pointer
+                                                before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
+                                                before:w-2.5 before:h-2.5 before:bg-secondary before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                                 required
                                             />
-                                            <label htmlFor="terms" className="text-white text-sm leading-relaxed cursor-pointer">
-                                                I agree to the{' '}
-                                                <Link to="/terms" target="_blank" className="underline hover:text-lime-400">
-                                                    Terms of Service
-                                                </Link>{' '}
-                                                and{' '}
-                                                <Link to="/privacy" target="_blank" className="underline hover:text-lime-400">
-                                                    Privacy Policy
-                                                </Link>.
-                                            </label>
-                                        </div>
-
-                                        <div className="flex items-start gap-3">
+                                            <span>
+                                                ვეთანხმები{' '}
+                                                <Link to="/terms-of-service" target="_blank" className="underline hover:text-secondary">
+                                                    გამოყენების წესებს
+                                                </Link>
+                                            </span>
+                                        </label>
+                                        <label className="flex items-start gap-2 text-white/80 cursor-pointer">
                                             <input
                                                 type="checkbox"
                                                 id="marketing"
                                                 name="agreeToMarketing"
                                                 checked={formData.agreeToMarketing}
                                                 onChange={handleChange}
-                                                className="mt-1 w-4 h-4 rounded border-white/40 bg-transparent text-lime-400 focus:ring-lime-400 cursor-pointer"
+                                                className="mt-0.5 w-4 h-4 flex-shrink-0 bg-white border-2 border-white rounded-sm appearance-none checked:bg-white checked:border-white relative cursor-pointer
+                                                before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
+                                                before:w-2.5 before:h-2.5 before:bg-secondary before:rounded-sm before:opacity-0 checked:before:opacity-100"
                                             />
-                                            <label htmlFor="marketing" className="text-white text-sm leading-relaxed cursor-pointer">
-                                                I agree to receive the direct marketing campaign messages.
-                                            </label>
-                                        </div>
+                                            <span>ვეთანხმები მივიღო გუნდისგან მარკეტინგული კამპანიები</span>
+                                        </label>
                                     </div>
 
                                     <div className="flex gap-3">
                                         <button
                                             type="button"
                                             onClick={handlePrevStep}
-                                            className="flex-1 bg-white/20 hover:bg-white/30 text-white font-bold py-4 rounded-full transition duration-200 text-lg"
+                                            className="flex-1 bg-white/20 hover:bg-white/30 text-white py-3 rounded-full transition"
                                         >
-                                            Back
+                                            უკან
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={isLoading || !formData.agreeToTerms}
-                                            className="flex-1 bg-lime-400 hover:bg-lime-300 text-blue-700 font-bold py-4 rounded-full transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                                            className="flex-1 bg-white text-primary py-3 rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            {isLoading ? 'Submitting...' : 'Submit Application'}
+                                            {isLoading ? 'იტვირთება...' : 'გაგზავნა'}
                                         </button>
                                     </div>
                                 </>
@@ -543,12 +781,12 @@ const RegisterMentor = () => {
                         </form>
 
                         {/* Already have an account */}
-                        <div className="mt-6 text-center text-white">
-                            <span className="text-sm">Already have an account? </span>
-                            <Link to="/auth/login" className="text-lime-400 hover:underline font-semibold">
-                                Sign in
+                        <p className="text-white/80 text-xs text-center pt-6">
+                            უკვე გაქვს ანგარიში?{' '}
+                            <Link to="/auth/login" className="text-secondary hover:underline">
+                                შესვლა
                             </Link>
-                        </div>
+                        </p>
                     </div>
                 </div>
             </div>

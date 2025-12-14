@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { AlertCircle } from 'lucide-react'
 
 const TimezoneServices = ({ api }) => {
     const [loading, setLoading] = useState(true);
@@ -605,18 +606,18 @@ const TimezoneServices = ({ api }) => {
     const SectionHeader = ({ title, isExpanded, onToggle, badge }) => (
         <button
             onClick={onToggle}
-            className="w-full flex items-center justify-between p-6 bg-white hover:bg-gray-50 transition-colors rounded-xl shadow-md"
+            className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-gray-50 transition-colors"
         >
             <div className="flex items-center gap-3">
-                <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+                <h2 className="text-base font-normal text-gray-900">{title}</h2>
                 {badge && (
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
+                    <span className="px-2 py-0.5 bg-[#FA8AFF] text-white text-xs font-medium rounded">
                         {badge}
                     </span>
                 )}
             </div>
             <svg
-                className={`w-6 h-6 text-gray-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                className={`w-5 h-5 text-gray-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -627,63 +628,76 @@ const TimezoneServices = ({ api }) => {
     );
 
     return (
-        <div className="space-y-4">
+        <div className="max-w-5xl mx-auto p-8">
             {/* ============ INFO MESSAGE FOR PENDING APPLICATIONS ============ */}
             {documentStatus && documentStatus.applicationStatus === 'pending' && (
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
-                    <div className="flex items-start">
-                        <svg className="w-6 h-6 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <div>
-                            <h3 className="text-lg font-semibold text-blue-900 mb-2">Complete Your Application</h3>
-                            <p className="text-sm text-blue-800">
-                                Please fill out <span className="font-medium">available times</span>, <span className="font-medium">services</span>, and <span className="font-medium">confirm documents</span>.
-                                Once completed, click <span className="font-medium">"Send Application"</span> and we'll review it in 24 hours.
-                                You'll receive update information on your dashboard and via email.
-                            </p>
-                        </div>
-                    </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex gap-3">
+                    <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-sm text-blue-900">
+                        Please fill out <span className="font-medium">available times</span>, <span className="font-medium">services</span>, and <span className="font-medium">confirm documents</span>.
+                        Once completed, click <span className="font-medium">"Send Application"</span> and we'll review it in 24-48 hours.
+                        You'll receive update information on your dashboard and via email.
+                    </p>
                 </div>
             )}
 
-            {/* ============ DOCUMENTS SECTION ============ */}
-            {documentStatus && documentStatus.applicationStatus === 'pending' && (
-                <div>
-                    <SectionHeader
-                        title="Documents"
-                        isExpanded={isDocumentsExpanded}
-                        onToggle={() => setIsDocumentsExpanded(!isDocumentsExpanded)}
-                        badge={!documentStatus.hasConfirmed ? 'Action Required' : null}
-                    />
+            <div className="space-y-4 mb-8">
 
-                    {isDocumentsExpanded && (
-                        <div className="mt-4">
-                            {/* Document not confirmed yet */}
-                            {!documentStatus.hasConfirmed && (
-                                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+                {/* ============ DOCUMENTS SECTION ============ */}
+                {documentStatus && documentStatus.applicationStatus === 'pending' && (
+                    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <SectionHeader
+                            title="Documents"
+                            isExpanded={isDocumentsExpanded}
+                            onToggle={() => setIsDocumentsExpanded(!isDocumentsExpanded)}
+                            badge={!documentStatus.hasConfirmed ? 'Action Required' : null}
+                        />
+
+                        {isDocumentsExpanded && (
+                            <div className="px-6 py-6 border-t border-gray-200">
+                                <div className={`border-l-4 p-6 rounded-lg ${documentStatus.hasConfirmed ? 'bg-green-50 border-green-400' : 'bg-yellow-50 border-yellow-400'}`}>
                                     <div className="flex items-start mb-4">
-                                        <svg className="w-6 h-6 text-yellow-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        <svg className={`w-6 h-6 mt-0.5 mr-3 ${documentStatus.hasConfirmed ? 'text-green-600' : 'text-yellow-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            {documentStatus.hasConfirmed ? (
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            ) : (
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            )}
                                         </svg>
                                         <div>
-                                            <h3 className="text-lg font-semibold text-yellow-800 mb-1">Document Confirmation Required</h3>
-                                            <p className="text-sm text-yellow-700">Please select your legal status and confirm the terms before your application can be reviewed.</p>
+                                            <h3 className={`text-lg font-semibold mb-1 ${documentStatus.hasConfirmed ? 'text-green-800' : 'text-yellow-800'}`}>
+                                                {documentStatus.hasConfirmed ? 'Document Confirmed' : 'Document Confirmation Required'}
+                                            </h3>
+                                            <p className={`text-sm ${documentStatus.hasConfirmed ? 'text-green-700' : 'text-yellow-700'}`}>
+                                                {documentStatus.hasConfirmed
+                                                    ? 'You have confirmed your legal status. Your application is now under review.'
+                                                    : 'Please select your legal status and confirm the terms before your application can be reviewed.'}
+                                            </p>
                                         </div>
                                     </div>
 
                                     <div className="bg-white rounded-lg p-6 mt-4">
-                                        <h4 className="font-medium text-gray-900 mb-4">Select Your Legal Status</h4>
+                                        <h4 className="font-medium text-gray-900 mb-4">
+                                            Your Legal Status
+                                            {documentStatus.hasConfirmed && (
+                                                <span className="ml-2 px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                                                    Confirmed
+                                                </span>
+                                            )}
+                                        </h4>
 
                                         {/* Radio buttons */}
                                         <div className="space-y-3 mb-6">
-                                            <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                            <label className={`flex items-start p-4 border-2 rounded-lg ${documentStatus.hasConfirmed ? 'cursor-not-allowed opacity-75' : 'cursor-pointer hover:bg-gray-50'} transition`}>
                                                 <input
                                                     type="radio"
                                                     name="documentType"
                                                     value="individual_entrepreneur"
                                                     checked={selectedDocumentType === 'individual_entrepreneur'}
                                                     onChange={(e) => setSelectedDocumentType(e.target.value)}
+                                                    disabled={documentStatus.hasConfirmed}
                                                     className="mt-1 mr-3"
                                                 />
                                                 <div>
@@ -692,13 +706,14 @@ const TimezoneServices = ({ api }) => {
                                                 </div>
                                             </label>
 
-                                            <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                            <label className={`flex items-start p-4 border-2 rounded-lg ${documentStatus.hasConfirmed ? 'cursor-not-allowed opacity-75' : 'cursor-pointer hover:bg-gray-50'} transition`}>
                                                 <input
                                                     type="radio"
                                                     name="documentType"
                                                     value="private_individual"
                                                     checked={selectedDocumentType === 'private_individual'}
                                                     onChange={(e) => setSelectedDocumentType(e.target.value)}
+                                                    disabled={documentStatus.hasConfirmed}
                                                     className="mt-1 mr-3"
                                                 />
                                                 <div>
@@ -713,7 +728,7 @@ const TimezoneServices = ({ api }) => {
                                             <div className="mb-6">
                                                 <button
                                                     onClick={() => setIsDocumentModalOpen(true)}
-                                                    className="w-full px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium flex items-center justify-center gap-2"
+                                                    className="w-full px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium flex items-center justify-center gap-2"
                                                 >
                                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -724,570 +739,522 @@ const TimezoneServices = ({ api }) => {
                                             </div>
                                         )}
 
-                                        {/* Submit button */}
-                                        <button
-                                            onClick={handleConfirmDocument}
-                                            disabled={!selectedDocumentType || confirmingDocument}
-                                            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                                        >
-                                            {confirmingDocument ? 'Confirming...' : 'Confirm Document Type'}
-                                        </button>
+                                        {/* Submit button - only show if not confirmed */}
+                                        {!documentStatus.hasConfirmed && (
+                                            <>
+                                                <button
+                                                    onClick={handleConfirmDocument}
+                                                    disabled={!selectedDocumentType || confirmingDocument}
+                                                    className="w-full px-6 py-2.5 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                                >
+                                                    {confirmingDocument ? 'Confirming...' : 'Confirm Document Type'}
+                                                </button>
 
-                                        <p className="text-xs text-gray-500 mt-3 text-center">
-                                            Note: Once confirmed, you cannot change your selection. Please contact support if you need to make changes.
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
+                                                <p className="text-xs text-gray-500 mt-3 text-center">
+                                                    Note: Once confirmed, you cannot change your selection. Please contact support if you need to make changes.
+                                                </p>
+                                            </>
+                                        )}
 
-                            {/* Document confirmed message */}
-                            {documentStatus.hasConfirmed && (
-                                <div className="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg">
-                                    <div className="flex items-start">
-                                        <svg className="w-6 h-6 text-green-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-green-800 mb-1">Document Confirmed</h3>
-                                            <p className="text-sm text-green-700">
-                                                You have confirmed your legal status as a{' '}
-                                                <span className="font-medium">
-                                                    {documentStatus.documentConfirmation.documentType === 'individual_entrepreneur'
-                                                        ? 'Individual Entrepreneur'
-                                                        : 'Private Individual'}
-                                                </span>
-                                                . Your application is now under review.
+                                        {/* Show note if confirmed */}
+                                        {documentStatus.hasConfirmed && (
+                                            <p className="text-xs text-gray-500 text-center">
+                                                Your document type has been confirmed. Please contact support if you need to make changes.
                                             </p>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* ============ TIMES SECTION ============ */}
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <SectionHeader
+                        title="Times & Availability"
+                        isExpanded={isTimesExpanded}
+                        onToggle={() => setIsTimesExpanded(!isTimesExpanded)}
+                    />
+
+                    {isTimesExpanded && (
+                        <div className="px-6 py-6 border-t border-gray-200">
+                            <div className="flex justify-between items-center mb-6">
+                                {!isEditing ? (
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="px-4 py-2 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition flex items-center gap-2"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Edit Schedule
+                                    </button>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handleSave}
+                                            disabled={saving || !hasChanges()}
+                                            className="px-4 py-2 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {saving ? 'Saving...' : 'Save Changes'}
+                                        </button>
+                                        <button
+                                            onClick={handleCancel}
+                                            disabled={saving}
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition disabled:opacity-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-6">
+                                {/* Timezone Selection */}
+                                <div>
+                                    <label className="block text-sm text-gray-700 mb-2">
+                                        Your Timezone <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        value={timezone}
+                                        onChange={(e) => setTimezone(e.target.value)}
+                                        disabled={!isEditing}
+                                        className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                            }`}
+                                    >
+                                        <option value="">Select your timezone</option>
+                                        {timezones.map(tz => (
+                                            <option key={tz.value} value={tz.value}>
+                                                {tz.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Weekly Schedule */}
+                                <div>
+                                    <h4 className="text-sm text-gray-900 mb-4">Weekly Schedule</h4>
+                                    <p className="text-xs text-gray-500 mb-4">
+                                        Add time slots for each day when you're available to meet with students
+                                    </p>
+
+                                    <div className="space-y-3">
+                                        {Object.keys(schedule).map(day => (
+                                            <div key={day} className="py-3 border-b border-gray-100 last:border-0">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="text-sm text-gray-900">{day}</span>
+                                                    {isEditing && (
+                                                        <button
+                                                            onClick={() => addTimeSlot(day)}
+                                                            className="text-sm text-[#FA8AFF] hover:text-[#FA8AFF]/80"
+                                                        >
+                                                            + Add Time Slot
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                {schedule[day].length === 0 ? (
+                                                    <p className="text-xs text-gray-500">No time slots yet</p>
+                                                ) : (
+                                                    <div className="space-y-2">
+                                                        {schedule[day].map((slot) => (
+                                                            <div key={slot.id} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
+                                                                {isEditing ? (
+                                                                    <>
+                                                                        <div className="flex items-center gap-2 flex-1">
+                                                                            <input
+                                                                                type="time"
+                                                                                value={slot.startTime}
+                                                                                onChange={(e) => updateTimeSlot(day, slot.id, 'startTime', e.target.value)}
+                                                                                className="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-[#FA8AFF] bg-white"
+                                                                            />
+                                                                            <span className="text-xs text-gray-500">-</span>
+                                                                            <input
+                                                                                type="time"
+                                                                                value={slot.endTime}
+                                                                                onChange={(e) => updateTimeSlot(day, slot.id, 'endTime', e.target.value)}
+                                                                                className="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:border-[#FA8AFF] bg-white"
+                                                                            />
+                                                                        </div>
+                                                                        <button
+                                                                            onClick={() => removeTimeSlot(day, slot.id)}
+                                                                            className="text-gray-400 hover:text-red-500 transition-colors"
+                                                                        >
+                                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="text-xs text-gray-700">{slot.startTime} - {slot.endTime}</span>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
-            )}
 
-            {/* ============ TIMES SECTION ============ */}
-            <div>
-                <SectionHeader
-                    title="Times & Availability"
-                    isExpanded={isTimesExpanded}
-                    onToggle={() => setIsTimesExpanded(!isTimesExpanded)}
-                />
+                {/* ============ PAYMENT SECTION ============ */}
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <SectionHeader
+                        title="Payment Information"
+                        isExpanded={isPaymentExpanded}
+                        onToggle={() => setIsPaymentExpanded(!isPaymentExpanded)}
+                    />
 
-                {isTimesExpanded && (
-                    <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            {!isEditing ? (
-                                <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Edit Schedule
-                                </button>
-                            ) : (
-                                <div className="flex gap-2">
+                    {isPaymentExpanded && (
+                        <div className="px-6 py-6 border-t border-gray-200">
+                            <div className="flex justify-between items-center mb-6">
+                                {!isEditingPayment ? (
                                     <button
-                                        onClick={handleSave}
-                                        disabled={saving || !hasChanges()}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                        onClick={() => setIsEditingPayment(true)}
+                                        className="px-4 py-2 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition flex items-center gap-2"
                                     >
-                                        {saving ? 'Saving...' : 'Save Changes'}
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Edit Payment Info
                                     </button>
-                                    <button
-                                        onClick={handleCancel}
-                                        disabled={saving}
-                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Timezone Selection */}
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Your Timezone <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                value={timezone}
-                                onChange={(e) => setTimezone(e.target.value)}
-                                disabled={!isEditing}
-                                className={`w-full md:w-1/2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
-                            >
-                                <option value="">Select your timezone</option>
-                                {timezones.map(tz => (
-                                    <option key={tz.value} value={tz.value}>
-                                        {tz.label}
-                                    </option>
-                                ))}
-                            </select>
-                            {timezone && (
-                                <p className="text-xs text-gray-500 mt-1">
-                                    Current timezone: {timezone}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Weekly Schedule */}
-                        <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900">Weekly Schedule</h3>
-                                <button
-                                    onClick={() => setIsTimesExpanded(!isTimesExpanded)}
-                                    className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition"
-                                >
-                                    <span>{isTimesExpanded ? 'Collapse' : 'Expand'}</span>
-                                    <svg
-                                        className={`w-5 h-5 transition-transform duration-200 ${isTimesExpanded ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                            </div>
-                            {isTimesExpanded && (
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    {Object.keys(schedule).map(day => (
-                                        <div key={day} className="border rounded-lg p-4 bg-gray-50">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <h4 className="font-medium text-gray-900">{day}</h4>
-                                                {isEditing && (
-                                                    <button
-                                                        onClick={() => addTimeSlot(day)}
-                                                        className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
-                                                    >
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                                        </svg>
-                                                        Add Time Slot
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {schedule[day].length === 0 ? (
-                                                <p className="text-sm text-gray-500 italic">No availability set</p>
-                                            ) : (
-                                                <div className="space-y-2">
-                                                    {schedule[day].map((slot, index) => (
-                                                        <div key={slot.id} className="flex items-center gap-3 bg-white p-3 rounded-lg">
-                                                            <span className="text-sm text-gray-600 w-8">#{index + 1}</span>
-                                                            <div className="flex items-center gap-2 flex-1">
-                                                                <input
-                                                                    type="time"
-                                                                    value={slot.startTime}
-                                                                    onChange={(e) => updateTimeSlot(day, slot.id, 'startTime', e.target.value)}
-                                                                    disabled={!isEditing}
-                                                                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                                                        }`}
-                                                                />
-                                                                <span className="text-gray-500">to</span>
-                                                                <input
-                                                                    type="time"
-                                                                    value={slot.endTime}
-                                                                    onChange={(e) => updateTimeSlot(day, slot.id, 'endTime', e.target.value)}
-                                                                    disabled={!isEditing}
-                                                                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                                                        }`}
-                                                                />
-                                                            </div>
-                                                            {isEditing && (
-                                                                <button
-                                                                    onClick={() => removeTimeSlot(day, slot.id)}
-                                                                    className="text-red-600 hover:text-red-700 p-2"
-                                                                    title="Remove time slot"
-                                                                >
-                                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                                    </svg>
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* ============ PAYMENT SECTION ============ */}
-            <div>
-                <SectionHeader
-                    title="Payment Information"
-                    isExpanded={isPaymentExpanded}
-                    onToggle={() => setIsPaymentExpanded(!isPaymentExpanded)}
-                />
-
-                {isPaymentExpanded && (
-                    <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            {!isEditingPayment ? (
-                                <button
-                                    onClick={() => setIsEditingPayment(true)}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Edit Payment Info
-                                </button>
-                            ) : (
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={handleSavePayment}
-                                        disabled={savingPayment}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {savingPayment ? 'Saving...' : 'Save Changes'}
-                                    </button>
-                                    <button
-                                        onClick={handleCancelPayment}
-                                        disabled={savingPayment}
-                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Payment Info Instructions */}
-                        <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-100">
-                            <div className="flex items-start gap-3">
-                                <div className="flex-shrink-0 mt-1">
-                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                        Payment Information
-                                    </h3>
-                                    <p className="text-sm text-gray-700 mb-2">
-                                        Please provide your complete payment information to receive mentor session payments.
-                                    </p>
-                                    <p className="text-xs text-gray-600">
-                                        Your payment information is securely stored and will only be used for transferring your earnings.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-6">
-                            {/* Identification Number */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Identification Number <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={paymentInfo.identificationNumber}
-                                    onChange={(e) => handlePaymentInfoChange('identificationNumber', e.target.value)}
-                                    disabled={!isEditingPayment}
-                                    placeholder="Enter your ID or passport number"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
-                                />
-                            </div>
-
-                            {/* Address */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Address <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    value={paymentInfo.address}
-                                    onChange={(e) => handlePaymentInfoChange('address', e.target.value)}
-                                    disabled={!isEditingPayment}
-                                    placeholder="Enter your full address"
-                                    rows="3"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
-                                />
-                            </div>
-
-                            {/* Bank Dropdown */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Bank <span className="text-red-500">*</span>
-                                </label>
-                                {!showOtherBankInput ? (
-                                    <select
-                                        value={paymentInfo.bank}
-                                        onChange={(e) => handlePaymentInfoChange('bank', e.target.value)}
-                                        disabled={!isEditingPayment}
-                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                            !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                        }`}
-                                    >
-                                        <option value="">Select your bank</option>
-                                        <option value="TBC Bank">TBC Bank</option>
-                                        <option value="Bank of Georgia">Bank of Georgia</option>
-                                        <option value="Liberty Bank">Liberty Bank</option>
-                                        <option value="Credo Bank">Credo Bank</option>
-                                        <option value="Procredit Bank">Procredit Bank</option>
-                                        <option value="Other">Other</option>
-                                    </select>
                                 ) : (
-                                    <div className="space-y-2">
-                                        <input
-                                            type="text"
-                                            value={paymentInfo.bank}
-                                            onChange={(e) => handlePaymentInfoChange('bank', e.target.value)}
-                                            disabled={!isEditingPayment}
-                                            placeholder="Enter your bank name"
-                                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                                !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                            }`}
-                                        />
-                                        {isEditingPayment && (
-                                            <button
-                                                onClick={() => {
-                                                    setShowOtherBankInput(false);
-                                                    setPaymentInfo(prev => ({ ...prev, bank: '' }));
-                                                }}
-                                                className="text-sm text-blue-600 hover:text-blue-700"
-                                            >
-                                                ← Back to bank selection
-                                            </button>
-                                        )}
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handleSavePayment}
+                                            disabled={savingPayment}
+                                            className="px-4 py-2 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {savingPayment ? 'Saving...' : 'Save Changes'}
+                                        </button>
+                                        <button
+                                            onClick={handleCancelPayment}
+                                            disabled={savingPayment}
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition disabled:opacity-50"
+                                        >
+                                            Cancel
+                                        </button>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Bank RTGS Code */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Bank RTGS Code <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={paymentInfo.bankRtgsCode}
-                                    onChange={(e) => handlePaymentInfoChange('bankRtgsCode', e.target.value)}
-                                    disabled={!isEditingPayment}
-                                    placeholder="Enter bank RTGS/SWIFT code"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
-                                />
-                                <p className="text-xs text-gray-500 mt-2">
-                                    Find your bank's RTGS code at{' '}
-                                    <a
-                                        href="https://nbg.gov.ge/payment-system/iban"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 hover:text-blue-700 underline"
-                                    >
-                                        nbg.gov.ge/payment-system/iban
-                                    </a>
-                                </p>
-                            </div>
-
-                            {/* Bank Account Number */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Bank Account Number <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={paymentInfo.bankAccountNumber}
-                                    onChange={(e) => handlePaymentInfoChange('bankAccountNumber', e.target.value)}
-                                    disabled={!isEditingPayment}
-                                    placeholder="Enter your bank account number (IBAN or account number)"
-                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                        !isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
-                                />
-                                {paymentInfo.bankAccountNumber && (
-                                    <p className="text-xs text-gray-500 mt-2">
-                                        Make sure your bank account number is correct. Payments will be sent to this account.
+                            {/* Payment Info Instructions */}
+                            {/* <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-100"> */}
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3 mb-4">
+                                <AlertCircle size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
+                                <div className='text-left'>
+                                    <p className="text-sm text-blue-900 mb-1">გადახდის ინფორმაცია</p>
+                                    <p className="text-xs text-blue-800">
+                                        დაამატეთ თქვენი ბანკის დეტალები, რათა მიიღოთ გადახდები სტუდენტებისგან. ყველა ინფორმაცია დაშიფრული და უსაფრთხოა.
                                     </p>
+                                </div>
+                            </div>
+                            {/* </div> */}
+
+                            <div className="space-y-6 text-left">
+                                {/* Identification Number & Address - 2 column grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Identification Number <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={paymentInfo.identificationNumber}
+                                            onChange={(e) => handlePaymentInfoChange('identificationNumber', e.target.value)}
+                                            disabled={!isEditingPayment}
+                                            placeholder="e.g., 01001234567"
+                                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                                }`}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Address <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={paymentInfo.address}
+                                            onChange={(e) => handlePaymentInfoChange('address', e.target.value)}
+                                            disabled={!isEditingPayment}
+                                            placeholder="e.g., Tbilisi, Rustaveli 15"
+                                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                                }`}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Bank Dropdown */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Select Bank <span className="text-red-500">*</span>
+                                    </label>
+                                    {!showOtherBankInput ? (
+                                        <select
+                                            value={paymentInfo.bank}
+                                            onChange={(e) => handlePaymentInfoChange('bank', e.target.value)}
+                                            disabled={!isEditingPayment}
+                                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                                }`}
+                                        >
+                                            <option value="">Select your bank</option>
+                                            <option value="TBC Bank">TBC Bank</option>
+                                            <option value="Bank of Georgia">Bank of Georgia</option>
+                                            <option value="Liberty Bank">Liberty Bank</option>
+                                            <option value="Credo Bank">Credo Bank</option>
+                                            <option value="Procredit Bank">Procredit Bank</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <input
+                                                type="text"
+                                                value={paymentInfo.bank}
+                                                onChange={(e) => handlePaymentInfoChange('bank', e.target.value)}
+                                                disabled={!isEditingPayment}
+                                                placeholder="Enter your bank name"
+                                                className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                                    }`}
+                                            />
+                                            {isEditingPayment && (
+                                                <button
+                                                    onClick={() => {
+                                                        setShowOtherBankInput(false);
+                                                        setPaymentInfo(prev => ({ ...prev, bank: '' }));
+                                                    }}
+                                                    className="text-sm text-[#FA8AFF] hover:opacity-80"
+                                                >
+                                                    ← Back to bank selection
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Bank RTGS Code */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        RTGS Code <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={paymentInfo.bankRtgsCode}
+                                        onChange={(e) => handlePaymentInfoChange('bankRtgsCode', e.target.value)}
+                                        disabled={!isEditingPayment}
+                                        placeholder="e.g., TBCBGE22"
+                                        className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                            }`}
+                                    />
+                                    <p className="text-left text-xs text-gray-500 mt-2">
+                                        Find your bank's RTGS code at{' '}
+                                        <a
+                                            href="https://nbg.gov.ge/payment-system/iban"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[#FA8AFF] hover:opacity-80 underline"
+                                        >
+                                            nbg.gov.ge/payment-system/iban
+                                        </a>
+                                    </p>
+                                </div>
+
+                                {/* Bank Account Number */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Bank Account Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={paymentInfo.bankAccountNumber}
+                                        onChange={(e) => handlePaymentInfoChange('bankAccountNumber', e.target.value)}
+                                        disabled={!isEditingPayment}
+                                        placeholder="GE00TB0000000000000000"
+                                        className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#FA8AFF] ${!isEditingPayment ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                            }`}
+                                    />
+                                    {paymentInfo.bankAccountNumber && (
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Make sure your bank account number is correct. Payments will be sent to this account.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* ============ SERVICES SECTION ============ */}
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <SectionHeader
+                        title="Services & Pricing"
+                        isExpanded={isServicesExpanded}
+                        onToggle={() => setIsServicesExpanded(!isServicesExpanded)}
+                    />
+
+                    {isServicesExpanded && (
+                        <div className="px-6 py-6 border-t border-gray-200">
+                            <div className="flex justify-between items-center mb-6">
+                                {!isEditingServices ? (
+                                    <button
+                                        onClick={() => setIsEditingServices(true)}
+                                        className="px-4 py-2 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition flex items-center gap-2"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Edit Services
+                                    </button>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handleSaveServices}
+                                            disabled={savingServices}
+                                            className="px-4 py-2 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {savingServices ? 'Saving...' : 'Save Changes'}
+                                        </button>
+                                        <button
+                                            onClick={handleCancelServices}
+                                            disabled={savingServices}
+                                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition disabled:opacity-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
                                 )}
                             </div>
-                        </div>
-                    </div>
-                )}
-            </div>
 
-            {/* ============ SERVICES SECTION ============ */}
-            <div>
-                <SectionHeader
-                    title="Services & Pricing"
-                    isExpanded={isServicesExpanded}
-                    onToggle={() => setIsServicesExpanded(!isServicesExpanded)}
-                />
-
-                {isServicesExpanded && (
-                    <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            {!isEditingServices ? (
-                                <button
-                                    onClick={() => setIsEditingServices(true)}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Edit Services
-                                </button>
-                            ) : (
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={handleSaveServices}
-                                        disabled={savingServices}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {savingServices ? 'Saving...' : 'Save Changes'}
-                                    </button>
-                                    <button
-                                        onClick={handleCancelServices}
-                                        disabled={savingServices}
-                                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
-                                    >
-                                        Cancel
-                                    </button>
+                            {/* Service Description */}
+                            <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-100">
+                                <div className="flex items-start gap-3">
+                                    <div className="flex-shrink-0 mt-1">
+                                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                            1. Profession Introduction Session & Ask Me Anything
+                                        </h3>
+                                        <p className="text-sm text-gray-700 mb-3">
+                                            A short, structured session where the mentor:
+                                        </p>
+                                        <ul className="space-y-2 text-sm text-gray-700">
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-blue-600 mt-0.5">•</span>
+                                                <span>Explains what their job actually looks like</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-blue-600 mt-0.5">•</span>
+                                                <span>Breaks down day-to-day tasks</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-blue-600 mt-0.5">•</span>
+                                                <span>Talks about required skills, education, and personality traits</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="text-blue-600 mt-0.5">•</span>
+                                                <span>Shares real examples from their work</span>
+                                            </li>
+                                        </ul>
+                                        <p className="text-sm font-medium text-blue-900 mt-3">
+                                            <span className="font-semibold">Purpose:</span> Give the student a realistic understanding of the profession.
+                                        </p>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
+                            </div>
 
-                        {/* Service Description */}
-                        <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-100">
-                            <div className="flex items-start gap-3">
-                                <div className="flex-shrink-0 mt-1">
-                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            {/* Services Table */}
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b-2 border-gray-200">
+                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Service</th>
+                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Your Session Price</th>
+                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Platform Fee ({getFeePercentages().platformFee}%)</th>
+                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Taxes ({getFeePercentages().taxes}%)</th>
+                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Student Pays (Total)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {services.map((service, index) => {
+                                            const pricing = calculatePricing(service.mentorSessionPrice || 0);
+                                            return (
+                                                <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                                                    <td className="py-4 px-4">
+                                                        <div className="font-medium text-gray-900">{service.mentorshipService}</div>
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        {isEditingServices ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-gray-600">₾</span>
+                                                                <input
+                                                                    type="number"
+                                                                    min="0"
+                                                                    step="1"
+                                                                    value={service.mentorSessionPrice || ''}
+                                                                    onChange={(e) => updateServicePrice(index, e.target.value)}
+                                                                    className="w-32 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                                    placeholder="0"
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-gray-900 font-medium">₾{service.mentorSessionPrice || 0}</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <span className="text-gray-600">₾{pricing.platformFee}</span>
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <span className="text-gray-600">₾{pricing.taxesFee}</span>
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <span className="text-green-600 font-semibold text-lg">
+                                                            ₾{pricing.totalPrice}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Info Box */}
+                            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                                <div className="flex items-start gap-3">
+                                    <svg className="w-5 h-5 text-gray-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                        1. Profession Introduction Session & Ask Me Anything
-                                    </h3>
-                                    <p className="text-sm text-gray-700 mb-3">
-                                        A short, structured session where the mentor:
-                                    </p>
-                                    <ul className="space-y-2 text-sm text-gray-700">
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-blue-600 mt-0.5">•</span>
-                                            <span>Explains what their job actually looks like</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-blue-600 mt-0.5">•</span>
-                                            <span>Breaks down day-to-day tasks</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-blue-600 mt-0.5">•</span>
-                                            <span>Talks about required skills, education, and personality traits</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <span className="text-blue-600 mt-0.5">•</span>
-                                            <span>Shares real examples from their work</span>
-                                        </li>
-                                    </ul>
-                                    <p className="text-sm font-medium text-blue-900 mt-3">
-                                        <span className="font-semibold">Purpose:</span> Give the student a realistic understanding of the profession.
-                                    </p>
+                                    <div className="text-sm text-gray-700">
+                                        <p className="font-medium mb-1">Pricing Information:</p>
+                                        <ul className="list-disc list-inside space-y-1 text-gray-600">
+                                            <li>Set your base session price (what you'll receive)</li>
+                                            {getFeePercentages().taxes > 0 ? (
+                                                <li>Platform fee ({getFeePercentages().platformFee}%) and taxes ({getFeePercentages().taxes}%) are added for students</li>
+                                            ) : (
+                                                <li>Platform fee ({getFeePercentages().platformFee}%) is added for students (no taxes for individual entrepreneurs)</li>
+                                            )}
+                                            <li>Students pay the total: your price + platform fee{getFeePercentages().taxes > 0 ? ' + taxes' : ''}</li>
+                                            <li>All prices are in GEL (₾) and must be whole numbers</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    )}
+                </div>
 
-                        {/* Services Table */}
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b-2 border-gray-200">
-                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Service</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Your Session Price</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Platform Fee ({getFeePercentages().platformFee}%)</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Taxes ({getFeePercentages().taxes}%)</th>
-                                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Student Pays (Total)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {services.map((service, index) => {
-                                        const pricing = calculatePricing(service.mentorSessionPrice || 0);
-                                        return (
-                                            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                                                <td className="py-4 px-4">
-                                                    <div className="font-medium text-gray-900">{service.mentorshipService}</div>
-                                                </td>
-                                                <td className="py-4 px-4">
-                                                    {isEditingServices ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-gray-600">₾</span>
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                step="1"
-                                                                value={service.mentorSessionPrice || ''}
-                                                                onChange={(e) => updateServicePrice(index, e.target.value)}
-                                                                className="w-32 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                                placeholder="0"
-                                                            />
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-gray-900 font-medium">₾{service.mentorSessionPrice || 0}</span>
-                                                    )}
-                                                </td>
-                                                <td className="py-4 px-4">
-                                                    <span className="text-gray-600">₾{pricing.platformFee}</span>
-                                                </td>
-                                                <td className="py-4 px-4">
-                                                    <span className="text-gray-600">₾{pricing.taxesFee}</span>
-                                                </td>
-                                                <td className="py-4 px-4">
-                                                    <span className="text-green-600 font-semibold text-lg">
-                                                        ₾{pricing.totalPrice}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Info Box */}
-                        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                            <div className="flex items-start gap-3">
-                                <svg className="w-5 h-5 text-gray-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <div className="text-sm text-gray-700">
-                                    <p className="font-medium mb-1">Pricing Information:</p>
-                                    <ul className="list-disc list-inside space-y-1 text-gray-600">
-                                        <li>Set your base session price (what you'll receive)</li>
-                                        {getFeePercentages().taxes > 0 ? (
-                                            <li>Platform fee ({getFeePercentages().platformFee}%) and taxes ({getFeePercentages().taxes}%) are added for students</li>
-                                        ) : (
-                                            <li>Platform fee ({getFeePercentages().platformFee}%) is added for students (no taxes for individual entrepreneurs)</li>
-                                        )}
-                                        <li>Students pay the total: your price + platform fee{getFeePercentages().taxes > 0 ? ' + taxes' : ''}</li>
-                                        <li>All prices are in GEL (₾) and must be whole numbers</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
             {/* ============ SEND APPLICATION BUTTON ============ */}
             {documentStatus && documentStatus.applicationStatus === 'pending' && (
-                <div className="bg-white rounded-xl shadow-lg p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
                     <div className="text-center">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">Ready to Submit Your Application?</h3>
                         <p className="text-sm text-gray-600 mb-6">
@@ -1316,7 +1283,7 @@ const TimezoneServices = ({ api }) => {
                         <button
                             onClick={handleSendApplication}
                             disabled={!isApplicationReady() || sendingApplication}
-                            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg shadow-lg"
+                            className="w-full px-6 py-3 bg-[#FA8AFF] text-white rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {sendingApplication ? 'Sending...' : 'Send Application'}
                         </button>
@@ -1351,27 +1318,16 @@ const TimezoneServices = ({ api }) => {
                         <div className="flex-1 overflow-hidden">
                             <iframe
                                 className="h-full w-full"
-                                src={`https://docs.google.com/document/d/14B3LvfJVnP1NV2qIhENuitVYwb0iyu9yFPy3eY-qNOY/edit?tab=t.0#heading=h.aq99z315j4ro`}
+                                src={`https://jjcnyzuuqwcsjbznjknn.supabase.co/storage/v1/object/public/Documents/forma100.pdf`}
                                 title="Document Preview"
                             />
                         </div>
 
                         {/* Modal Footer */}
                         <div className="flex items-center justify-between p-6 border-t bg-gray-50">
-                            <a
-                                href={`https://drive.google.com/drive/u/1/folders/1-zHScd994sYHgPKjpxOPaJG0PxbH_Opc`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                                Open in Google Drive
-                            </a>
                             <button
                                 onClick={() => setIsDocumentModalOpen(false)}
-                                className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-medium"
+                                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium"
                             >
                                 Close
                             </button>

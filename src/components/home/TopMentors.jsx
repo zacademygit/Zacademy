@@ -48,7 +48,7 @@ const TopMentors = () => {
         <section className="px-8 py-32 bg-white">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-5xl mb-4 text-[#1F3A8A]">ჩვენი საუკეთესო მენტორები</h2>
+                    <h2 className="text-5xl mb-4 text-primary">ჩვენი საუკეთესო მენტორები</h2>
                     <p className="text-xl text-gray-600">
                         გაეცანი პროფესიონალებს, რომლებიც დაგეხმარებიან შენს წარმატებაში
                     </p>
@@ -62,17 +62,14 @@ const TopMentors = () => {
                                     alt={mentor.name}
                                     className="w-full h-48 object-cover rounded-xl"
                                 />
-                                <div
-                                    className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 text-white px-4 py-1 rounded-full text-sm flex items-center gap-1"
-                                    style={{ backgroundColor: '#FA8AFF' }}
-                                >
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 text-white px-4 py-1 rounded-full text-sm flex items-center gap-1 bg-secondary">
                                     <svg className="w-3.5 h-3.5 fill-white" viewBox="0 0 24 24">
                                         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                                     </svg>
                                     {mentor.rating}
                                 </div>
                             </div>
-                            <h3 className="text-xl mb-1 text-[#1F3A8A] text-center">{mentor.name}</h3>
+                            <h3 className="text-xl mb-1 text-primary text-center">{mentor.name}</h3>
                             <p className="text-gray-600 text-center mb-1">{mentor.title}</p>
                             <p className="text-sm text-gray-500 text-center mb-4">{mentor.company}</p>
 
@@ -99,7 +96,7 @@ const TopMentors = () => {
                                 ))}
                             </div>
 
-                            <button className="w-full bg-[#1F3A8A] text-white py-2 rounded-lg hover:opacity-90 transition-opacity mt-auto">
+                            <button className="w-full bg-primary text-white py-2 rounded-lg hover:opacity-90 transition-opacity mt-auto">
                                 ნახე პროფილი
                             </button>
                         </div>

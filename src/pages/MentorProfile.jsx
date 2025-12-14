@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Star, Briefcase, ArrowLeft, Calendar, Clock, X, MessageCircle } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthProvider';
 
-// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 const MentorProfile = () => {
     const { mentorId } = useParams();
@@ -78,7 +79,7 @@ const MentorProfile = () => {
     const fetchMentorProfile = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`/api/mentors/${mentorId}`);
+            const response = await axios.get(`${API_BASE_URL}/api/mentors/${mentorId}`);
 
             if (response.data.success) {
                 setMentor(response.data.data);
@@ -94,7 +95,7 @@ const MentorProfile = () => {
 
     const fetchMentorServices = async () => {
         try {
-            const response = await axios.get(`/api/mentors/${mentorId}/services`);
+            const response = await axios.get(`${API_BASE_URL}/api/mentors/${mentorId}/services`);
 
             if (response.data.success) {
                 setServices(response.data.data);
@@ -111,7 +112,7 @@ const MentorProfile = () => {
 
     const fetchMentorAvailability = async () => {
         try {
-            const response = await axios.get(`/api/mentors/${mentorId}/availability`);
+            const response = await axios.get(`${API_BASE_URL}/api/mentors/${mentorId}/availability`);
 
             if (response.data.success && response.data.data) {
                 setAvailability(response.data.data);
@@ -141,7 +142,7 @@ const MentorProfile = () => {
 
     const fetchBookedSlots = async () => {
         try {
-            const response = await axios.get(`/api/bookings/booked-times/${mentorId}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/bookings/booked-times/${mentorId}`, {
                 params: { date: selectedDate }
             });
 
@@ -285,6 +286,29 @@ const MentorProfile = () => {
         }
     };
 
+    // Generate next 14 days for date selection
+    const getNextDays = () => {
+        const days = [];
+        const today = new Date();
+        for (let i = 1; i <= 14; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            days.push(date);
+        }
+        return days;
+    };
+
+    const formatDate = (date) => {
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return {
+            dayName: dayNames[date.getDay()],
+            day: date.getDate(),
+            month: monthNames[date.getMonth()],
+            fullDate: date.toISOString().split('T')[0]
+        };
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -308,8 +332,19 @@ const MentorProfile = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            {/* Back Button */}
+            <div className="max-w-7xl mx-auto px-8 pt-8 pb-4">
+                <button
+                    onClick={() => navigate('/mentors')}
+                    className="flex items-center gap-2 text-gray-600 hover:text-secondary transition-colors"
+                >
+                    <ArrowLeft size={20} />
+                    <span>Back to Mentors</span>
+                </button>
+            </div>
 
-            <div className="container mx-auto px-4 py-8">
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-8 pb-16">
                 {/* Show message if user already has booking */}
                 {user && hasExistingBooking && (
                     <div className="mb-6 bg-blue-50 border-l-4 border-blue-600 rounded-lg p-4 shadow-sm">
@@ -334,120 +369,110 @@ const MentorProfile = () => {
                     </div>
                 )}
 
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Left Column - Mentor Info */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Profile Card */}
-                        <div className="bg-white rounded-xl shadow-sm p-6">
-                            <div className="flex flex-col md:flex-row gap-6">
-                                {/* Photo */}
+                <div className="grid grid-cols-3 gap-8">
+                    {/* Left Column - Main Info */}
+                    <div className="col-span-2 space-y-8">
+                        {/* Profile Header */}
+                        <div className="bg-white rounded-2xl p-8 border-2 border-gray-200">
+                            <div className="flex gap-6 mb-6">
+                                {/* Mentor Photo */}
                                 <div className="flex-shrink-0">
                                     {mentor.photoUrl ? (
                                         <img
                                             src={mentor.photoUrl}
                                             alt={`${mentor.firstName} ${mentor.lastName}`}
-                                            className="w-32 h-32 md:w-48 md:h-48 rounded-xl object-cover"
+                                            className="w-48 h-64 object-cover rounded-xl"
                                             onError={(e) => {
                                                 e.target.onerror = null;
-                                                e.target.src = `https://ui-avatars.com/api/?name=${mentor.firstName}+${mentor.lastName}&background=3b82f6&color=fff&size=200`;
+                                                e.target.src = `https://ui-avatars.com/api/?name=${mentor.firstName}+${mentor.lastName}&background=FA8AFF&color=fff&size=400`;
                                             }}
                                         />
                                     ) : (
-                                        <div className="w-32 h-32 md:w-48 md:h-48 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                                            <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
+                                        <div className="w-48 h-64 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-6xl font-bold">
+                                            {mentor.firstName?.[0]}{mentor.lastName?.[0]}
                                         </div>
                                     )}
                                 </div>
 
-                                {/* Basic Info */}
+                                {/* Mentor Info */}
                                 <div className="flex-1">
-                                    <div className="mb-4">
-                                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                            {mentor.firstName} {mentor.lastName}
-                                        </h1>
-                                        <span className="inline-block text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-1.5 rounded-full">
-                                            {mentor.currentPosition || 'Mentor'}
-                                        </span>
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div>
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <h1 className="text-4xl font-bold text-primary">
+                                                    {mentor.firstName} {mentor.lastName}
+                                                </h1>
+                                            </div>
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <div className="flex items-center gap-1 bg-secondary text-white px-4 py-2 rounded-full">
+                                                    <Star className="fill-white text-white" size={18} />
+                                                    <span className="text-lg font-semibold">5.0</span>
+                                                </div>
+                                                <span className="text-gray-600">(0 reviews)</span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    {/* Occupation Area */}
-                                    {mentor.occupationArea && (
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                            <span className="text-gray-700 font-medium">{mentor.occupationArea}</span>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 text-gray-700">
+                                            <Briefcase size={18} className="text-gray-400" />
+                                            <span className="text-lg">
+                                                {mentor.currentPosition || 'Mentor'}
+                                                {mentor.company && ` • ${mentor.company}`}
+                                            </span>
                                         </div>
-                                    )}
 
-                                    {/* University & Faculty */}
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                                            <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                        </svg>
-                                        <span className="text-gray-700 font-medium">{mentor.university || 'Independent'}</span>
-                                        {mentor.faculty && (
-                                            <span className="text-gray-500">• {mentor.faculty}</span>
+                                        {mentor.occupationArea && (
+                                            <div className="flex items-center gap-3 text-gray-700">
+                                                <MessageCircle size={18} className="text-gray-400" />
+                                                <span className="text-lg">{mentor.occupationArea}</span>
+                                            </div>
                                         )}
-                                    </div>
 
-                                    {/* Company */}
-                                    {mentor.company && (
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                            <span className="text-gray-600 text-sm">Company:</span>
-                                            <span className="text-gray-700 font-medium">{mentor.company}</span>
+                                        <div className="flex items-center gap-3 text-gray-700">
+                                            <Clock size={18} className="text-gray-400" />
+                                            <span className="text-lg">Responds within 24 hours</span>
                                         </div>
-                                    )}
-
-                                    {/* Years of Experience */}
-                                    {mentor.yearsOfExperience && (
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                            </svg>
-                                            <span className="text-gray-600 text-sm">Experience:</span>
-                                            <span className="text-gray-700 font-medium">{mentor.yearsOfExperience} years</span>
-                                        </div>
-                                    )}
-
-                                    {/* Contact */}
-                                    <div className="flex items-center gap-4 mt-4">
-                                        {mentor.linkedin && (
-                                            <a
-                                                href={mentor.linkedin}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition"
-                                            >
-                                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                                                </svg>
-                                                <span className="text-sm">LinkedIn</span>
-                                            </a>
-                                        )}
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Tags */}
+                            <div className="flex flex-wrap gap-2">
+                                {mentor.occupationArea && (
+                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                        {mentor.occupationArea}
+                                    </span>
+                                )}
+                                {mentor.university && (
+                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                        {mentor.university}
+                                    </span>
+                                )}
+                                {mentor.faculty && (
+                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                        {mentor.faculty}
+                                    </span>
+                                )}
+                                {mentor.yearsOfExperience && (
+                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                        {mentor.yearsOfExperience} years experience
+                                    </span>
+                                )}
                             </div>
                         </div>
 
                         {/* About Section */}
-                        <div className="bg-white rounded-xl shadow-sm p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">About Me</h2>
-                            <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                        <div className="bg-white rounded-2xl p-8 border-2 border-gray-200">
+                            <h2 className="text-2xl font-bold text-primary mb-4">About Me</h2>
+                            <div className="text-gray-700 leading-relaxed whitespace-pre-line">
                                 {mentor.bio || 'I am passionate about helping students achieve their academic and career goals. With my experience and expertise, I provide personalized guidance to help you navigate your educational journey and make informed decisions about your future.'}
-                            </p>
+                            </div>
                         </div>
 
-
-                        {/* Reviews Section (Placeholder) */}
-                        <div className="bg-white rounded-xl shadow-sm p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">Reviews</h2>
+                        {/* Reviews Section */}
+                        <div className="bg-white rounded-2xl p-8 border-2 border-gray-200">
+                            <h2 className="text-2xl font-bold text-primary mb-6">Reviews</h2>
                             <div className="text-center py-8 text-gray-500">
                                 <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -457,17 +482,63 @@ const MentorProfile = () => {
                         </div>
                     </div>
 
-                    {/* Right Column - Booking */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">Book a Session</h2>
+                    {/* Right Column - Booking Card */}
+                    <div className="col-span-1">
+                        <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 sticky top-8">
+                            <h3 className="text-2xl font-bold text-primary mb-6">Book a Session</h3>
 
-                            {/* Calendar */}
+                            {/* Availability Info */}
+                            {availability && (
+                                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                                    <div className="flex items-start gap-3 mb-3">
+                                        <Calendar size={18} className="text-secondary mt-1" />
+                                        <div>
+                                            <p className="text-sm text-gray-600 mb-1">Availability</p>
+                                            <p className="text-gray-900">Check calendar below</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <Clock size={18} className="text-secondary mt-1" />
+                                        <div>
+                                            <p className="text-sm text-gray-600 mb-1">Response Time</p>
+                                            <p className="text-gray-900">Within 24 hours</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Service Selection */}
+                            {services.length > 0 ? (
+                                <div className="space-y-4 mb-6">
+                                    <p className="text-sm text-gray-600 font-medium">Select session type:</p>
+                                    {services.map((service) => (
+                                        <div
+                                            key={service.id}
+                                            className={`border-2 rounded-lg p-4 hover:border-secondary transition-colors cursor-pointer ${
+                                                selectedService?.id === service.id ? 'border-secondary bg-secondary/5' : 'border-gray-200'
+                                            }`}
+                                            onClick={() => setSelectedService(service)}
+                                        >
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h4 className="text-gray-900 font-semibold">{service.mentorshipService}</h4>
+                                                <span className="text-xl font-bold text-primary">₾{service.totalPrice}</span>
+                                            </div>
+                                            <p className="text-sm text-gray-600">{service.durationMinutes} minutes</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="mb-6 p-4 bg-gray-50 rounded-lg text-center text-gray-500">
+                                    <p>This mentor has not set up services yet</p>
+                                </div>
+                            )}
+
+                            {/* Date Selection */}
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+                                <label className="block text-sm font-medium text-gray-600 mb-2">Select Date:</label>
                                 <input
                                     type="date"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary outline-none"
                                     value={selectedDate}
                                     onChange={(e) => setSelectedDate(e.target.value)}
                                     min={new Date().toISOString().split('T')[0]}
@@ -476,18 +547,19 @@ const MentorProfile = () => {
 
                             {/* Time Slots */}
                             {selectedDate && (
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Available Times</label>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-600 mb-2">Select Time:</label>
                                     {availableTimes.length > 0 ? (
                                         <div className="grid grid-cols-3 gap-2">
                                             {availableTimes.map((time, index) => (
                                                 <button
                                                     key={index}
                                                     onClick={() => setSelectedTime(time.value)}
-                                                    className={`px-3 py-2 text-sm rounded-lg transition ${selectedTime === time.value
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                        }`}
+                                                    className={`px-3 py-2 text-sm rounded-lg transition ${
+                                                        selectedTime === time.value
+                                                            ? 'bg-secondary text-white'
+                                                            : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
+                                                    }`}
                                                 >
                                                     {time.display}
                                                 </button>
@@ -501,155 +573,118 @@ const MentorProfile = () => {
                                 </div>
                             )}
 
-                            {/* Service Selection */}
-                            {services.length > 0 ? (
-                                <div className="mb-6">
-                                    <label className="block text-sm font-medium text-gray-700 mb-3">Select Service</label>
-                                    <div className="space-y-3">
-                                        {services.map((service) => (
-                                            <button
-                                                key={service.id}
-                                                onClick={() => setSelectedService(service)}
-                                                className={`w-full text-left p-4 rounded-lg border-2 transition ${selectedService?.id === service.id
-                                                    ? 'border-blue-600 bg-blue-50'
-                                                    : 'border-gray-200 hover:border-blue-300'
-                                                    }`}
-                                            >
-                                                <div className="flex justify-between items-start">
-                                                    <div className="flex-1">
-                                                        <h4 className="font-semibold text-gray-900">{service.mentorshipService}</h4>
-                                                    </div>
-                                                    <div className="text-right ml-4">
-                                                        <span className="text-lg font-bold text-blue-600">₾{service.totalPrice}</span>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="mb-6 p-4 bg-gray-50 rounded-lg text-center text-gray-500">
-                                    <p>This mentor has not set up services yet</p>
-                                </div>
-                            )}
-
                             {/* Book Button */}
-                            <div className="relative group">
-                                <button
-                                    onClick={handleBookSession}
-                                    disabled={!selectedDate || !selectedTime || !selectedService}
-                                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-purple-600"
-                                >
-                                    Book Session
-                                </button>
-                                {(!selectedDate || !selectedTime || !selectedService) && (
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                                        Please select date and time
-                                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                                            <div className="border-4 border-transparent border-t-gray-900"></div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            <button
+                                onClick={handleBookSession}
+                                disabled={!selectedDate || !selectedTime || !selectedService}
+                                className="w-full px-6 py-4 bg-secondary text-white rounded-full hover:opacity-90 transition-opacity text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Book Session
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Booking Confirmation Modal */}
+            {/* Booking Modal */}
             {showBookingModal && (
-                <>
-                    {/* Backdrop to freeze background */}
-                    <div className="fixed inset-0 bg-black bg-opacity-30 z-40"></div>
-                    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-                        <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-xl p-8 max-w-md w-full shadow-2xl">
-                            {!user ? (
-                                /* Not Authenticated */
-                                <div className="text-center">
-                                    <h3 className="text-2xl font-bold text-white mb-3">Hi!</h3>
-                                    <p className="text-lg text-blue-100 mb-6">
-                                        Please register to book the session
-                                    </p>
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={() => setShowBookingModal(false)}
-                                            className="flex-1 px-6 py-3 text-blue-700 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition font-medium"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <Link
-                                            to="/auth/register"
-                                            onClick={() => {
-                                                // Save booking details to sessionStorage to redirect back after registration
-                                                sessionStorage.setItem('redirectToMentor', mentorId);
-                                                sessionStorage.setItem('bookingDate', selectedDate);
-                                                sessionStorage.setItem('bookingTime', selectedTime);
-                                            }}
-                                            className="flex-1 px-6 py-3 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition font-medium text-center"
-                                        >
-                                            Register
-                                        </Link>
-                                    </div>
-                                </div>
-                            ) : (
-                                /* Authenticated */
-                                <>
-                                    <div className="text-center mb-6">
-                                        <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <p className="text-lg text-white">
-                                            You're scheduling the session with{' '}
-                                            <span className="font-bold">{mentor.firstName} {mentor.lastName}</span>{' '}
-                                            at{' '}
-                                            <span className="font-bold">
-                                                {new Date(selectedDate).toLocaleDateString('en-US', {
-                                                    weekday: 'long',
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}{' '}
-                                                {selectedTime && new Date(selectedTime).toLocaleTimeString('en-US', {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                    hour12: false
-                                                })}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={() => setShowBookingModal(false)}
-                                            disabled={bookingLoading}
-                                            className="flex-1 px-6 py-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-white transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={confirmBooking}
-                                            disabled={bookingLoading}
-                                            className="flex-1 px-6 py-3 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                        >
-                                            {bookingLoading ? (
-                                                <>
-                                                    <svg className="animate-spin h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                    </svg>
-                                                    Processing...
-                                                </>
-                                            ) : (
-                                                'Proceed'
-                                            )}
-                                        </button>
-                                    </div>
-                                </>
-                            )}
+                <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+                        <div className="flex justify-between items-center mb-5">
+                            <h3 className="text-xl font-bold text-primary">Confirm Booking</h3>
+                            <button
+                                className="text-gray-600 hover:text-secondary transition-colors"
+                                onClick={() => setShowBookingModal(false)}
+                                disabled={bookingLoading}
+                            >
+                                <X size={24} />
+                            </button>
                         </div>
+
+                        {!user ? (
+                            /* Not Authenticated */
+                            <div className="text-center">
+                                <h3 className="text-2xl font-bold text-primary mb-3">Hi!</h3>
+                                <p className="text-lg text-gray-600 mb-6">
+                                    Please register to book the session
+                                </p>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setShowBookingModal(false)}
+                                        className="flex-1 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition font-medium"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <Link
+                                        to="/auth/register"
+                                        onClick={() => {
+                                            // Save booking details to sessionStorage to redirect back after registration
+                                            sessionStorage.setItem('redirectToMentor', mentorId);
+                                            sessionStorage.setItem('bookingDate', selectedDate);
+                                            sessionStorage.setItem('bookingTime', selectedTime);
+                                        }}
+                                        className="flex-1 px-6 py-3 bg-secondary text-white rounded-lg hover:opacity-90 transition font-medium text-center"
+                                    >
+                                        Register
+                                    </Link>
+                                </div>
+                            </div>
+                        ) : (
+                            /* Authenticated */
+                            <>
+                                <div className="text-center mb-6">
+                                    <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Calendar className="text-secondary" size={32} />
+                                    </div>
+                                    <p className="text-lg text-gray-700">
+                                        You're scheduling a session with{' '}
+                                        <span className="font-bold text-primary">{mentor.firstName} {mentor.lastName}</span>
+                                        {' '}on{' '}
+                                        <span className="font-bold">
+                                            {new Date(selectedDate).toLocaleDateString('en-US', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}{' '}
+                                            at {selectedTime && new Date(selectedTime).toLocaleTimeString('en-US', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: false
+                                            })}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setShowBookingModal(false)}
+                                        disabled={bookingLoading}
+                                        className="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={confirmBooking}
+                                        disabled={bookingLoading}
+                                        className="flex-1 px-6 py-3 bg-secondary text-white rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    >
+                                        {bookingLoading ? (
+                                            <>
+                                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            'Confirm'
+                                        )}
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
-                </>
+                </div>
             )}
         </div>
     );

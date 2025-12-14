@@ -1,14 +1,13 @@
 // src/pages/Auth.jsx
 
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Auth = () => {
-    const [selectedRole, setSelectedRole] = useState('');
     const navigate = useNavigate();
 
     const handleRoleSelect = (role) => {
-        setSelectedRole(role);
         // Navigate to the appropriate registration page based on role
         if (role === 'student') {
             navigate('/auth/register/student');
@@ -17,57 +16,63 @@ const Auth = () => {
         }
     };
 
+    const handleNavigation = (destination) => {
+        if (destination === 'home') {
+            navigate('/');
+        }
+    };
+
+    // Role Selection Screen
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 flex flex-col">
-            {/* Header */}
-            <div className="flex justify-between items-center p-6 text-white">
-                <Link to="/" className="text-sm hover:underline">
-                    ← Back to home
-                </Link>
-                <Link to="/support" className="text-sm hover:underline">
-                    Need help?
+        <div className="min-h-screen bg-primary relative overflow-hidden">
+            {/* Top Navigation */}
+            <div className="relative z-10 max-w-[1440px] mx-auto px-8 py-4 flex justify-between items-center">
+                <button
+                    onClick={() => handleNavigation('home')}
+                    className="bg-primary text-white hover:text-secondary transition-colors flex items-center gap-2 text-sm"
+                >
+                    <ArrowLeft size={16} />
+                    <span>უკან მთავარზე</span>
+                </button>
+                <Link to="/support" className="text-white hover:text-secondary transition-colors text-sm">
+                    დახმარება?
                 </Link>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex items-center justify-center px-4">
-                <div className="text-center max-w-4xl mx-auto">
-                    {/* Main Heading */}
-                    <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-                        <span className="text-lime-400">START YOUR</span>
-                        <br />
-                        <span className="text-lime-400">JOURNEY WITH US</span>
+            <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-8">
+                <div className="text-center max-w-3xl w-full">
+                    {/* Heading */}
+                    <h1 className="text-3xl text-white mb-3">
+                        გაიარე რეგისტრაცია
                     </h1>
+                    <p className="text-white/80 mb-10">
+                        აირჩიე როგორც გსურს შემოხვიდე პლატფორმაზე
+                    </p>
 
-                    {/* Role Selection Card */}
-                    <div className="bg-blue-800/50 backdrop-blur-sm border-2 border-blue-600 rounded-2xl p-8 md:p-12 mt-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-lime-400 mb-8">
-                            SELECT YOUR ROLE
-                        </h2>
-
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button
-                                onClick={() => handleRoleSelect('student')}
-                                className="px-8 py-4 bg-white text-blue-700 font-semibold rounded-full hover:bg-lime-400 hover:text-blue-800 transition-all transform hover:scale-105"
-                            >
-                                Student
-                            </button>
-                            <button
-                                onClick={() => handleRoleSelect('mentor')}
-                                className="px-8 py-4 bg-white text-blue-700 font-semibold rounded-full hover:bg-lime-400 hover:text-blue-800 transition-all transform hover:scale-105"
-                            >
-                                Mentor
-                            </button>
-                        </div>
-
-                        <div className="mt-8 text-white/80">
-                            <p className="text-sm">
-                                Already have an account?{' '}
-                                <Link to="/auth/login" className="text-lime-400 hover:underline">
-                                    Sign in here
-                                </Link>
+                    {/* Role Cards */}
+                    <div className="grid grid-cols-2 gap-6">
+                        {/* Student Card */}
+                        <button
+                            onClick={() => handleRoleSelect('student')}
+                            className="bg-primary/60 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/20 hover:border-secondary transition-all transform hover:scale-105"
+                        >
+                            <h2 className="text-xl text-white mb-3">როგორც სტუდენტი</h2>
+                            <p className="text-sm text-white/70">
+                                იპოვე შენთვის სასურველი მენტორი და განავითარე უნარები
                             </p>
-                        </div>
+                        </button>
+
+                        {/* Mentor Card */}
+                        <button
+                            onClick={() => handleRoleSelect('mentor')}
+                            className="bg-primary/60 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/20 hover:border-secondary transition-all transform hover:scale-105"
+                        >
+                            <h2 className="text-xl text-white mb-3">როგორც მენტორი</h2>
+                            <p className="text-sm text-white/70">
+                                გაუზიარე შენი ცოდნა და გამოცდილება სტუდენტებს
+                            </p>
+                        </button>
                     </div>
                 </div>
             </div>

@@ -12,8 +12,12 @@ import Mentors from './pages/Mentors';
 import MentorProfile from './pages/MentorProfile';
 import BecomeMentor from './pages/BecomeMentor';
 import Blogs from './pages/Blogs';
+import BlogPost from './pages/BlogPost';
 import FAQ from './pages/FAQ';
 import Support from './pages/Support';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Auth Pages
 import Auth from './pages/Auth';
@@ -48,8 +52,12 @@ function App() {
               <Route path="mentor/:mentorId" element={<MentorProfile />} />
               <Route path="become-mentor" element={<BecomeMentor />} />
               <Route path="blogs" element={<Blogs />} />
+              <Route path="blog/:id" element={<BlogPost />} />
               <Route path="faq" element={<FAQ />} />
               <Route path="support" element={<Support />} />
+              <Route path="terms-of-service" element={<TermsOfService />} />
+              <Route path="cookie-policy" element={<CookiePolicy />} />
+              <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
               {/* Protected Dashboard Routes - Only accessible when logged in */}
               <Route
