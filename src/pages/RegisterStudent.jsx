@@ -158,6 +158,7 @@ const RegisterStudent = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     firstName: formData.firstName,
                     lastName: formData.lastName,
@@ -180,13 +181,13 @@ const RegisterStudent = () => {
             await checkAuth();
 
             // Check if user should be redirected back to mentor profile
-            // const redirectMentorId = sessionStorage.getItem('redirectToMentor');
-            // if (redirectMentorId) {
-            //     navigate(`/mentor/${redirectMentorId}`);
-            // } else {
-            //     // Default redirect to student dashboard
-            //     navigate('/student-dashboard');
-            // }
+            const redirectMentorId = sessionStorage.getItem('redirectToMentor');
+            if (redirectMentorId) {
+                navigate(`/mentor/${redirectMentorId}`);
+            } else {
+                // Default redirect to student dashboard
+                navigate('/student-dashboard');
+            }
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {

@@ -103,7 +103,7 @@ const WhyDifferent = () => {
     };
 
     return (
-        <section className="px-8 py-32 bg-white">
+        <section className="px-8 py-32 bg-white overflow-hidden">
             <div className="max-w-6xl mx-auto">
                 <motion.div
                     className="text-center mb-16"
@@ -112,8 +112,8 @@ const WhyDifferent = () => {
                     viewport={{ once: true, amount: 0.3 }}
                     variants={headingVariants}
                 >
-                    <h2 className="text-5xl mb-4 text-primary">რა გვაქცევს განსხვავებულებად?</h2>
-                    <p className="text-xl text-gray-600">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl mb-4 text-primary break-words">რა გვაქცევს განსხვავებულებად?</h2>
+                    <p className="text-lg sm:text-xl text-gray-600 break-words">
                         ჩვენ არ ვართ უბრალო სასწავლო პლატფორმა - ჩვენ ვქმნით მომავალს
                     </p>
                 </motion.div>
@@ -135,8 +135,8 @@ const WhyDifferent = () => {
                             >
                                 {item.icon}
                             </div>
-                            <h3 className="text-2xl mb-3 text-primary">{item.title}</h3>
-                            <p className="text-gray-600">{item.description}</p>
+                            <h3 className="text-xl sm:text-2xl mb-3 text-primary break-words">{item.title}</h3>
+                            <p className="text-gray-600 break-words">{item.description}</p>
                         </motion.div>
                     ))}
                 </motion.div>

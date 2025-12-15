@@ -258,6 +258,7 @@ const RegisterMentor = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(payload),
             });
 
@@ -271,7 +272,7 @@ const RegisterMentor = () => {
             await checkAuth();
 
             // Redirect to mentor dashboard after successful registration
-            // navigate('/mentor-dashboard');
+            navigate('/mentor-dashboard');
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {
@@ -352,21 +353,19 @@ const RegisterMentor = () => {
                             <div className="flex gap-2 mb-6 bg-white/10 p-1 rounded-full">
                                 <button
                                     onClick={() => handleRoleSelect('student')}
-                                    className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${
-                                        selectedRole === 'student'
-                                            ? 'bg-white text-primary'
-                                            : 'text-white hover:bg-white/20'
-                                    }`}
+                                    className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'student'
+                                        ? 'bg-white text-primary'
+                                        : 'text-white hover:bg-white/20'
+                                        }`}
                                 >
                                     როგორც სტუდენტი
                                 </button>
                                 <button
                                     onClick={() => handleRoleSelect('mentor')}
-                                    className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${
-                                        selectedRole === 'mentor'
-                                            ? 'bg-white text-primary'
-                                            : 'text-white hover:bg-white/20'
-                                    }`}
+                                    className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'mentor'
+                                        ? 'bg-white text-primary'
+                                        : 'text-white hover:bg-white/20'
+                                        }`}
                                 >
                                     როგორც მენტორი
                                 </button>

@@ -4,7 +4,12 @@
   --color-primary: #2764F3;
   --color-secondary: rgba(195, 196, 199, 1);
   --color-light-text: white;
-  --color-neutral-bg: #E5E5E5
+  --color-neutral-bg: #E5E5E5;
+
+  /* Custom breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
 }
 
 #root {
