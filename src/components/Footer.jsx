@@ -43,7 +43,7 @@ export function Footer() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="px-4 xs:px-8 py-20 bg-primary text-light-text">
+      <footer id="contact" className="px-4 xs:px-8 py-20 bg-secondary text-light-text">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xs:gap-12 mb-12">
             {/* Company Info */}
