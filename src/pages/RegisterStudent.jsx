@@ -249,7 +249,7 @@ const RegisterStudent = () => {
                             <button
                                 onClick={() => handleRoleSelect('student')}
                                 className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'student'
-                                    ? 'bg-white text-primary'
+                                    ? 'bg-white '
                                     : 'text-white hover:bg-white/20'
                                     }`}
                             >
@@ -258,7 +258,7 @@ const RegisterStudent = () => {
                             <button
                                 onClick={() => handleRoleSelect('mentor')}
                                 className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'mentor'
-                                    ? 'bg-white text-primary'
+                                    ? 'bg-white '
                                     : 'text-white hover:bg-white/20'
                                     }`}
                             >
@@ -395,7 +395,7 @@ const RegisterStudent = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading || !formData.agreeToTerms}
-                                className="w-full py-3 bg-white text-primary rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full py-3 bg-white  rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? 'იტვირთება...' : 'შემდეგი'}
                             </button>

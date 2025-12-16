@@ -75,7 +75,7 @@ const Support = () => {
                         </div>
                         <h3 className="text-xl mb-2 text-gray-900">ელ-ფოსტის მხარდაჭერა</h3>
                         <p className="text-gray-600 mb-4">მოგვწერე ნებისმიერ დროს</p>
-                        <a href="mailto:support@academy.ge" className="text-primary hover:text-secondary transition-colors">
+                        <a href="mailto:support@academy.ge" className=" hover:text-secondary transition-colors">
                             support@academy.ge
                         </a>
                     </div>
@@ -83,11 +83,11 @@ const Support = () => {
                     {/* Response Time Card */}
                     <div className="border-2 border-gray-200 rounded-2xl p-8 hover:border-secondary transition-colors">
                         <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                            <Clock className="text-primary" size={24} />
+                            <Clock className="" size={24} />
                         </div>
                         <h3 className="text-xl mb-2 text-gray-900">პასუხის დრო</h3>
                         <p className="text-gray-600 mb-4">ჩვეულებრივ ვპასუხობთ შემდეგში</p>
-                        <p className="text-2xl text-primary">24 საათი</p>
+                        <p className="text-2xl ">24 საათი</p>
                     </div>
                 </div>
             </section>
@@ -100,7 +100,7 @@ const Support = () => {
                         <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-6">
                             <FileText className="text-white" size={24} />
                         </div>
-                        <h2 className="text-2xl mb-4 text-primary">მხარდაჭერის ბილეთის გაგზავნა</h2>
+                        <h2 className="text-2xl mb-4 ">მხარდაჭერის ბილეთის გაგზავნა</h2>
                         <p className="text-gray-700 mb-6">
                             გახსენი ბილეთი ჩვენს მხარდაჭერის პორტალში და ჩვენი გუნდი დაგეხმარება შენს პრობლემაში.
                         </p>
@@ -148,7 +148,7 @@ const Support = () => {
                                         <span className="text-gray-900 pr-4">{faq.question}</span>
                                         <ChevronDown
                                             size={20}
-                                            className={`text-primary flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-180' : ''
+                                            className={` flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-180' : ''
                                                 }`}
                                         />
                                     </button>

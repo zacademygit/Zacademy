@@ -36,7 +36,7 @@ const FAQ = () => {
         <section className="px-8 py-32 bg-white">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-5xl mb-4 text-primary">ხშირად დასმული კითხვები</h2>
+                    <h2 className="text-5xl mb-4 ">ხშირად დასმული კითხვები</h2>
                     <p className="text-xl text-gray-600">
                         იპოვე პასუხები ყველაზე გავრცელებულ შეკითხვებზე
                     </p>
@@ -48,7 +48,7 @@ const FAQ = () => {
                                 className="w-full px-8 py-6 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
                                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                             >
-                                <span className="text-xl text-primary text-left">{faq.question}</span>
+                                <span className="text-xl  text-left">{faq.question}</span>
                                 {openIndex === index ? (
                                     <svg className="text-secondary flex-shrink-0" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />

@@ -399,7 +399,7 @@ const MentorProfile = () => {
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
                                             <div className="flex items-center gap-3 mb-3">
-                                                <h1 className="text-4xl font-bold text-primary">
+                                                <h1 className="text-4xl font-bold ">
                                                     {mentor.firstName} {mentor.lastName}
                                                 </h1>
                                             </div>
@@ -440,22 +440,22 @@ const MentorProfile = () => {
                             {/* Tags */}
                             <div className="flex flex-wrap gap-2">
                                 {mentor.occupationArea && (
-                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                    <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                         {mentor.occupationArea}
                                     </span>
                                 )}
                                 {mentor.university && (
-                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                    <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                         {mentor.university}
                                     </span>
                                 )}
                                 {mentor.faculty && (
-                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                    <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                         {mentor.faculty}
                                     </span>
                                 )}
                                 {mentor.yearsOfExperience && (
-                                    <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                    <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                         {mentor.yearsOfExperience} years experience
                                     </span>
                                 )}
@@ -464,7 +464,7 @@ const MentorProfile = () => {
 
                         {/* About Section */}
                         <div className="bg-white rounded-2xl p-8 border-2 border-gray-200">
-                            <h2 className="text-2xl font-bold text-primary mb-4">About Me</h2>
+                            <h2 className="text-2xl font-bold  mb-4">About Me</h2>
                             <div className="text-gray-700 leading-relaxed whitespace-pre-line">
                                 {mentor.bio || 'I am passionate about helping students achieve their academic and career goals. With my experience and expertise, I provide personalized guidance to help you navigate your educational journey and make informed decisions about your future.'}
                             </div>
@@ -472,7 +472,7 @@ const MentorProfile = () => {
 
                         {/* Reviews Section */}
                         <div className="bg-white rounded-2xl p-8 border-2 border-gray-200">
-                            <h2 className="text-2xl font-bold text-primary mb-6">Reviews</h2>
+                            <h2 className="text-2xl font-bold  mb-6">Reviews</h2>
                             <div className="text-center py-8 text-gray-500">
                                 <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -485,7 +485,7 @@ const MentorProfile = () => {
                     {/* Right Column - Booking Card */}
                     <div className="col-span-1">
                         <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 sticky top-8">
-                            <h3 className="text-2xl font-bold text-primary mb-6">Book a Session</h3>
+                            <h3 className="text-2xl font-bold  mb-6">Book a Session</h3>
 
                             {/* Availability Info */}
                             {availability && (
@@ -514,14 +514,13 @@ const MentorProfile = () => {
                                     {services.map((service) => (
                                         <div
                                             key={service.id}
-                                            className={`border-2 rounded-lg p-4 hover:border-secondary transition-colors cursor-pointer ${
-                                                selectedService?.id === service.id ? 'border-secondary bg-secondary/5' : 'border-gray-200'
-                                            }`}
+                                            className={`border-2 rounded-lg p-4 hover:border-secondary transition-colors cursor-pointer ${selectedService?.id === service.id ? 'border-secondary bg-secondary/5' : 'border-gray-200'
+                                                }`}
                                             onClick={() => setSelectedService(service)}
                                         >
                                             <div className="flex justify-between items-start mb-2">
                                                 <h4 className="text-gray-900 font-semibold">{service.mentorshipService}</h4>
-                                                <span className="text-xl font-bold text-primary">₾{service.totalPrice}</span>
+                                                <span className="text-xl font-bold ">₾{service.totalPrice}</span>
                                             </div>
                                             <p className="text-sm text-gray-600">{service.durationMinutes} minutes</p>
                                         </div>
@@ -555,11 +554,10 @@ const MentorProfile = () => {
                                                 <button
                                                     key={index}
                                                     onClick={() => setSelectedTime(time.value)}
-                                                    className={`px-3 py-2 text-sm rounded-lg transition ${
-                                                        selectedTime === time.value
+                                                    className={`px-3 py-2 text-sm rounded-lg transition ${selectedTime === time.value
                                                             ? 'bg-secondary text-white'
                                                             : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {time.display}
                                                 </button>
@@ -591,7 +589,7 @@ const MentorProfile = () => {
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl p-6 w-full max-w-md">
                         <div className="flex justify-between items-center mb-5">
-                            <h3 className="text-xl font-bold text-primary">Confirm Booking</h3>
+                            <h3 className="text-xl font-bold ">Confirm Booking</h3>
                             <button
                                 className="text-gray-600 hover:text-secondary transition-colors"
                                 onClick={() => setShowBookingModal(false)}
@@ -604,7 +602,7 @@ const MentorProfile = () => {
                         {!user ? (
                             /* Not Authenticated */
                             <div className="text-center">
-                                <h3 className="text-2xl font-bold text-primary mb-3">Hi!</h3>
+                                <h3 className="text-2xl font-bold  mb-3">Hi!</h3>
                                 <p className="text-lg text-gray-600 mb-6">
                                     Please register to book the session
                                 </p>
@@ -638,7 +636,7 @@ const MentorProfile = () => {
                                     </div>
                                     <p className="text-lg text-gray-700">
                                         You're scheduling a session with{' '}
-                                        <span className="font-bold text-primary">{mentor.firstName} {mentor.lastName}</span>
+                                        <span className="font-bold ">{mentor.firstName} {mentor.lastName}</span>
                                         {' '}on{' '}
                                         <span className="font-bold">
                                             {new Date(selectedDate).toLocaleDateString('en-US', {

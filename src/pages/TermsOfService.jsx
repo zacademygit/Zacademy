@@ -33,7 +33,7 @@ const TermsOfService = () => {
 
             {/* Section 1 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ტერმინთა განმარტება</h2>
+              <h2 className="text-3xl  mb-6 text-left">ტერმინთა განმარტება</h2>
               <p className="text-gray-700 mb-4 text-left">
                 წინამდებარე დოკუმენტში გამოყენებულ ტერმინებს აქვთ შემდეგი მნიშვნელობა:
               </p>
@@ -54,7 +54,7 @@ const TermsOfService = () => {
 
             {/* Section 2 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ზოგადი პირობები</h2>
+              <h2 className="text-3xl  mb-6 text-left">ზოგადი პირობები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p><strong>2.1.</strong> თრინითი გთავაზობთ ვებ-პლატფორმაზე www.z-academy.ge განთავსებულ ონლაინ სერვისებსა და ონლაინ რესურსებს (შემდგომში – „პლატფორმა").</p>
                 <p><strong>2.2.</strong> წინამდებარე მომსახურების წესები და პირობები (შემდგომში – „წესები და პირობები") წარმოადგენს თქვენსა (შემდგომში – „რეგისტრირებული მომხმარებელი") და თრინითის შორის დადებულ იურიდიული ძალის მქონე შეთანხმებას, რომელიც არეგულირებს პლატფორმის გამოყენებისა და ჩვენი სერვისების მიწოდების წესებს.</p>
@@ -67,7 +67,7 @@ const TermsOfService = () => {
 
             {/* Section 3 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მომსახურების აღწერა</h2>
+              <h2 className="text-3xl  mb-6 text-left">მომსახურების აღწერა</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p><strong>3.1</strong> პლატფორმის მეშვეობით თრინითი უზრუნველყოფს:</p>
                 <p><strong>3.1.1</strong> მენტორობის სერვისებს, პროფესიული განვითარების, კარიერის დაგეგმვისა და აკადემიური ხარისხის ამაღლების/არჩევის მიმართულებით;</p>
@@ -78,7 +78,7 @@ const TermsOfService = () => {
 
             {/* Section 4 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მომხმარებლის ტიპები</h2>
+              <h2 className="text-3xl  mb-6 text-left">მომხმარებლის ტიპები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p><strong>4.1</strong> პლატფორმის მომხმარებლები შეიძლება იყვნენ:</p>
                 <p><strong>ა)</strong> მომხმარებლები – ინდივიდები, რომლებიც სარგებლობენ მენტორის სერვისებით;</p>
@@ -90,7 +90,7 @@ const TermsOfService = () => {
 
             {/* Section 5 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ანგარიშის რეგისტრაცია</h2>
+              <h2 className="text-3xl  mb-6 text-left">ანგარიშის რეგისტრაცია</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p><strong>5.1.</strong> სესიების გამოქვეყნების ან შეძენის მიზნით, როგორც მენტორმა, ასევე მომხმარებელმა უნდა შექმნან რეგისტრირებული ანგარიშები პლატფორმაზე შესაბამისი ფორმის შევსებით და მოთხოვნილი ინფორმაციის მიწოდებით, იმ წესითა და ფორმით, რაც დადგენილია კომპანიის მიერ.</p>
                 <p><strong>5.2</strong> პლატფორმის სერვისების გამოყენება შესაძლებელია მხოლოდ რეგისტრაციის დასრულებისა და ანგარიშის აქტივაციის შემდეგ.</p>
@@ -114,7 +114,7 @@ const TermsOfService = () => {
 
             {/* Section 6 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">პლატფორმის გამოყენების წესები</h2>
+              <h2 className="text-3xl  mb-6 text-left">პლატფორმის გამოყენების წესები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p><strong>6.1</strong> მომხმარებელს/მენტორს შეუძლია პლატფორმის გამოყენება და შესაბამისი რესურსის ატვირთვა ან გაზიარება, რომელიც დაკავშირებულია მის საჭიროებებთან და მიზნებთან სესიის დაჯავშნისა და სხვა რეგისტრირებულ მომხმარებლებთან ურთიერთობის ფარგლებში.</p>
                 <p><strong>6.2</strong> მომხმარებელს არ შეუძლია პლატფორმისა და სერვისების გამოყენება ისეთი ქმედებებისთვის ან კონტენტის გაზიარებისთვის, რომელიც:</p>
@@ -132,7 +132,7 @@ const TermsOfService = () => {
 
             {/* Section 7 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">სერვისების გამოყენების უფლება</h2>
+              <h2 className="text-3xl  mb-6 text-left">სერვისების გამოყენების უფლება</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p><strong>7.1 ზოგადი წესი (სრული ქმედუნარიანობა)</strong></p>
                 <p><strong>7.1.2</strong> თრინითის სერვისები ხელმისაწვდომია მხოლოდ იმ პირებისა და ორგანიზაციებისთვის, რომლებიც ქმედუნარიანები არიან დადონ წინამდებარე გარიგება და სხვა მომსახურებასთან დაკავშირებული შეთანხმებები მომსახურების მიმწოდებელთან.</p>
@@ -146,7 +146,7 @@ const TermsOfService = () => {
 
             {/* Section 24 */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მხარდაჭერა</h2>
+              <h2 className="text-3xl  mb-6 text-left">მხარდაჭერა</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თუ მომხმარებელი მიიჩნევს, რომ პლატფორმაზე განთავსებული კონტენტი არღვევს მის უფლებებს (მათ შორის ინტელექტუალურ საკუთრებას), შეუძლია გვაცნობოს ელფოსტაზე <a href="mailto:info@z-academy.ge" className="text-secondary hover:underline">info@z-academy.ge</a> ან მომხმარებლის მხარდაჭერის პორტალზე.</p>
               </div>

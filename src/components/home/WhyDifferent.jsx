@@ -112,7 +112,7 @@ const WhyDifferent = () => {
                     viewport={{ once: true, amount: 0.3 }}
                     variants={headingVariants}
                 >
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl mb-4 text-primary break-words">რა გვაქცევს განსხვავებულებად?</h2>
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl mb-4  break-words">რა გვაქცევს განსხვავებულებად?</h2>
                     <p className="text-lg sm:text-xl text-gray-600 break-words">
                         ჩვენ არ ვართ უბრალო სასწავლო პლატფორმა - ჩვენ ვქმნით მომავალს
                     </p>
@@ -135,7 +135,7 @@ const WhyDifferent = () => {
                             >
                                 {item.icon}
                             </div>
-                            <h3 className="text-xl sm:text-2xl mb-3 text-primary break-words">{item.title}</h3>
+                            <h3 className="text-xl sm:text-2xl mb-3  break-words">{item.title}</h3>
                             <p className="text-gray-600 break-words">{item.description}</p>
                         </motion.div>
                     ))}

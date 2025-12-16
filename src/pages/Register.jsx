@@ -50,13 +50,13 @@ const Auth = () => {
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button
                                 onClick={() => handleRoleSelect('student')}
-                                className="px-8 py-3 rounded-full transition-all bg-secondary text-white hover:bg-white hover:text-primary hover:scale-105"
+                                className="px-8 py-3 rounded-full transition-all bg-secondary text-white hover:bg-white hover: hover:scale-105"
                             >
                                 Student
                             </button>
                             <button
                                 onClick={() => handleRoleSelect('mentor')}
-                                className="px-8 py-3 rounded-full transition-all bg-secondary text-white hover:bg-white hover:text-primary hover:scale-105"
+                                className="px-8 py-3 rounded-full transition-all bg-secondary text-white hover:bg-white hover: hover:scale-105"
                             >
                                 Mentor
                             </button>

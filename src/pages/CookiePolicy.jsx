@@ -38,7 +38,7 @@ const CookiePolicy = () => {
 
             {/* Section 1: Definitions */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">განსაზღვრებები</h2>
+              <h2 className="text-3xl  mb-6 text-left">განსაზღვრებები</h2>
               <p className="text-gray-700 mb-4 text-left">
                 წინამდებარე დოკუმენტში გამოყენებულ ტერმინებს აქვთ შემდეგი მნიშვნელობა:
               </p>
@@ -55,7 +55,7 @@ const CookiePolicy = () => {
 
             {/* Section 2: General Information */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ზოგადი ინფორმაცია</h2>
+              <h2 className="text-3xl  mb-6 text-left">ზოგადი ინფორმაცია</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>ჩვენი ვებ-გვერდი www.z-academy.ge იყენებს Cookie ფაილებს მხოლოდ იმ მიზნით, რომ გავაუმჯობესოთ პლატფორმის ფუნქციონირება და მომხმარებელთა გამოცდილება. Cookie ფაილი არის მცირე ტექსტური ფაილი, რომელიც შენახულია მომხმარებლის მოწყობილობაზე და ხელს უწყობს საიტის მუშაობას.</p>
               </div>
@@ -63,7 +63,7 @@ const CookiePolicy = () => {
 
             {/* Section 3: Used Cookies */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">გამოყენებული Cookie ფაილები</h2>
+              <h2 className="text-3xl  mb-6 text-left">გამოყენებული Cookie ფაილები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>ჩვენ ვიყენებთ მხოლოდ Google Analytics-ის Cookie ფაილებს, რომლებიც საშუალებას გვაძლევს:</p>
                 <ul className="list-disc pl-6 space-y-3">
@@ -79,7 +79,7 @@ const CookiePolicy = () => {
 
             {/* Section 4: Cookie Management */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">Cookie ფაილების მართვა</h2>
+              <h2 className="text-3xl  mb-6 text-left">Cookie ფაილების მართვა</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თქვენ შეგიძლიათ ნებისმიერ დროს გაააქტიუროთ ან დაბლოკოთ Cookie ფაილები თქვენი ბრაუზერის პარამეტრებიდან.</p>
                 <p className="bg-yellow-50 p-4 rounded-lg border-l-4 border-secondary">
@@ -90,7 +90,7 @@ const CookiePolicy = () => {
 
             {/* Section 5: Third Party Sharing */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მესამე პირებთან გაზიარება</h2>
+              <h2 className="text-3xl  mb-6 text-left">მესამე პირებთან გაზიარება</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>Cookie მონაცემებს ამუშავებს მხოლოდ Google LLC, როგორც მესამე პირი, და მხოლოდ ანონიმურ ფორმატში. Google Analytics-ის მომსახურება რეგულირდება Google-ის კონფიდენციალურობის პოლიტიკით.</p>
               </div>
@@ -98,7 +98,7 @@ const CookiePolicy = () => {
 
             {/* Section 6: Changes to Cookie Policy */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ცვლილებები Cookie პოლიტიკაში</h2>
+              <h2 className="text-3xl  mb-6 text-left">ცვლილებები Cookie პოლიტიკაში</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თრინითი იტოვებს უფლებას, საჭიროების შემთხვევაში განაახლოს წინამდებარე პოლიტიკა.</p>
                 <p>დოკუმენტში ცვლილებები შეიტანება ვებ გვერდზე გამოქვეყნების გზით და ცვლილებებს უნდა გაეცნოთ პერიოდულად. ცვლილებების შესახებ პერსონალურად გეცნობებათ მხოლოდ იმ შემთხვევაში, თუ ეს ვალდებულება გამომდინარეობს მოქმედი კანონმდებლობიდან.</p>
@@ -107,7 +107,7 @@ const CookiePolicy = () => {
 
             {/* Section 7: Language Version */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ენების ვერსია</h2>
+              <h2 className="text-3xl  mb-6 text-left">ენების ვერსია</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>დოკუმენტი შეიძლება ხელმისაწვდომი იყოს სხვადასხვა ენაზე. შეუსაბამობის შემთხვევაში უპირატესობა ენიჭება ქართულ ვერსიას.</p>
               </div>

@@ -15,7 +15,7 @@ export function Footer() {
       {/* Newsletter Section */}
       <section className="px-4 xs:px-8 py-16 bg-white">
         <div className="max-w-2xl mx-auto text-center">
-          <h3 className="text-xl xs:text-2xl text-primary mb-3">გამოიწერეთ ჩვენი სიახლეები</h3>
+          <h3 className="text-xl xs:text-2xl  mb-3">გამოიწერეთ ჩვენი სიახლეები</h3>
           <p className="text-sm xs:text-base text-gray-700 mb-6">იყავით განახლებული ჩვენი უახლესი სიახლეებითა და ექსკლუზიური შეთავაზებებით</p>
           <div className="flex flex-col xs:flex-row gap-3 max-w-md mx-auto mb-4">
             <input

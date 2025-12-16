@@ -212,7 +212,7 @@ const FAQ = () => {
                         {faqCategories.map((category, categoryIndex) => (
                             <div key={categoryIndex}>
                                 <div className="mb-8">
-                                    <h2 className="text-3xl text-primary mb-2">{category.category}</h2>
+                                    <h2 className="text-3xl  mb-2">{category.category}</h2>
                                     <div className="w-20 h-1 bg-secondary"></div>
                                 </div>
 
@@ -225,7 +225,7 @@ const FAQ = () => {
                                                     className="w-full px-8 py-6 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors"
                                                     onClick={() => toggleQuestion(categoryIndex, questionIndex)}
                                                 >
-                                                    <span className="text-lg text-primary text-left">{faq.question}</span>
+                                                    <span className="text-lg  text-left">{faq.question}</span>
                                                     {openIndex === key ? (
                                                         <Minus className="text-secondary flex-shrink-0" size={24} />
                                                     ) : (
@@ -259,7 +259,7 @@ const FAQ = () => {
                         <button className="px-8 py-4 bg-secondary text-white rounded-full hover:opacity-90 transition-opacity">
                             დაგვიკავშირდი
                         </button>
-                        <button className="px-8 py-4 bg-white text-primary rounded-full hover:bg-white/90 transition-colors">
+                        <button className="px-8 py-4 bg-white  rounded-full hover:bg-white/90 transition-colors">
                             ელ-ფოსტის გაგზავნა
                         </button>
                     </div>

@@ -63,7 +63,7 @@ const Layout = () => {
     return (
         <div className="min-h-screen flex flex-col">
             {/* Header/Navigation */}
-            <header className="sticky top-0 z-50 w-full bg-primary">
+            <header className="sticky top-0 z-50 w-full bg-neutral-bg">
                 <div className="px-8 py-6">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
@@ -76,13 +76,13 @@ const Layout = () => {
                         {/* Desktop Navigation (Hidden on dashboard pages) */}
                         {/* {!isDashboardPage && ( */}
                         <div className="hidden md:flex items-center gap-8">
-                            <Link to="/mentors" className="text-light-text hover:text-light-text/80 transition-colors">
+                            <Link to="/mentors" className="transition-colors">
                                 {language === "en" ? "Mentorship" : "მენტორები"}
                             </Link>
-                            <Link to="/blogs" className="text-light-text hover:text-light-text/80 transition-colors">
+                            <Link to="/blogs" className="transition-colors">
                                 {language === "en" ? "Blog" : "ბლოგი"}
                             </Link>
-                            <Link to="/about" className="text-light-text hover:text-light-text/80 transition-colors">
+                            <Link to="/about" className=" transition-colors">
                                 {language === "en" ? "About Us" : "ჩვენს შესახებ"}
                             </Link>
                             {/* {user?.userType !== 'mentor' && (
@@ -90,10 +90,10 @@ const Layout = () => {
                                         {language === "en" ? "Become Mentor" : "გახდი მენტორი"}
                                     </Link>
                                 )} */}
-                            <Link to="/faq" className="text-light-text hover:text-light-text/80 transition-colors">
+                            <Link to="/faq" className="transition-colors">
                                 {language === "en" ? "FAQ" : "კითხვები"}
                             </Link>
-                            <Link to="/support" className="text-light-text hover:text-light-text/80 transition-colors">
+                            <Link to="/support" className="transition-colors">
                                 {language === "en" ? "Support" : "დახმარება"}
                             </Link>
 
@@ -101,19 +101,14 @@ const Layout = () => {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => switchLanguage("en")}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "en"
-                                        ? "text-light-text"
-                                        : "text-black hover:text-gray-700"
-                                        }`}
+                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition`
+                                    }
                                 >
                                     EN
                                 </button>
                                 <button
                                     onClick={() => switchLanguage("ka")}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "ka"
-                                        ? "text-light-text"
-                                        : "text-black hover:text-gray-700"
-                                        }`}
+                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition `}
                                 >
                                     KA
                                 </button>
@@ -353,23 +348,23 @@ const Layout = () => {
                         </nav>
                     )}
                 </div>
-            </header>
+            </header >
 
             {/* Main Content */}
-            <main className="flex-1">
+            <main main className="flex-1" >
                 <Outlet />
-            </main>
+            </main >
 
             {/* Footer */}
-            <Footer />
+            < Footer />
 
             {/* Fixed Support Button */}
-            <button className="fixed bottom-8 right-8 bg-blue-600 text-light-text p-4 rounded-full shadow-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 z-40">
+            <button button className="fixed bottom-8 right-8 bg-blue-600 text-light-text p-4 rounded-full shadow-xl hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 z-40" >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-            </button>
-        </div>
+            </button >
+        </div >
     );
 };
 

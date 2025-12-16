@@ -38,7 +38,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 1: Definitions */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">განსაზღვრებები</h2>
+              <h2 className="text-3xl  mb-6 text-left">განსაზღვრებები</h2>
               <p className="text-gray-700 mb-4 text-left">
                 წინამდებარე დოკუმენტში გამოყენებულ ტერმინებს აქვთ შემდეგი მნიშვნელობა:
               </p>
@@ -56,7 +56,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 2: General Conditions */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ზოგადი პირობები</h2>
+              <h2 className="text-3xl  mb-6 text-left">ზოგადი პირობები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>წინამდებარე დოკუმენტი წარმოადგენს შპს „თრინითი ლაბს"-ის პერსონალურ მონაცემთა დაცვის პოლიტიკას (შემდგომში — „პოლიტიკა").</p>
                 <p>ჩვენ, შპს „თრინითი ლაბს", ვართ შეზღუდული პასუხისმგებლობის საზოგადოება, რეგისტრირებული საქართველოს კანონმდებლობის შესაბამისად, საიდენტიფიკაციო ნომრით 406536208 (შემდგომში — „თრინითი" ან „ჩვენ").</p>
@@ -70,7 +70,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 3: Subject Rights */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მონაცემთა სუბიექტის უფლებები</h2>
+              <h2 className="text-3xl  mb-6 text-left">მონაცემთა სუბიექტის უფლებები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თრინითი აღიარებს და იცავს ყველა იმ უფლებას, რომელიც განსაზღვრულია საქართველოს მოქმედი პერსონალურ მონაცემთა დაცვის კანონმდებლობით.</p>
                 <p>მონაცემთა სუბიექტს უფლება აქვს ისარგებლოს კანონით დადგენილი ყველა მექანიზმით, მათ შორის ინფორმაცია მიიღოს დამუშავების შესახებ, მოითხოვოს მონაცემების შესწორება, წაშლა ან დამუშავების შეზღუდვა, ასევე გაიხმოს თანხმობა.</p>
@@ -80,7 +80,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 4: Data Collection */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მონაცემთა შეგროვება</h2>
+              <h2 className="text-3xl  mb-6 text-left">მონაცემთა შეგროვება</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თრინითი აგროვებს, ამუშავებს და ინახავს რეგისტრირებული მომხმარებლის მიერ პლატფორმის მეშვეობით მოწოდებულ პერსონალურ მონაცემებს საქართველოს მოქმედი პერსონალურ მონაცემთა დაცვის კანონმდებლობის შესაბამისად.</p>
                 <p><strong>შეგროვებული მონაცემების შესაძლო კატეგორიები:</strong></p>
@@ -97,7 +97,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 5: Data Processing Purpose */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მონაცემთა დამუშავების მიზნობრიობა</h2>
+              <h2 className="text-3xl  mb-6 text-left">მონაცემთა დამუშავების მიზნობრიობა</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თუ თქვენ თრინითს მიაწოდებთ თქვენს პერსონალურ მონაცემებს ჩვენი სარეგისტრაციო ფორმის მეშვეობით, თქვენ აცხადებთ თანხმობას, რომ თრინითიმ შეინახოს და გამოიყენოს ეს მონაცემები შემდეგი მიზნებისთვის:</p>
                 <ul className="list-disc pl-6 space-y-2">
@@ -113,7 +113,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 6: Data Security */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მონაცემთა უსაფრთხოება</h2>
+              <h2 className="text-3xl  mb-6 text-left">მონაცემთა უსაფრთხოება</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თრინითი იყენებს ტექნოლოგიური და ორგანიზაციული უსაფრთხოების ზომებს, რათა დაიცვას თქვენი პერსონალური მონაცემები შემთხვევითი ან განზრახ დაკარგვისგან ან განადგურებისგან ან არაუფლებამოსილი პირების მხრიდან წვდომისგან.</p>
                 <p>ჩვენ მუდმივად ვანახლებთ ჩვენი უსაფრთხოების ზომებს ტექნოლოგიური განვითარების შესაბამისად.</p>
@@ -122,7 +122,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 7: Data Retention */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">💾 მონაცემთა შენახვის ვადები</h2>
+              <h2 className="text-3xl  mb-6 text-left">💾 მონაცემთა შენახვის ვადები</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>ჩვენ ვინახავთ პერსონალურ მონაცემებს მხოლოდ იმ ვადით, რაც აუცილებელია მათი დამუშავების მიზნების მისაღწევად, ან კანონით დადგენილი სავალდებულო ვადის განმავლობაში. ვადების გასვლის შემდეგ მონაცემები წაიშლება ან დამუშავება შეიზღუდება მოქმედი ნორმების შესაბამისად.</p>
 
@@ -164,7 +164,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 8: Data Transfer */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">მონაცემთა გადაცემა მესამე პირებზე და საზღვარგარეთ</h2>
+              <h2 className="text-3xl  mb-6 text-left">მონაცემთა გადაცემა მესამე პირებზე და საზღვარგარეთ</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>ჩვენს პლატფორმაზე მოქმედმა მენტორებმა შესაძლოა მიიღონ წვდომა მომხმარებელთა გარკვეულ პერსონალურ მონაცემებზე (სახელი, გვარი, იმეილი, ასაკი) მხოლოდ იმ მოცულობით, რაც აუცილებელია მომსახურების გაწევისთვის.</p>
                 <p>მესამე პირები (მათ შორის უცხოეთში მდებარე ტექნიკური მომსახურების პროვაიდერები) არჩეულია იმ პირობით, რომ იძლევიან სათანადო გარანტიას მონაცემთა დაცვის შესახებ.</p>
@@ -174,11 +174,11 @@ const PrivacyPolicy = () => {
 
             {/* Section 9: Contact Information */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">საკონტაქტო ინფორმაცია</h2>
+              <h2 className="text-3xl  mb-6 text-left">საკონტაქტო ინფორმაცია</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>პერსონალურ მონაცემთა დამუშავებასთან დაკავშირებული ნებისმიერი შეკითხვა ან მოთხოვნა შეგიძლიათ გამოგვიგზავნოთ შემდეგ მისამართზე:</p>
                 <div className="flex items-center gap-3 bg-blue-50 p-4 rounded-lg">
-                  <Mail className="w-6 h-6 text-primary" />
+                  <Mail className="w-6 h-6 " />
                   <a href="mailto:info@z-academy.ge" className="text-secondary hover:underline text-xl">
                     info@z-academy.ge
                   </a>
@@ -189,7 +189,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 10: Policy Updates */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">პოლიტიკის განახლება</h2>
+              <h2 className="text-3xl  mb-6 text-left">პოლიტიკის განახლება</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>თრინითი იტოვებს უფლებას, საჭიროების შემთხვევაში განაახლოს წინამდებარე პოლიტიკა.</p>
                 <p>დოკუმენტში ცვლილებები შეიტანება ვებ გვერდზე გამოქვეყნების გზით და ცვლილებებს უნდა გაეცნოთ პერიოდულად. ცვლილებების შესახებ პერსონალურად გეცნობებათ მხოლოდ იმ შემთხვევაში, თუ ეს ვალდებულება გამომდინარეობს მოქმედი კანონმდებლობიდან.</p>
@@ -198,7 +198,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 11: Direct Marketing */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">პირდაპირი მარკეტინგი</h2>
+              <h2 className="text-3xl  mb-6 text-left">პირდაპირი მარკეტინგი</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>ჩვენი მომსახურებების, პაკეტებისა და შეთავაზებების პირდაპირი მარკეტინგის მიზნით, ჩვენ პერიოდულად გამოგიგზავნით წერილობით შეტყობინებებს სარეგისტრაციო ფორმაში თქვენ მიერ მითითებულ საკონტაქტო მობილურის ნომერსა და ელექტრონულ ფოსტზე, ასევე პლატფორმაზე თქვენთვის გამოყოფილ პირად გვერდზე.</p>
                 <p>პირდაპირი მარკეტინგის შესახებ თანხმობის მიღება ხდება დამოუკიდებლად ელექტრონულად.</p>
@@ -211,7 +211,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 12: Cookies */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">„მზა ჩანაწერები" (Cookies)</h2>
+              <h2 className="text-3xl  mb-6 text-left">„მზა ჩანაწერები" (Cookies)</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>პლატფორმაზე მომხმარებელთა ქცევის მონიტორინგი შესაძლოა განვახორციელოთ ე.წ. „მზა ჩანაწერების" (cookies-ის) საშუალებით იმისათვის, რომ ვიზიტორებს გავუადვილოთ ვებ გვერდით სარგებლობა და გავაუმჯობესოთ მისი ფუნქციონირების ხარისხი.</p>
                 <p>„მზა ჩანაწერები" მცირე ზომის ფაილებია, რომლებიც საიტზე ვიზიტისას ინახება მომხმარებლის კომპიუტერში, პლანშეტში ან მობილურ მოწყობილობაში. ისინი რჩება თქვენს მოწყობილობაში და საიტს უბრუნდება, როცა კვლავ ეწვევით იმავე მისამართს.</p>
@@ -221,7 +221,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 13: Minors */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">არასრულწოლვნის რეგისტრაცია და მონაცემების დამუშავება</h2>
+              <h2 className="text-3xl  mb-6 text-left">არასრულწოლვნის რეგისტრაცია და მონაცემების დამუშავება</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>პლატფორმაზე რეგისტრაცია დაშვებულია მხოლოდ 16 წლის და უფროსი ასაკის პირებისთვის. 16 წლამდე ასაკის პირების მონაცემთა დამუშავება არ ხორციელდება.</p>
                 <p className="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
@@ -232,7 +232,7 @@ const PrivacyPolicy = () => {
 
             {/* Section 14: Language Version */}
             <section className="mb-12">
-              <h2 className="text-3xl text-primary mb-6 text-left">ენების ვერსია</h2>
+              <h2 className="text-3xl  mb-6 text-left">ენების ვერსია</h2>
               <div className="space-y-4 text-gray-700 text-left">
                 <p>დოკუმენტი შეიძლება ხელმისაწვდომი იყოს სხვადასხვა ენაზე. შეუსაბამობის შემთხვევაში უპირატესობა ენიჭება ქართულ ვერსიას.</p>
               </div>

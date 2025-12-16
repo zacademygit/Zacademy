@@ -97,7 +97,7 @@ const About = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-primary mb-6 text-4xl font-bold">ჩვენი მისია</h2>
+              <h2 className=" mb-6 text-4xl font-bold">ჩვენი მისია</h2>
               <p className="text-gray-700 mb-4 leading-relaxed">
                 ჩვენი მისიაა დავუკავშიროთ ერთმანეთს ახალგაზრდა ნიჭიერი ადამიანები და
                 გამოცდილი პროფესიონალები, რათა შევქმნათ საქართველოში ძლიერი მენტორშიპის
@@ -124,7 +124,7 @@ const About = () => {
       <section className="px-8 py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <motion.h2
-            className="text-primary text-center mb-16 text-4xl font-bold"
+            className=" text-center mb-16 text-4xl font-bold"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
@@ -147,7 +147,7 @@ const About = () => {
               <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Users className="text-secondary" size={32} />
               </div>
-              <h3 className="text-primary mb-4 text-xl font-bold">თანამშრომლობა</h3>
+              <h3 className=" mb-4 text-xl font-bold">თანამშრომლობა</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 ვქმნით გარემოს, სადაც ცოდნის გაზიარება და ურთიერთდახმარება
                 ფასდაუდებელია
@@ -161,7 +161,7 @@ const About = () => {
               <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Target className="text-secondary" size={32} />
               </div>
-              <h3 className="text-primary mb-4 text-xl font-bold">მიზანზე ორიენტირება</h3>
+              <h3 className=" mb-4 text-xl font-bold">მიზანზე ორიენტირება</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 ვეხმარებით თითოეულ სტუდენტს განსაზღვროს და მიაღწიოს თავის
                 კარიერულ მიზნებს
@@ -175,7 +175,7 @@ const About = () => {
               <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Award className="text-secondary" size={32} />
               </div>
-              <h3 className="text-primary mb-4 text-xl font-bold">ხარისხი</h3>
+              <h3 className=" mb-4 text-xl font-bold">ხარისხი</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 ყველა მენტორი გადის გადამოწმებას, რათა უზრუნველყოფილი იყოს
                 მაღალი ხარისხის მომსახურება
@@ -189,7 +189,7 @@ const About = () => {
               <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="text-secondary" size={32} />
               </div>
-              <h3 className="text-primary mb-4 text-xl font-bold">ზრუნვა</h3>
+              <h3 className=" mb-4 text-xl font-bold">ზრუნვა</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 ჩვენთვის მნიშვნელოვანია თითოეული წევრის პირადი და
                 პროფესიული განვითარება
@@ -202,12 +202,12 @@ const About = () => {
       {/* Story Section */}
       <section className="px-8 py-24 bg-white">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-primary text-center mb-12 text-4xl font-bold">ჩვენი ისტორია</h2>
+          <h2 className=" text-center mb-12 text-4xl font-bold">ჩვენი ისტორია</h2>
 
           <div className="space-y-8">
             <div className="border-l-4 border-secondary pl-8">
               <div className="text-secondary mb-2 font-semibold">2023 წელი</div>
-              <h3 className="text-primary mb-3 text-2xl font-bold">დაფუძნება</h3>
+              <h3 className=" mb-3 text-2xl font-bold">დაფუძნება</h3>
               <p className="text-gray-700 leading-relaxed">
                 პლატფორმა შეიქმნა იდეით, რომ ყველა სტუდენტს უნდა ჰქონდეს წვდომა
                 ხარისხიან მენტორშიპზე. დავიწყეთ მცირე ჯგუფით ენთუზიაზმით სავსე
@@ -217,7 +217,7 @@ const About = () => {
 
             <div className="border-l-4 border-secondary pl-8">
               <div className="text-secondary mb-2 font-semibold">2024 წელი</div>
-              <h3 className="text-primary mb-3 text-2xl font-bold">ზრდა და განვითარება</h3>
+              <h3 className=" mb-3 text-2xl font-bold">ზრდა და განვითარება</h3>
               <p className="text-gray-700 leading-relaxed">
                 პლატფორმამ მიიღო ათასობით სტუდენტის ნდობა. გავაფართოვეთ მენტორების
                 ბაზა და დავამატეთ ახალი ფუნქციონალები, რათა უკეთ მოვემსახურეთ ჩვენს
@@ -227,7 +227,7 @@ const About = () => {
 
             <div className="border-l-4 border-secondary pl-8">
               <div className="text-secondary mb-2 font-semibold">2025 წელი</div>
-              <h3 className="text-primary mb-3 text-2xl font-bold">ახალი ეტაპი</h3>
+              <h3 className=" mb-3 text-2xl font-bold">ახალი ეტაპი</h3>
               <p className="text-gray-700 leading-relaxed">
                 დღეს ჩვენ ვართ საქართველოს უმსხვილესი მენტორშიპის პლატფორმა, რომელიც
                 აერთიანებს 1000+ მენტორს და ათასობით სტუდენტს. ჩვენი მიზანია
@@ -261,7 +261,7 @@ const About = () => {
             </button>
             <button
               onClick={() => navigate('/auth/register/mentor')}
-              className="px-8 py-3 bg-white text-primary rounded-full hover:opacity-90 transition-opacity font-semibold"
+              className="px-8 py-3 bg-white  rounded-full hover:opacity-90 transition-opacity font-semibold"
             >
               გახდი მენტორი
             </button>

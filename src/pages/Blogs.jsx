@@ -308,66 +308,66 @@ const Blogs = () => {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {blogPosts.map((post) => (
-                        <article
-                            key={post.id}
-                            onClick={() => handleBlogClick(post.id)}
-                            className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-secondary transition-all duration-300 hover:shadow-xl cursor-pointer group"
-                        >
-                            {/* Visual */}
-                            <div className="h-48 bg-gray-50 relative overflow-hidden">
-                                <BlogVisual type={post.visualType} />
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-6">
-                                {/* Category */}
-                                <div className="inline-block px-3 py-1 text-secondary bg-secondary/10 rounded-full text-sm mb-4">
-                                    {post.category}
+                            <article
+                                key={post.id}
+                                onClick={() => handleBlogClick(post.id)}
+                                className="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden hover:border-secondary transition-all duration-300 hover:shadow-xl cursor-pointer group"
+                            >
+                                {/* Visual */}
+                                <div className="h-48 bg-gray-50 relative overflow-hidden">
+                                    <BlogVisual type={post.visualType} />
                                 </div>
 
-                                {/* Title */}
-                                <h3 className="text-xl text-primary mb-3 group-hover:text-secondary transition-colors">
-                                    {post.title}
-                                </h3>
+                                {/* Content */}
+                                <div className="p-6">
+                                    {/* Category */}
+                                    <div className="inline-block px-3 py-1 text-secondary bg-secondary/10 rounded-full text-sm mb-4">
+                                        {post.category}
+                                    </div>
 
-                                {/* Excerpt */}
-                                <p className="text-gray-600 mb-4 line-clamp-3">
-                                    {post.excerpt}
-                                </p>
+                                    {/* Title */}
+                                    <h3 className="text-xl  mb-3 group-hover:text-secondary transition-colors">
+                                        {post.title}
+                                    </h3>
 
-                                {/* Meta Info */}
-                                <div className="flex flex-col gap-2 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-200">
-                                    <div className="flex items-center gap-2">
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    {/* Excerpt */}
+                                    <p className="text-gray-600 mb-4 line-clamp-3">
+                                        {post.excerpt}
+                                    </p>
+
+                                    {/* Meta Info */}
+                                    <div className="flex flex-col gap-2 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-200">
+                                        <div className="flex items-center gap-2">
+                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            <span>{post.author}</span>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>{post.date}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span>{post.readTime}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Read More */}
+                                    <button className="flex items-center gap-2  group-hover:text-secondary transition-colors">
+                                        <span>ვრცლად</span>
+                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                         </svg>
-                                        <span>{post.author}</span>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2">
-                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <span>{post.date}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <span>{post.readTime}</span>
-                                        </div>
-                                    </div>
+                                    </button>
                                 </div>
-
-                                {/* Read More */}
-                                <button className="flex items-center gap-2 text-primary group-hover:text-secondary transition-colors">
-                                    <span>ვრცლად</span>
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" className="group-hover:translate-x-1 transition-transform">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </article>
+                            </article>
                         ))}
                     </div>
                 </div>

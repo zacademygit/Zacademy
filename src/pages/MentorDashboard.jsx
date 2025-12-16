@@ -131,11 +131,10 @@ const MentorDashboard = () => {
                                 <li key={item.id}>
                                     <button
                                         onClick={() => setActiveSection(item.id)}
-                                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3 ${
-                                            activeSection === item.id
+                                        className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center gap-3 ${activeSection === item.id
                                                 ? 'bg-primary text-white'
                                                 : 'hover:bg-gray-100 text-gray-700'
-                                        }`}
+                                            }`}
                                     >
                                         <span className={activeSection === item.id ? 'text-white' : 'text-gray-500'}>
                                             {item.icon}
@@ -164,7 +163,7 @@ const MentorDashboard = () => {
                     <div className="p-6 border-t border-gray-200">
                         <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg p-4">
                             <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                                <HelpCircle size={20} className="text-primary" />
+                                <HelpCircle size={20} className="" />
                                 დახმარება
                             </h4>
                             <p className="text-sm text-gray-600 mb-3">
@@ -172,7 +171,7 @@ const MentorDashboard = () => {
                             </p>
                             <a
                                 href="/support"
-                                className="text-sm text-primary font-medium hover:text-secondary transition-colors"
+                                className="text-sm  font-medium hover:text-secondary transition-colors"
                             >
                                 დახმარების ცენტრი →
                             </a>

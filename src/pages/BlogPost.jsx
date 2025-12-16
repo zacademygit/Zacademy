@@ -71,7 +71,7 @@ const BlogPost = () => {
           {/* Back Button */}
           <button
             onClick={() => navigate('/blogs')}
-            className="flex items-center gap-2 text-primary hover:text-secondary transition-colors mb-8"
+            className="flex items-center gap-2  hover:text-secondary transition-colors mb-8"
           >
             <ArrowLeft size={20} />
             <span>უკან ბლოგზე</span>
@@ -83,7 +83,7 @@ const BlogPost = () => {
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl text-primary mb-6 text-left">
+          <h1 className="text-5xl  mb-6 text-left">
             {postData.title}
           </h1>
 
@@ -114,7 +114,7 @@ const BlogPost = () => {
             </button>
             <button
               onClick={handleBookmark}
-              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-primary  rounded-full hover:bg-primary hover:text-white transition-colors"
             >
               <Bookmark size={20} />
               <span>შენახვა</span>
@@ -131,7 +131,7 @@ const BlogPost = () => {
             {/* Sections */}
             {content.sections.map((section, index) => (
               <div key={index} className="mb-10">
-                <h2 className="text-3xl text-primary mb-4 text-left">
+                <h2 className="text-3xl  mb-4 text-left">
                   {section.heading}
                 </h2>
                 <p className="text-gray-700 leading-relaxed whitespace-pre-line text-left">
@@ -142,7 +142,7 @@ const BlogPost = () => {
 
             {/* Conclusion */}
             <div className="mt-12 p-8 bg-primary/5 rounded-2xl border-2 border-primary/10">
-              <h2 className="text-3xl text-primary mb-4 text-left">დასკვნა</h2>
+              <h2 className="text-3xl  mb-4 text-left">დასკვნა</h2>
               <p className="text-gray-700 leading-relaxed whitespace-pre-line text-left">
                 {content.conclusion}
               </p>
@@ -151,13 +151,13 @@ const BlogPost = () => {
 
           {/* Author Bio */}
           <div className="mt-12 p-8 bg-gray-50 rounded-2xl">
-            <h3 className="text-2xl text-primary mb-4 text-left">ავტორის შესახებ</h3>
+            <h3 className="text-2xl  mb-4 text-left">ავტორის შესახებ</h3>
             <div className="flex items-start gap-4">
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-white text-2xl">
                 {postData.author.charAt(0)}
               </div>
               <div>
-                <p className="text-xl text-primary mb-2">{postData.author}</p>
+                <p className="text-xl  mb-2">{postData.author}</p>
                 <p className="text-gray-600">
                   პროფესიონალი მენტორი და ექსპერტი {postData.category.toLowerCase()} სფეროში. აქტიურად წერს და იზიარებს ცოდნას პროფესიული განვითარების თემაზე.
                 </p>

@@ -48,7 +48,7 @@ const TopMentors = () => {
         <section className="bg-white px-8 py-32">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-5xl mb-4 text-primary">ჩვენი საუკეთესო მენტორები</h2>
+                    <h2 className="text-5xl mb-4 ">ჩვენი საუკეთესო მენტორები</h2>
                     <p className="text-xl text-gray-600">
                         გაეცანი პროფესიონალებს, რომლებიც დაგეხმარებიან შენს წარმატებაში
                     </p>
@@ -69,7 +69,7 @@ const TopMentors = () => {
                                     {mentor.rating}
                                 </div>
                             </div>
-                            <h3 className="text-xl mb-1 text-primary text-center">{mentor.name}</h3>
+                            <h3 className="text-xl mb-1  text-center">{mentor.name}</h3>
                             <p className="text-gray-600 text-center mb-1">{mentor.title}</p>
                             <p className="text-sm text-gray-500 text-center mb-4">{mentor.company}</p>
 

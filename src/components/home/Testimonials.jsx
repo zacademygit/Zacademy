@@ -100,7 +100,7 @@ const Testimonials = () => {
                     viewport={{ once: true, amount: 0.3 }}
                     variants={headingVariants}
                 >
-                    <h2 className="text-5xl mb-4 text-primary">რას ამბობენ ჩვენი კლიენტები</h2>
+                    <h2 className="text-5xl mb-4 ">რას ამბობენ ჩვენი კლიენტები</h2>
                     <p className="text-xl text-gray-600">
                         ნუ მიიღებთ მხოლოდ ჩვენს სიტყვას - მოისმინეთ ჩვენი კმაყოფილი კლიენტებისგან
                     </p>
@@ -119,7 +119,7 @@ const Testimonials = () => {
                             variants={cardVariants}
                         >
                             <svg
-                                className={`mb-4 ${index % 4 === 0 ? 'text-secondary' : 'text-primary'}`}
+                                className={`mb-4 ${index % 4 === 0 ? 'text-secondary' : ''}`}
                                 width="32"
                                 height="32"
                                 fill="none"
@@ -149,7 +149,7 @@ const Testimonials = () => {
                                     className="w-12 h-12 rounded-full object-cover"
                                 />
                                 <div>
-                                    <div className="font-semibold text-primary">{testimonial.name}</div>
+                                    <div className="font-semibold ">{testimonial.name}</div>
                                     <div className="text-gray-600 text-sm">{testimonial.role}</div>
                                 </div>
                             </div>

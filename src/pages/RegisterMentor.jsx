@@ -326,15 +326,15 @@ const RegisterMentor = () => {
                     {/* Progress Indicator */}
                     <div className="flex justify-center mb-8">
                         <div className="flex items-center space-x-4">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-secondary text-primary' : 'bg-white/20 text-white'} font-bold`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-secondary ' : 'bg-white/20 text-white'} font-bold`}>
                                 1
                             </div>
                             <div className={`w-20 h-1 ${step >= 2 ? 'bg-secondary' : 'bg-white/20'}`}></div>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-secondary text-primary' : 'bg-white/20 text-white'} font-bold`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-secondary ' : 'bg-white/20 text-white'} font-bold`}>
                                 2
                             </div>
                             <div className={`w-20 h-1 ${step >= 3 ? 'bg-secondary' : 'bg-white/20'}`}></div>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-secondary text-primary' : 'bg-white/20 text-white'} font-bold`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-secondary ' : 'bg-white/20 text-white'} font-bold`}>
                                 3
                             </div>
                         </div>
@@ -354,7 +354,7 @@ const RegisterMentor = () => {
                                 <button
                                     onClick={() => handleRoleSelect('student')}
                                     className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'student'
-                                        ? 'bg-white text-primary'
+                                        ? 'bg-white '
                                         : 'text-white hover:bg-white/20'
                                         }`}
                                 >
@@ -363,7 +363,7 @@ const RegisterMentor = () => {
                                 <button
                                     onClick={() => handleRoleSelect('mentor')}
                                     className={`flex-1 py-2 px-4 rounded-full transition-all text-sm ${selectedRole === 'mentor'
-                                        ? 'bg-white text-primary'
+                                        ? 'bg-white '
                                         : 'text-white hover:bg-white/20'
                                         }`}
                                 >
@@ -463,7 +463,7 @@ const RegisterMentor = () => {
                                     <button
                                         type="button"
                                         onClick={handleNextStep}
-                                        className="w-full py-3 bg-white text-primary rounded-full hover:bg-white/90 transition-colors"
+                                        className="w-full py-3 bg-white  rounded-full hover:bg-white/90 transition-colors"
                                     >
                                         შემდეგი
                                     </button>
@@ -674,7 +674,7 @@ const RegisterMentor = () => {
                                         <button
                                             type="button"
                                             onClick={handleNextStep}
-                                            className="flex-1 bg-white text-primary py-3 rounded-full hover:bg-white/90 transition-colors"
+                                            className="flex-1 bg-white  py-3 rounded-full hover:bg-white/90 transition-colors"
                                         >
                                             შემდეგი
                                         </button>
@@ -770,7 +770,7 @@ const RegisterMentor = () => {
                                         <button
                                             type="submit"
                                             disabled={isLoading || !formData.agreeToTerms}
-                                            className="flex-1 bg-white text-primary py-3 rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="flex-1 bg-white  py-3 rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             {isLoading ? 'იტვირთება...' : 'გაგზავნა'}
                                         </button>

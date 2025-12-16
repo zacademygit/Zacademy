@@ -167,7 +167,7 @@ const Mentors = () => {
                 <div className="col-span-3 bg-white min-h-screen px-6 py-8 border-r-2 border-gray-200">
                     {/* Occupation Area */}
                     <div className="mb-8">
-                        <h3 className="text-primary text-left mb-4">მიმართულებები</h3>
+                        <h3 className=" text-left mb-4">მიმართულებები</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
@@ -196,7 +196,7 @@ const Mentors = () => {
 
                     {/* Position */}
                     <div className="mb-8">
-                        <h3 className="text-primary mb-4">პოზიცია</h3>
+                        <h3 className=" mb-4">პოზიცია</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
@@ -225,7 +225,7 @@ const Mentors = () => {
 
                     {/* Company */}
                     <div className="mb-8">
-                        <h3 className="text-primary mb-4">კომპანია</h3>
+                        <h3 className=" mb-4">კომპანია</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
@@ -254,7 +254,7 @@ const Mentors = () => {
 
                     {/* Years of Experience */}
                     <div className="mb-8">
-                        <h3 className="text-primary mb-4">გამოცდილება</h3>
+                        <h3 className=" mb-4">გამოცდილება</h3>
                         <div className="space-y-2">
                             {filterOptions.yearsOfExperience.map((exp) => (
                                 <label key={exp} className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded group">
@@ -276,7 +276,7 @@ const Mentors = () => {
 
                     {/* University */}
                     <div className="mb-8">
-                        <h3 className="text-primary mb-4">უნივერსიტეტი</h3>
+                        <h3 className=" mb-4">უნივერსიტეტი</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
@@ -305,7 +305,7 @@ const Mentors = () => {
 
                     {/* Faculty */}
                     <div>
-                        <h3 className="text-primary mb-4">ფაკულტეტი</h3>
+                        <h3 className=" mb-4">ფაკულტეტი</h3>
                         <div className="mb-4">
                             <input
                                 type="text"
@@ -404,7 +404,7 @@ const Mentors = () => {
                                                 <div className="flex items-start justify-between mb-3">
                                                     <div>
                                                         <div className="flex items-center gap-3 mb-2">
-                                                            <h3 className="text-3xl text-primary">{mentor.name}</h3>
+                                                            <h3 className="text-3xl ">{mentor.name}</h3>
                                                             <span className="text-2xl">🇬🇪</span>
                                                         </div>
                                                     </div>
@@ -426,22 +426,22 @@ const Mentors = () => {
 
                                                 <div className="flex flex-wrap gap-2 mb-4">
                                                     {mentor.occupationArea && (
-                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                                        <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                                             {mentor.occupationArea}
                                                         </span>
                                                     )}
                                                     {mentor.university && (
-                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                                        <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                                             {mentor.university}
                                                         </span>
                                                     )}
                                                     {mentor.faculty && (
-                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                                        <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                                             {mentor.faculty}
                                                         </span>
                                                     )}
                                                     {mentor.yearsOfExperience && (
-                                                        <span className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm border border-primary/20">
+                                                        <span className="px-4 py-2 bg-primary/10  rounded-lg text-sm border border-primary/20">
                                                             {mentor.yearsOfExperience} წლიანი გამოცდილება
                                                         </span>
                                                     )}

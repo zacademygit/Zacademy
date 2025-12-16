@@ -171,8 +171,8 @@ const StudentDashboard = () => {
                                 {/* Profile Card */}
                                 <div className="bg-white rounded-2xl p-6 border-2 border-gray-200">
                                     <div className="flex items-center gap-2 mb-6">
-                                        <User className="text-primary" size={24} />
-                                        <h2 className="text-2xl text-primary">ჩემი პროფილი</h2>
+                                        <User className="" size={24} />
+                                        <h2 className="text-2xl ">ჩემი პროფილი</h2>
                                     </div>
 
                                     <div className="space-y-4">
@@ -215,12 +215,12 @@ const StudentDashboard = () => {
 
                                 {/* Stats Card */}
                                 <div className="bg-white rounded-2xl p-6 border-2 border-gray-200">
-                                    <h3 className="text-xl text-primary mb-6">სტატისტიკა</h3>
+                                    <h3 className="text-xl  mb-6">სტატისტიკა</h3>
 
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-600">დასრულებული სესიები</span>
-                                            <span className="text-2xl text-primary">{userData.completedSessions}</span>
+                                            <span className="text-2xl ">{userData.completedSessions}</span>
                                         </div>
 
                                         <div className="flex justify-between items-center">
@@ -230,7 +230,7 @@ const StudentDashboard = () => {
 
                                         <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                                             <span className="text-gray-600">სულ დახარჯული</span>
-                                            <span className="text-2xl text-primary">€{userData.totalSpent}</span>
+                                            <span className="text-2xl ">€{userData.totalSpent}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -242,7 +242,7 @@ const StudentDashboard = () => {
                                 <div className="bg-white rounded-2xl p-6 border-2 border-gray-200">
                                     <div className="flex items-center gap-2 mb-6">
                                         <Calendar className="text-secondary" size={24} />
-                                        <h2 className="text-2xl text-primary">მოსალოდნელი სესიები</h2>
+                                        <h2 className="text-2xl ">მოსალოდნელი სესიები</h2>
                                     </div>
 
                                     <div className="space-y-4">
@@ -291,7 +291,7 @@ const StudentDashboard = () => {
                                                         </div>
 
                                                         <div className="flex items-center justify-between">
-                                                            <span className="text-xl text-primary">€{session.price}</span>
+                                                            <span className="text-xl ">€{session.price}</span>
                                                             <div className="flex gap-2">
                                                                 <button
                                                                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
@@ -332,8 +332,8 @@ const StudentDashboard = () => {
                                 {/* Past Sessions */}
                                 <div className="bg-white rounded-2xl p-6 border-2 border-gray-200">
                                     <div className="flex items-center gap-2 mb-6">
-                                        <Star className="text-primary" size={24} />
-                                        <h2 className="text-2xl text-primary">გასული სესიები</h2>
+                                        <Star className="" size={24} />
+                                        <h2 className="text-2xl ">გასული სესიები</h2>
                                     </div>
 
                                     <div className="space-y-4">
@@ -402,7 +402,7 @@ const StudentDashboard = () => {
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-2xl p-6 w-[500px]">
                         <div className="flex justify-between items-center mb-5">
-                            <h3 className="text-xl text-primary">სესიის გადატანა</h3>
+                            <h3 className="text-xl ">სესიის გადატანა</h3>
                             <button
                                 className="text-gray-600 hover:text-secondary transition-colors"
                                 onClick={() => setShowRescheduleModal(false)}
@@ -437,7 +437,7 @@ const StudentDashboard = () => {
                                 >
                                     <ChevronLeft size={20} />
                                 </button>
-                                <h4 className="text-lg text-primary">{getCurrentMonthName()}</h4>
+                                <h4 className="text-lg ">{getCurrentMonthName()}</h4>
                                 <button
                                     className="text-gray-600 hover:text-secondary transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                     onClick={goToNextMonth}
@@ -494,7 +494,7 @@ const StudentDashboard = () => {
                 <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-2xl p-6 w-[500px]">
                         <div className="flex justify-between items-center mb-5">
-                            <h3 className="text-xl text-primary">სესიის გაუქმება</h3>
+                            <h3 className="text-xl ">სესიის გაუქმება</h3>
                             <button
                                 className="text-gray-600 hover:text-secondary transition-colors"
                                 onClick={() => setShowCancelModal(false)}
@@ -528,7 +528,7 @@ const StudentDashboard = () => {
                                     <span className="text-gray-700">{selectedSessionForCancel.time} ({selectedSessionForCancel.duration})</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xl text-primary">€{selectedSessionForCancel.price}</span>
+                                    <span className="text-xl ">€{selectedSessionForCancel.price}</span>
                                 </div>
                             </div>
                         </div>

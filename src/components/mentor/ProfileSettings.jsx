@@ -222,7 +222,7 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                         <button
                             onClick={handleSave}
                             disabled={saving || !hasChanges()}
-                            className="px-6 py-2 bg-secondary text-primary rounded-lg hover:bg-secondary/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-6 py-2 bg-secondary  rounded-lg hover:bg-secondary/90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
                             <Save size={16} />
                             {saving ? 'ინახება...' : 'შენახვა'}
@@ -267,9 +267,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                         </p>
                         <button
                             disabled={!isEditing}
-                            className={`px-4 py-2 border border-gray-300 rounded-lg transition flex items-center gap-2 ${
-                                isEditing ? 'hover:bg-gray-50 text-gray-700' : 'opacity-50 cursor-not-allowed text-gray-400'
-                            }`}
+                            className={`px-4 py-2 border border-gray-300 rounded-lg transition flex items-center gap-2 ${isEditing ? 'hover:bg-gray-50 text-gray-700' : 'opacity-50 cursor-not-allowed text-gray-400'
+                                }`}
                         >
                             <Camera size={16} />
                             ფოტოს ატვირთვა
@@ -294,9 +293,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             value={formData.firstName}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                            }`}
+                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                }`}
                             required
                         />
                     </div>
@@ -312,9 +310,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             value={formData.lastName}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                            }`}
+                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                }`}
                             required
                         />
                     </div>
@@ -330,9 +327,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                             value={formData.email}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                            }`}
+                            className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                }`}
                             required
                         />
                     </div>
@@ -348,9 +344,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                 value={formData.countryCode}
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
-                                className={`w-24 px-2 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                }`}
+                                className={`w-24 px-2 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                             >
                                 <option value="+995">+995</option>
                                 <option value="+1">+1</option>
@@ -364,9 +359,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                 value={formData.phone}
                                 onChange={handleInputChange}
                                 disabled={!isEditing}
-                                className={`flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                }`}
+                                className={`flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                 required
                             />
                         </div>
@@ -400,9 +394,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     value={formData.occupationArea}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                     required
                                 >
                                     <option value="">აირჩიეთ სფერო</option>
@@ -424,9 +417,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
                                     placeholder="მაგ., Senior Engineer"
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                     required
                                 />
                             </div>
@@ -443,9 +435,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
                                     placeholder="მაგ., Google"
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                 />
                             </div>
 
@@ -459,9 +450,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     value={formData.yearsOfExperience}
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                 >
                                     <option value="">აირჩიეთ წლები</option>
                                     <option value="0-2">0-2 წელი</option>
@@ -483,9 +473,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
                                     placeholder="მაგ., თსუ"
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                     required
                                 />
                             </div>
@@ -502,9 +491,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
                                     placeholder="მაგ., ინფორმატიკა"
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                     required
                                 />
                             </div>
@@ -521,9 +509,8 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                     onChange={handleInputChange}
                                     disabled={!isEditing}
                                     placeholder="https://linkedin.com/in/yourprofile"
-                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                        !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                        }`}
                                 />
                             </div>
                         </div>
@@ -540,20 +527,18 @@ const ProfileSettings = ({ profile, refreshProfile, api }) => {
                                 disabled={!isEditing}
                                 rows="5"
                                 placeholder="მოგვიყევით თქვენი გამოცდილების, ექსპერტიზისა და თქვენი დახმარების შესახებ..."
-                                className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${
-                                    !isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
-                                }`}
+                                className={`w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary ${!isEditing ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'
+                                    }`}
                                 required
                             />
                             <div className="flex justify-between items-center mt-1">
                                 <p className="text-sm text-gray-500">მინიმუმ 100 სიმბოლო</p>
-                                <p className={`text-sm font-medium ${
-                                    formData.bio.length >= 100
+                                <p className={`text-sm font-medium ${formData.bio.length >= 100
                                         ? 'text-green-600'
                                         : formData.bio.length > 0
                                             ? 'text-orange-600'
                                             : 'text-gray-500'
-                                }`}>
+                                    }`}>
                                     {formData.bio.length} / 100
                                 </p>
                             </div>
