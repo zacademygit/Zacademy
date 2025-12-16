@@ -52,7 +52,7 @@ const Hero = () => {
                         {language === 'en' ? 'Find your mentor' : 'იპოვე შენი მენტორი'}
                     </h1>
                     <p className="text-xl text-white/90 mb-8">
-                        {language === 'en' ? 'Connect with professionals and achieve your career goalsr' : 'დაუკავშირდი პროფესიონალებს და მიაღწიე შენს კარიერულ მიზნებს'}
+                        {language === 'en' ? 'Connect with professionals and achieve your career goalsr' : '1-1 სესიები ტოპ პროფესიონალებთან'}
                     </p>
 
                     {/* Search Bar */}

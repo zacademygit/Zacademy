@@ -88,14 +88,6 @@ const TopMentors = () => {
                                 </div>
                             </div>
 
-                            <div className="flex flex-wrap gap-2 justify-center mb-4 min-h-[64px]">
-                                {mentor.expertise.map((skill, idx) => (
-                                    <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                                        {skill}
-                                    </span>
-                                ))}
-                            </div>
-
                             <button className="w-full bg-primary text-white py-2 rounded-lg hover:opacity-90 transition-opacity mt-auto">
                                 ნახე პროფილი
                             </button>
