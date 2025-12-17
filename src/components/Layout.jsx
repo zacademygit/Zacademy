@@ -14,6 +14,7 @@ const Layout = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
     // Check if we're on a dashboard page
     const isDashboardPage = location.pathname === '/student-dashboard' || location.pathname === '/mentor-dashboard';
@@ -52,13 +53,16 @@ const Layout = () => {
             if (!event.target.closest('.user-dropdown')) {
                 setShowDropdown(false);
             }
+            if (!event.target.closest('.language-dropdown')) {
+                setShowLanguageDropdown(false);
+            }
         };
 
-        if (showDropdown) {
+        if (showDropdown || showLanguageDropdown) {
             document.addEventListener('click', handleClickOutside);
             return () => document.removeEventListener('click', handleClickOutside);
         }
-    }, [showDropdown]);
+    }, [showDropdown, showLanguageDropdown]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -76,13 +80,13 @@ const Layout = () => {
                         {/* Desktop Navigation (Hidden on dashboard pages) */}
                         {/* {!isDashboardPage && ( */}
                         <div className="hidden md:flex items-center gap-8">
-                            <Link to="/mentors" className="transition-colors">
+                            <Link to="/mentors" className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors">
                                 {language === "en" ? "Mentorship" : "მენტორები"}
                             </Link>
-                            <Link to="/blogs" className="transition-colors">
+                            <Link to="/blogs" className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors">
                                 {language === "en" ? "Blog" : "ბლოგი"}
                             </Link>
-                            <Link to="/about" className=" transition-colors">
+                            <Link to="/about" className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors">
                                 {language === "en" ? "About Us" : "ჩვენს შესახებ"}
                             </Link>
                             {/* {user?.userType !== 'mentor' && (
@@ -90,28 +94,41 @@ const Layout = () => {
                                         {language === "en" ? "Become Mentor" : "გახდი მენტორი"}
                                     </Link>
                                 )} */}
-                            <Link to="/faq" className="transition-colors">
+                            <Link to="/faq" className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors">
                                 {language === "en" ? "FAQ" : "კითხვები"}
                             </Link>
-                            <Link to="/support" className="transition-colors">
+                            <Link to="/support" className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors">
                                 {language === "en" ? "Support" : "დახმარება"}
                             </Link>
 
                             {/* Language Switcher */}
-                            <div className="flex items-center gap-2">
+                            <div className="relative language-dropdown">
                                 <button
-                                    onClick={() => switchLanguage("en")}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition`
-                                    }
+                                    onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full transition cursor-pointer"
                                 >
-                                    EN
+                                    <span className="text-sm font-medium">{language === "en" ? "EN" : "KA"}</span>
+                                    <svg className={`w-4 h-4 transition-transform ${showLanguageDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </button>
-                                <button
-                                    onClick={() => switchLanguage("ka")}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition `}
-                                >
-                                    KA
-                                </button>
+
+                                {showLanguageDropdown && (
+                                    <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                                        <button
+                                            onClick={() => { switchLanguage("en"); setShowLanguageDropdown(false); }}
+                                            className={`w-full text-left px-4 py-2 text-sm hover:bg-accent cursor-pointer ${language === "en" ? 'text-primary font-medium' : 'text-gray-700'}`}
+                                        >
+                                            English
+                                        </button>
+                                        <button
+                                            onClick={() => { switchLanguage("ka"); setShowLanguageDropdown(false); }}
+                                            className={`w-full text-left px-4 py-2 text-sm hover:bg-accent cursor-pointer ${language === "ka" ? 'text-primary font-medium' : 'text-gray-700'}`}
+                                        >
+                                            ქართული
+                                        </button>
+                                    </div>
+                                )}
                             </div>
 
                             {/* User Section */}
@@ -257,21 +274,21 @@ const Layout = () => {
                             <Link
                                 to="/mentors"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
+                                className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors text-left"
                             >
                                 {language === "en" ? "Mentorship" : "მენტორები"}
                             </Link>
                             <Link
                                 to="/blogs"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
+                                className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors text-left"
                             >
                                 {language === "en" ? "Blog" : "ბლოგი"}
                             </Link>
                             <Link
                                 to="/about"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
+                                className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors text-left"
                             >
                                 {language === "en" ? "About Us" : "ჩვენს შესახებ"}
                             </Link>
@@ -287,38 +304,40 @@ const Layout = () => {
                             <Link
                                 to="/faq"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
+                                className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors text-left"
                             >
                                 {language === "en" ? "FAQ" : "კითხვები"}
                             </Link>
                             <Link
                                 to="/support"
                                 onClick={() => setShowMobileMenu(false)}
-                                className="text-light-text hover:text-light-text/80 transition-colors text-left"
+                                className="hover:underline hover:decoration-[var(--color-primary)] underline-offset-4 transition-colors text-left"
                             >
                                 {language === "en" ? "Support" : "დახმარება"}
                             </Link>
 
                             {/* Language Switcher Mobile */}
-                            <div className="flex items-center gap-2 pt-2 border-t border-white/20">
-                                <button
-                                    onClick={() => switchLanguage("en")}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "en"
-                                        ? "text-light-text bg-secondary"
-                                        : "text-black hover:text-gray-700"
-                                        }`}
-                                >
-                                    EN
-                                </button>
-                                <button
-                                    onClick={() => switchLanguage("ka")}
-                                    className={`px-3 py-1 rounded-lg text-sm font-medium transition ${language === "ka"
-                                        ? "text-light-text bg-secondary"
-                                        : "text-black hover:text-gray-700"
-                                        }`}
-                                >
-                                    KA
-                                </button>
+                            <div className="pt-2 border-t border-white/20">
+                                <div className="flex flex-col gap-2">
+                                    <button
+                                        onClick={() => { switchLanguage("en"); setShowMobileMenu(false); }}
+                                        className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${language === "en"
+                                            ? "text-light-text bg-secondary"
+                                            : "text-gray-700 hover:bg-gray-100"
+                                            }`}
+                                    >
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => { switchLanguage("ka"); setShowMobileMenu(false); }}
+                                        className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${language === "ka"
+                                            ? "text-light-text bg-secondary"
+                                            : "text-gray-700 hover:bg-gray-100"
+                                            }`}
+                                    >
+                                        ქართული
+                                    </button>
+                                </div>
                             </div>
 
                             {user ? (

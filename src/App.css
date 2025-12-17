@@ -3,6 +3,7 @@
 @theme {
   --color-primary: #0139c6;
   --color-secondary: #161616;
+  --color-accent: #E5E5E5;
   --color-light-text: white;
   --color-neutral-bg: white;
 
@@ -10,6 +11,16 @@
   --breakpoint-xs: 480px;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
+
+  /* Custom breakpoints */
+
+  /* Font sizes */
+  --font-size-h1: 48px;
+  --font-size-h2: 32px;
+  --font-size-h3: 20px;
+  --font-size-body-big: 16px;
+  --font-size-body-small: 12px;
+
 }
 
 #root {
