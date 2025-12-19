@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(undefined);
-console.log('here')
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
@@ -18,8 +17,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-    console.log('user state in AuthProvider:', user);
-
     // Check if user is authenticated on mount
     useEffect(() => {
         checkAuth();
@@ -30,11 +27,9 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
                 credentials: 'include', // Important for cookies
             });
-            console.log('response from /auth/me:', response);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("Auth check response data:", data);
                 setUser({
                     id: data.id,
                     firstName: data.first_name,
@@ -48,7 +43,7 @@ export const AuthProvider = ({ children }) => {
                 setUser(null);
             }
         } catch (error) {
-            console.error('Auth check failed:', error);
+            console.error('Authorization failed:', error);
             setUser(null);
         } finally {
             setLoading(false);

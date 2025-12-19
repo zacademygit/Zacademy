@@ -221,8 +221,10 @@ const RegisterMentor = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!formData.agreeToTerms) {
+        console.log(formData)
+        console.log(formData.agreeToTerms)
+        console.log('tye', typeof (formData.agreeToTerms))
+        if (!formData.agreeToTerms == true) {
             setError('You must agree to the Terms of Service and Privacy Policy');
             return;
         }
@@ -231,35 +233,37 @@ const RegisterMentor = () => {
         setError('');
 
         try {
-            // Note: Photo upload would need to be handled separately (e.g., upload to cloud storage)
-            // For now, we'll send null for photoUrl
-            const payload = {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                password: formData.password,
-                phone: formData.phone,
-                dateOfBirth: formData.dateOfBirth,
-                occupationArea: formData.occupationArea,
-                currentPosition: formData.currentPosition,
-                company: formData.company,
-                yearsOfExperience: formData.yearsOfExperience,
-                university: formData.university,
-                faculty: formData.faculty,
-                bio: formData.bio,
-                linkedin: formData.linkedin,
-                photoUrl: null, // TODO: Implement photo upload to cloud storage
-                agreeToTerms: formData.agreeToTerms,
-                agreeToMarketing: formData.agreeToMarketing
-            };
+            // Create FormData to handle file upload
+            const payload = new FormData();
+
+            // Append all form fields
+            payload.append('firstName', formData.firstName);
+            payload.append('lastName', formData.lastName);
+            payload.append('email', formData.email);
+            payload.append('password', formData.password);
+            payload.append('phone', formData.phone);
+            payload.append('dateOfBirth', formData.dateOfBirth);
+            payload.append('occupationArea', formData.occupationArea);
+            payload.append('currentPosition', formData.currentPosition);
+            payload.append('company', formData.company || '');
+            payload.append('yearsOfExperience', formData.yearsOfExperience || '');
+            payload.append('university', formData.university);
+            payload.append('faculty', formData.faculty);
+            payload.append('bio', formData.bio);
+            payload.append('linkedin', formData.linkedin || '');
+            payload.append('agreeToTerms', formData.agreeToTerms);
+            payload.append('agreeToMarketing', formData.agreeToMarketing);
+
+            // Append photo file if selected
+            if (formData.photo) {
+                payload.append('photo', formData.photo);
+            }
 
             const response = await fetch(`${API_BASE_URL}/api/auth/register/mentor`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 credentials: 'include',
-                body: JSON.stringify(payload),
+                body: payload,
+                // Don't set Content-Type header - browser will set it automatically with boundary
             });
 
             const data = await response.json();

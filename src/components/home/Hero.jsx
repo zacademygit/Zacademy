@@ -1,10 +1,14 @@
 // src/components/home/Hero.jsx
 
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 const Hero = () => {
     const { language } = useLanguage();
+    const navigate = useNavigate();
+    const [selectedOccupation, setSelectedOccupation] = useState('');
 
     // Animation variant for entire content to fade in together
     const headingVariants = {
@@ -16,6 +20,14 @@ const Hero = () => {
                 duration: 0.8,
                 ease: "easeOut"
             }
+        }
+    };
+
+    const handleSearch = () => {
+        if (selectedOccupation) {
+            navigate(`/mentors?occupationArea=${encodeURIComponent(selectedOccupation)}`);
+        } else {
+            navigate('/mentors');
         }
     };
 
@@ -57,46 +69,51 @@ const Hero = () => {
 
                     {/* Search Bar */}
                     <div className="max-w-2xl mx-auto bg-white border-2 border-gray-200 rounded-full p-2 flex gap-2 shadow-lg">
-                        <select className="flex-1 min-w-0 px-3 sm:px-6 py-3 bg-transparent border-none outline-none text-gray-700">
-                            <option disabled selected hidden>
+                        <select
+                            value={selectedOccupation}
+                            onChange={(e) => setSelectedOccupation(e.target.value)}
+                            className="flex-1 min-w-0 px-3 sm:px-6 py-3 bg-transparent border-none outline-none text-gray-700"
+                        >
+                            <option value="" disabled>
                                 {language === 'en' ? 'Choose your goal' : 'აირჩიე მიზანი'}
                             </option>
-                            <option>
+                            <option value="STEM (Science, Technology, Engineering, Mathematics)">
                                 {language === 'en' ? 'STEM (Science, Technology, Engineering, Mathematics)' : 'STEM (მეცნიერება, ტექნოლოგია, ინჟინერია, მათემატიკა)'}
                             </option>
-                            <option>
+                            <option value="Business, Finance & Management">
                                 {language === 'en' ? 'Business, Finance & Management' : 'ბიზნესი, ფინანსები, მენეჯმენტი'}
                             </option>
-                            <option value="arts_design">
+                            <option value="Creative Arts, Media & Design">
                                 {language === 'en' ? 'Creative Arts, Media & Design' : 'კრეატიული ხელოვნება, მედია და დიზაინი'}
                             </option>
-                            <option value="healthcare">
+                            <option value="Healthcare & Medicine">
                                 {language === 'en' ? 'Healthcare & Medicine' : 'ჯანდაცვა და მედიცინა'}
                             </option>
-                            <option value="education">
+                            <option value="Education & Social Sciences">
                                 {language === 'en' ? 'Education & Social Sciences' : 'განათლება და სოციალური მეცნიერებები'}
                             </option>
-                            <option value="law">
+                            <option value="Law, Government & Public Policy">
                                 {language === 'en' ? 'Law, Government & Public Policy' : 'სამართალი, მმართველობა და საჯარო პოლიტიკა'}
                             </option>
-                            <option value="trades">
+                            <option value="Trades, Vocational & Technical Careers">
                                 {language === 'en' ? 'Trades, Vocational & Technical Careers' : 'პროფესიული, საწარმოო და ტექნიკური სფეროები'}
                             </option>
-                            <option value="hospitality">
+                            <option value="Hospitality, Tourism & Customer Experience">
                                 {language === 'en' ? 'Hospitality, Tourism & Customer Experience' : 'სტუმართმასპინძლობა, ტურიზმი და მომხმარებელთან ურთიერთობა'}
                             </option>
-                            <option value="environment">
+                            <option value="Environment, Agriculture & Sustainability">
                                 {language === 'en' ? 'Environment, Agriculture & Sustainability' : 'გარემო, სოფლის მეურნეობა და მდგრადობა'}
                             </option>
-                            <option value="sports">
+                            <option value="Sports, Fitness & Wellness">
                                 {language === 'en' ? 'Sports, Fitness & Wellness' : 'სპორტი, ფიტნესი და ველნესი'}
                             </option>
-                            <option value="emerging">
+                            <option value="Emerging & Future-Forward Fields">
                                 {language === 'en' ? 'Emerging & Future-Forward Fields' : 'ამომავალი და მომავლის სფეროები'}
                             </option>
                         </select>
                         <button
-                            className="flex-shrink-0 bg-accent px-4 sm:px-8 py-3 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2"
+                            onClick={handleSearch}
+                            className="flex-shrink-0 bg-accent px-4 sm:px-8 py-3 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2 cursor-pointer"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

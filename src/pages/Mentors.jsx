@@ -1,7 +1,7 @@
 // src/pages/Mentors.jsx
 
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -10,6 +10,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL
 
 const Mentors = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -27,14 +28,17 @@ const Mentors = () => {
         faculties: []
     });
 
-    // Selected filters
-    const [filters, setFilters] = useState({
-        occupation: '',
-        company: '',
-        yearsOfExperience: '',
-        position: '',
-        university: '',
-        faculty: ''
+    // Selected filters - initialize from URL params
+    const [filters, setFilters] = useState(() => {
+        const occupationFromUrl = searchParams.get('occupationArea');
+        return {
+            occupation: occupationFromUrl || '',
+            company: '',
+            yearsOfExperience: '',
+            position: '',
+            university: '',
+            faculty: ''
+        };
     });
 
     // Fetch filter options on mount
@@ -46,6 +50,11 @@ const Mentors = () => {
     useEffect(() => {
         fetchMentors();
     }, [currentPage, filters]);
+
+    // Scroll to top when page changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [currentPage]);
 
     const fetchFilterOptions = async () => {
         try {
@@ -164,7 +173,7 @@ const Mentors = () => {
 
             <div className="grid grid-cols-12 gap-0">
                 {/* Left Sidebar - Filters */}
-                <div className="col-span-3 bg-white min-h-screen px-6 py-8 border-r-2 border-gray-200">
+                <div className="text-left col-span-3 bg-white min-h-screen px-6 py-8 border-r-2 border-gray-200">
                     {/* Occupation Area */}
                     <div className="mb-8">
                         <h3 className=" text-left mb-4">მიმართულებები</h3>

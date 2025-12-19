@@ -109,7 +109,7 @@ const MentorDashboard = () => {
         <div className="min-h-screen bg-gray-50">
             <div className="flex">
                 {/* Sidebar */}
-                <div className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 overflow-y-auto">
+                <div className="w-64 bg-white border-r border-gray-200 min-h-screen sticky top-0">
                     {/* Profile Header */}
                     <div className="p-6 border-b border-gray-200">
                         <div className="flex flex-col items-center text-center mb-4">
